@@ -9,6 +9,9 @@ interface User {
     email: string;
     role: 'admin' | 'student' | 'instructor';
     status: 'active' | 'pending' | 'banned';
+    phone?: string;
+    targetGoal?: string;
+    createdAt?: string | Date;
 }
 
 interface AuthContextType {
