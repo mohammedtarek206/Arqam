@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbConnect } from '@/lib/db';
+import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 
 export async function GET(req: NextRequest) {
     try {
-        await dbConnect();
+        await connectDB();
 
         // Fetch top 100 students, sorting by points descending and then by level
         const topStudents = await User.find({ role: 'student' })
