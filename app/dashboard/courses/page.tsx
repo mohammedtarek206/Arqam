@@ -1,0 +1,178 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useLanguage } from '@/lib/LanguageContext';
+import { motion } from 'framer-motion';
+import { FiPlayCircle, FiMoreVertical, FiCheckCircle, FiClock, FiStar, FiSearch } from 'react-icons/fi';
+import Link from 'next/link';
+
+export default function MyCoursesPage() {
+    const { t } = useLanguage();
+    const [filter, setFilter] = useState('all');
+
+    const courses = [
+        {
+            id: 1,
+            title: 'Full Stack Web Development with Next.js',
+            instructor: 'Ahmed Shendy',
+            progress: 65,
+            thumbnail: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop',
+            track: 'Web Development',
+            status: 'in-progress',
+            lastAccessed: '2 hours ago'
+        },
+        {
+            id: 2,
+            title: 'UI/UX Design Fundamentals',
+            instructor: 'Sara Hassan',
+            progress: 100,
+            thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=250&fit=crop',
+            track: 'Design',
+            status: 'completed',
+            lastAccessed: '1 week ago'
+        },
+        {
+            id: 3,
+            title: 'Advanced Ethical Hacking',
+            instructor: 'Omar Zaid',
+            progress: 0,
+            thumbnail: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop',
+            track: 'Cyber Security',
+            status: 'not-started',
+            lastAccessed: 'Never'
+        }
+    ];
+
+    const filteredCourses = courses.filter(c => {
+        if (filter === 'all') return true;
+        if (filter === 'active') return c.progress > 0 && c.progress < 100;
+        if (filter === 'completed') return c.progress === 100;
+        return true;
+    });
+
+    return (
+        <div className="space-y-8 pb-20 max-w-7xl mx-auto">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 className="text-4xl font-black text-white uppercase">{t('my_courses')}</h1>
+                    <p className="text-gray-400 font-bold mt-1">Resume learning and track your accomplishments.</p>
+                </div>
+
+                <div className="flex gap-4 w-full md:w-auto">
+                    <div className="relative flex-1 md:w-64">
+                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                        <input
+                            type="text"
+                            placeholder="Search courses..."
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50"
+                        />
+                    </div>
+                    <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 shrink-0 hidden md:flex">
+                        {['all', 'active', 'completed'].map((f) => (
+                            <button
+                                key={f}
+                                onClick={() => setFilter(f)}
+                                className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-gray-500 hover:text-white'
+                                    }`}
+                            >
+                                {f}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </header>
+
+            {/* Mobile Filter */}
+            <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 md:hidden overflow-x-auto snap-x">
+                {['all', 'active', 'completed'].map((f) => (
+                    <button
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        className={`px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shrink-0 snap-start ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-gray-500 hover:text-white'
+                            }`}
+                    >
+                        {f}
+                    </button>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                {filteredCourses.map((course, i) => (
+                    <motion.div
+                        key={course.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="glass rounded-[2.5rem] border border-white/5 overflow-hidden group hover:border-white/20 transition-all flex flex-col relative"
+                    >
+                        {course.progress === 100 && (
+                            <div className="absolute top-4 right-4 z-10 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-green-500/20 border-2 border-dark">
+                                <FiCheckCircle className="text-xl" />
+                            </div>
+                        )}
+
+                        <div className="w-full h-48 relative overflow-hidden shrink-0">
+                            <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-black/50 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10">{course.track}</span>
+                            </div>
+
+                            {course.progress > 0 && course.progress < 100 && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                                    <Link href={`/learn/${course.id}`} className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl hover:scale-110 transition-transform shadow-xl shadow-primary/20">
+                                        <FiPlayCircle />
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-8 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 className="text-xl font-black text-white group-hover:text-primary transition-colors leading-tight mb-2">
+                                    {course.title}
+                                </h3>
+                                <p className="text-xs font-bold text-gray-400 flex items-center gap-2">
+                                    By {course.instructor}
+                                    <span className="w-1 h-1 bg-gray-600 rounded-full" />
+                                    <span className="flex items-center gap-1 text-yellow-500"><FiStar className="fill-current" /> 4.9</span>
+                                </p>
+                            </div>
+
+                            <div className="space-y-4 mt-8">
+                                <div>
+                                    <div className="flex justify-between text-[10px] font-black uppercase mb-2">
+                                        <span className={course.progress === 100 ? 'text-green-500' : 'text-gray-400'}>
+                                            {course.progress === 100 ? 'Completed' : 'Progress'}
+                                        </span>
+                                        <span className="text-white">{course.progress}%</span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${course.progress}%` }}
+                                            transition={{ duration: 1, delay: 0.2 }}
+                                            className={`h-full rounded-full ${course.progress === 100 ? 'bg-green-500' : 'bg-gradient-to-r from-primary to-accent'}`}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase">
+                                    <span className="flex items-center gap-1.5"><FiClock /> {course.lastAccessed}</span>
+                                    <button className="hover:text-white transition-colors"><FiMoreVertical className="text-lg" /></button>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+
+                {filteredCourses.length === 0 && (
+                    <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-white/10">
+                        <FiPlayCircle className="mx-auto text-5xl text-gray-700 mb-4" />
+                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">No {filter} courses found.</p>
+                        <Link href="/tracks" className="inline-block mt-6 px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-black uppercase text-xs rounded-xl transition-all border border-white/10">Browse Library</Link>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

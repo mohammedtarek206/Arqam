@@ -1,0 +1,275 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useLanguage } from '@/lib/LanguageContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    FiPlus, FiBook, FiMoreVertical, FiEdit2,
+    FiTrash2, FiEye, FiLayers, FiVideo, FiFileText,
+    FiX, FiUsers, FiStar, FiClock
+} from 'react-icons/fi';
+import CourseBuilder from '@/components/instructor/CourseBuilder';
+
+interface Course {
+    id: number;
+    title: string;
+    track: string;
+    students: number;
+    status: string;
+    modules: number;
+    lessons: number;
+    thumbnail: string;
+    description?: string;
+    rating?: number;
+    duration?: string;
+}
+
+const initialCourses: Course[] = [
+    {
+        id: 1,
+        title: 'Full Stack Web Development with Next.js',
+        track: 'Web Development',
+        students: 450,
+        status: 'active',
+        modules: 12,
+        lessons: 48,
+        thumbnail: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop',
+        description: 'A comprehensive course covering modern full stack development using Next.js, React, and MongoDB.',
+        rating: 4.9,
+        duration: '24h 30m',
+    },
+    {
+        id: 2,
+        title: 'Advanced Ethical Hacking',
+        track: 'Cyber Security',
+        students: 120,
+        status: 'pending',
+        modules: 8,
+        lessons: 32,
+        thumbnail: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop',
+        description: 'Learn ethical hacking techniques from reconnaissance to exploitation and reporting.',
+        rating: 4.8,
+        duration: '18h 00m',
+    }
+];
+
+// Course Preview Modal
+function CoursePreviewModal({ course, onClose }: { course: Course; onClose: () => void }) {
+    return (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="glass rounded-2xl border border-white/10 w-full max-w-2xl shadow-2xl overflow-hidden"
+            >
+                {/* Thumbnail */}
+                <div className="relative h-52 overflow-hidden">
+                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <button
+                        onClick={onClose}
+                        className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/80 rounded-xl text-white transition-colors"
+                    >
+                        <FiX />
+                    </button>
+                    <div className="absolute bottom-4 left-6">
+                        <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${course.status === 'active' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-dark'}`}>
+                            {course.status}
+                        </span>
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-2">{course.track}</p>
+                        <h2 className="text-xl font-black text-white mt-1 leading-tight">{course.title}</h2>
+                    </div>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center gap-6 px-6 py-4 border-b border-white/5">
+                    <div className="flex items-center gap-2 text-sm font-bold">
+                        <FiUsers className="text-primary" />
+                        <span className="text-white">{course.students}</span>
+                        <span className="text-gray-500">students</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-bold">
+                        <FiLayers className="text-primary" />
+                        <span className="text-white">{course.modules}</span>
+                        <span className="text-gray-500">modules</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-bold">
+                        <FiVideo className="text-primary" />
+                        <span className="text-white">{course.lessons}</span>
+                        <span className="text-gray-500">lessons</span>
+                    </div>
+                    {course.rating && (
+                        <div className="flex items-center gap-2 text-sm font-bold">
+                            <FiStar className="text-yellow-400 fill-current" />
+                            <span className="text-white">{course.rating}</span>
+                        </div>
+                    )}
+                    {course.duration && (
+                        <div className="flex items-center gap-2 text-sm font-bold">
+                            <FiClock className="text-primary" />
+                            <span className="text-white">{course.duration}</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Description */}
+                <div className="p-6">
+                    <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Description</h3>
+                    <p className="text-gray-300 font-medium text-sm leading-relaxed">{course.description || 'No description available.'}</p>
+                </div>
+
+                <div className="px-6 pb-6 flex gap-3">
+                    <button onClick={onClose} className="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-400 hover:text-white font-black text-xs uppercase tracking-widest transition-colors">
+                        Close
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+}
+
+export default function ManageCourses() {
+    const { t } = useLanguage();
+    const [courses, setCourses] = useState<Course[]>(initialCourses);
+    const [showBuilder, setShowBuilder] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+    const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+
+    const handleCreateNew = () => {
+        setSelectedCourse(null);
+        setShowBuilder(true);
+    };
+
+    const handleEdit = (course: Course) => {
+        setSelectedCourse(course);
+        setShowBuilder(true);
+    };
+
+    const handleView = (course: Course) => {
+        setPreviewCourse(course);
+    };
+
+    const handleDelete = (id: number) => {
+        if (!confirm('Are you sure you want to delete this course?')) return;
+        setCourses(prev => prev.filter(c => c.id !== id));
+    };
+
+    return (
+        <div className="space-y-8 pb-20">
+            <AnimatePresence>
+                {previewCourse && (
+                    <CoursePreviewModal course={previewCourse} onClose={() => setPreviewCourse(null)} />
+                )}
+            </AnimatePresence>
+
+            <header className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-4xl font-black text-white uppercase">{t('manage_courses')}</h1>
+                    <p className="text-gray-400 font-bold mt-1">Manage and update your educational content.</p>
+                </div>
+                {!showBuilder && (
+                    <button
+                        onClick={handleCreateNew}
+                        className="px-8 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
+                    >
+                        <FiPlus className="w-5 h-5" /> {t('create_course')}
+                    </button>
+                )}
+            </header>
+
+            <AnimatePresence mode="wait">
+                {!showBuilder ? (
+                    <motion.div
+                        key="list"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+                    >
+                        {courses.map((course, i) => (
+                            <motion.div
+                                key={course.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="glass rounded-[2.5rem] border border-white/5 overflow-hidden group hover:border-primary/30 transition-all flex flex-col sm:flex-row"
+                            >
+                                <div className="w-full sm:w-44 h-44 sm:h-full relative overflow-hidden shrink-0">
+                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    <div className="absolute top-3 left-3">
+                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${course.status === 'active' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-dark'}`}>
+                                            {course.status}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="p-6 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">{course.track}</span>
+                                        <h3 className="text-base font-black text-white group-hover:text-primary transition-colors leading-tight mb-3 mt-1">
+                                            {course.title}
+                                        </h3>
+                                        <div className="flex items-center gap-4 text-xs font-bold text-gray-500">
+                                            <span className="flex items-center gap-1.5"><FiLayers className="text-primary" /> {course.modules} Units</span>
+                                            <span className="flex items-center gap-1.5"><FiVideo className="text-primary" /> {course.lessons} Lessons</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between mt-5">
+                                        <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
+                                            <FiUsers className="text-primary" /> {course.students} students
+                                        </div>
+                                        <div className="flex gap-2">
+                                            {/* View button */}
+                                            <button
+                                                onClick={() => handleView(course)}
+                                                title="Preview Course"
+                                                className="p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-xl transition-all"
+                                            >
+                                                <FiEye />
+                                            </button>
+                                            {/* Edit button */}
+                                            <button
+                                                onClick={() => handleEdit(course)}
+                                                title="Edit Course"
+                                                className="p-2.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl transition-all"
+                                            >
+                                                <FiEdit2 />
+                                            </button>
+                                            {/* Delete button */}
+                                            <button
+                                                onClick={() => handleDelete(course.id)}
+                                                title="Delete Course"
+                                                className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-all"
+                                            >
+                                                <FiTrash2 />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+
+                        {courses.length === 0 && (
+                            <div className="col-span-2 text-center py-24 glass rounded-3xl border-2 border-dashed border-white/10">
+                                <FiBook className="mx-auto text-5xl text-gray-700 mb-4" />
+                                <p className="text-gray-500 font-bold mb-4">You haven't created any courses yet.</p>
+                                <button onClick={handleCreateNew} className="px-6 py-3 bg-primary text-white font-black rounded-xl text-xs uppercase tracking-widest hover:bg-primary/90 transition-colors">
+                                    Create Your First Course
+                                </button>
+                            </div>
+                        )}
+                    </motion.div>
+                ) : (
+                    <motion.div key="builder" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <CourseBuilder
+                            course={selectedCourse}
+                            onCancel={() => { setShowBuilder(false); setSelectedCourse(null); }}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}

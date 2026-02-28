@@ -1,0 +1,78 @@
+'use client';
+
+import { useAuth } from '@/lib/AuthContext';
+import { useLanguage } from '@/lib/LanguageContext';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
+import {
+    FiHome, FiBook, FiClipboard, FiCheckSquare,
+    FiMessageSquare, FiPieChart, FiLogOut
+} from 'react-icons/fi';
+
+export default function InstructorSidebar() {
+    const pathname = usePathname();
+    const { t, lang } = useLanguage();
+    const { logout, user } = useAuth();
+
+    const menuItems = [
+        { id: 'overview', href: '/instructor', icon: <FiHome />, label: t('dashboard') },
+        { id: 'courses', href: '/instructor/courses', icon: <FiBook />, label: t('manage_courses') },
+        { id: 'exams', href: '/instructor/exams', icon: <FiClipboard />, label: t('manage_exams') },
+        { id: 'projects', href: '/instructor/projects', icon: <FiCheckSquare />, label: t('project_grading') },
+        { id: 'comms', href: '/instructor/communications', icon: <FiMessageSquare />, label: t('communications') },
+        { id: 'stats', href: '/instructor/stats', icon: <FiPieChart />, label: t('stats') },
+    ];
+
+    return (
+        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-64 bg-black/50 backdrop-blur-xl border-r border-white/5 z-30 transition-all hidden md:flex flex-col pt-20`}>
+            {/* User info */}
+            <div className="px-4 py-4 border-b border-white/5 shrink-0">
+                <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-3">
+                    <div className="w-10 h-10 rounded-xl bg-accent/20 text-accent flex items-center justify-center font-black text-sm uppercase shrink-0">
+                        {user?.name?.charAt(0) || 'I'}
+                    </div>
+                    <div className="overflow-hidden">
+                        <p className="text-sm font-black text-white truncate">{user?.name || 'Instructor'}</p>
+                        <p className="text-[10px] font-bold text-accent uppercase tracking-widest">Instructor</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                {menuItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                        <Link key={item.id} href={item.href}>
+                            <motion.div
+                                whileHover={{ x: lang === 'ar' ? -4 : 4 }}
+                                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all relative ${isActive
+                                        ? 'bg-primary/10 text-white border border-primary/20'
+                                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                                    }`}
+                            >
+                                <span className={`text-xl ${isActive ? 'text-primary' : ''}`}>{item.icon}</span>
+                                <span className="text-xs uppercase tracking-widest">{item.label}</span>
+                                {isActive && (
+                                    <div className={`absolute ${lang === 'ar' ? 'right-0' : 'left-0'} top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full`} />
+                                )}
+                            </motion.div>
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            <div className="p-4 border-t border-white/5 shrink-0">
+                <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-gray-500 hover:text-white hover:bg-white/5 transition-all uppercase tracking-widest mb-1">
+                    View Site
+                </Link>
+                <button
+                    onClick={logout}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest"
+                >
+                    <FiLogOut className="text-base" /> Logout
+                </button>
+            </div>
+        </div>
+    );
+}
