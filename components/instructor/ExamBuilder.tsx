@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import {
     FiArrowLeft, FiPlus, FiTrash2, FiSave,
-    FiCheckCircle, FiCircle, FiAlignLeft, FiMoreHorizontal
+    FiCheckCircle, FiCircle, FiAlignLeft, FiMoreHorizontal,
+    FiClipboard
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -216,8 +217,8 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                                     key={opt}
                                                     onClick={() => setQuestions(questions.map(qu => qu.id === q.id ? { ...qu, correctAnswer: opt.toLowerCase() } : qu))}
                                                     className={`flex-1 py-4 rounded-2xl font-black text-sm transition-all border ${q.correctAnswer === opt.toLowerCase()
-                                                            ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20'
-                                                            : 'bg-white/5 border-white/10 text-gray-500'
+                                                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20'
+                                                        : 'bg-white/5 border-white/10 text-gray-500'
                                                         }`}
                                                 >
                                                     {opt}
