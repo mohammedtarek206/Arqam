@@ -6,7 +6,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const MONGODB_URI = 'mongodb://127.0.0.1:27017/arqam_academy';
+// Replace with your remote MongoDB URI
+const MONGODB_URI = 'mongodb+srv://mt7592546_db_user:84UxtvjU0ddGlGEX@cluster0.vd1nml2.mongodb.net/?appName=Cluster0';
 
 const UserSchema = new mongoose.Schema(
     {
