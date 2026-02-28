@@ -180,10 +180,42 @@ export default function Navbar() {
             </div>
 
             {/* Notifications */}
-            <button className="relative p-2 text-gray-400 hover:text-primary transition-colors">
-              <FiBell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-dark" />
-            </button>
+            <div className="relative group">
+              <button
+                onClick={() => setActiveDropdown(activeDropdown === 'notifications' ? null : 'notifications')}
+                className={`relative p-2 transition-colors ${activeDropdown === 'notifications' ? 'text-white bg-white/10 rounded-xl' : 'text-gray-400 hover:text-primary'}`}
+              >
+                <FiBell className="w-5 h-5" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-dark" />
+              </button>
+
+              <AnimatePresence>
+                {activeDropdown === 'notifications' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full mt-2 w-72 glass border border-white/10 rounded-2xl shadow-2xl p-4 right-0 rtl:right-auto rtl:left-0 overflow-hidden"
+                  >
+                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+                      <h3 className="text-white font-black uppercase text-sm">{t('notifications') || 'Notifications'}</h3>
+                      <button className="text-[10px] text-primary font-bold hover:underline">Mark all as read</button>
+                    </div>
+
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+                      {/* Empty State */}
+                      <div className="text-center py-6">
+                        <div className="w-12 h-12 rounded-full bg-white/5 mx-auto mb-3 flex items-center justify-center">
+                          <FiBell className="w-5 h-5 text-gray-500" />
+                        </div>
+                        <p className="text-gray-400 text-sm font-bold">No new notifications</p>
+                        <p className="text-gray-500 text-[10px] mt-1">We'll let you know when something arrives</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Theme & Language */}
             <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/5">

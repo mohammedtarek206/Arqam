@@ -3,6 +3,8 @@ import connectDB from '@/lib/mongodb';
 import Certificate from '@/models/Certificate';
 import { authenticateRequest } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
     try {
         const user = await authenticateRequest(request);

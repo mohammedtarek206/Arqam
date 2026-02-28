@@ -13,6 +13,8 @@ function generateRandomCode(length = 8) {
     return result;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
     try {
         const user = await authenticateRequest(request);
