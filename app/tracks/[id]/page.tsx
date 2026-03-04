@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import {
     FiMonitor, FiSmartphone, FiShield, FiCpu, FiBriefcase,
-    FiArrowRight, FiCheck, FiAward, FiClock, FiBook, FiX, FiCreditCard, FiUpload, FiCheckCircle, FiInfo
+    FiArrowRight, FiAward, FiClock, FiBook, FiX, FiCreditCard, FiUpload, FiCheckCircle, FiInfo
 } from 'react-icons/fi';
 import Link from 'next/link';
 
@@ -103,6 +103,7 @@ export default function TrackDetailPage() {
                     setTrack(getTrackInfo(trackId));
                 }
             } catch (err) {
+                console.error(err);
                 setTrack(getTrackInfo(trackId));
             } finally {
                 setLoading(false);
@@ -155,6 +156,7 @@ export default function TrackDetailPage() {
                 alert(error.error || 'فشل إرسال طلب الدفع');
             }
         } catch (err) {
+            console.error(err);
             alert('حدث خطأ أثناء إرسال الطلب');
         } finally {
             setUploading(false);

@@ -29,7 +29,8 @@ export async function GET(
             ...track.toObject(),
             exams
         }, { status: 200 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Fetch track error:', error);
         return NextResponse.json(
             { error: 'Failed to fetch track' },
             { status: 500 }
@@ -56,7 +57,8 @@ export async function PATCH(
         }
 
         return NextResponse.json(track, { status: 200 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Update track error:', error);
         return NextResponse.json({ error: 'Update failed' }, { status: 500 });
     }
 }
@@ -82,7 +84,8 @@ export async function DELETE(
             { message: 'Track deleted successfully' },
             { status: 200 }
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Delete track error:', error);
         return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
     }
 }

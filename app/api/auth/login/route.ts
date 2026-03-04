@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import connectDB from '@/lib/mongodb';
 import { generateToken } from '@/lib/auth';
 import User from '@/models/User';
-import InstructorDetail from '@/models/InstructorDetail';
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,7 +68,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Login failed' },

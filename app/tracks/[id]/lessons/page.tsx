@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { useAuth } from '@/lib/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
-import { FiPlay, FiChevronLeft, FiChevronRight, FiCheckCircle, FiLock, FiInfo, FiArrowLeft } from 'react-icons/fi';
+import { FiPlay, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
 import Link from 'next/link';
 
 export default function LessonsPage() {
-    const { lang, t } = useLanguage();
+    const { lang } = useLanguage();
     const { user, isLoading: authLoading } = useAuth();
     const params = useParams();
     const router = useRouter();

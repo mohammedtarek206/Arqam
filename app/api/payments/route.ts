@@ -62,14 +62,15 @@ export async function POST(request: NextRequest) {
             { message: 'Payment submitted successfully. Waiting for admin approval.', id: payment._id },
             { status: 201 }
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as Error;
         console.error('Payment API error details:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
+            message: err.message,
+            stack: err.stack,
+            name: err.name
         });
         return NextResponse.json(
-            { error: `Failed to submit payment: ${error.message || 'Unknown error'}` },
+            { error: `Failed to submit payment: ${err.message || 'Unknown error'}` },
             { status: 500 }
         );
     }
@@ -86,7 +87,8 @@ export async function GET(request: NextRequest) {
         await connectDB();
         const payments = await Payment.find({ user: user.userId }).populate('track', 'title').sort({ createdAt: -1 });
         return NextResponse.json(payments, { status: 200 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Fetch payments error:', error);
         return NextResponse.json(
             { error: 'Failed to fetch payments' },
             { status: 500 }
