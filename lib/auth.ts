@@ -8,7 +8,7 @@ export interface TokenPayload {
 }
 
 export function generateToken(payload: TokenPayload): string {
-  return jwt.sign(payload, process.env.JWT_SECRET || 'fallback-secret', {
+  return jwt.sign(payload, process.env.JWT_SECRET || 'arqam_platform_secret_key_2026_secure', {
     expiresIn: '7d',
   });
 }
@@ -17,7 +17,7 @@ export function verifyToken(token: string): TokenPayload | null {
   try {
     return jwt.verify(
       token,
-      process.env.JWT_SECRET || 'fallback-secret'
+      process.env.JWT_SECRET || 'arqam_platform_secret_key_2026_secure'
     ) as TokenPayload;
   } catch (error) {
     return null;

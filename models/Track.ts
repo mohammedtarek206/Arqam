@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface ILesson {
   title: string;
   description: string;
-  videoUrl: string; // Dailymotion URL or ID
+  videoUrl: string; // YouTube URL or ID
 }
 
 export interface ITrack extends Document {
@@ -16,6 +16,7 @@ export interface ITrack extends Document {
   curriculum: string[];
   lessons: ILesson[];
   price: number;
+  slug: string;
   imageUrl: string;
   isActive: boolean;
   createdAt: Date;
@@ -43,6 +44,7 @@ const TrackSchema: Schema = new Schema(
       },
     ],
     price: { type: Number, default: 0 },
+    slug: { type: String, required: true, unique: true },
     imageUrl: { type: String },
     isActive: { type: Boolean, default: true },
   },

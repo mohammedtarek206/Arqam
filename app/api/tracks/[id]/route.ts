@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as mongoose from 'mongoose';
 import connectDB from '@/lib/mongodb';
 import Track from '@/models/Track';
 import Exam from '@/models/Exam';
@@ -10,7 +11,13 @@ export async function GET(
 ) {
     try {
         await connectDB();
-        const track = await Track.findById(params.id);
+
+        let track;
+        if (mongoose.Types.ObjectId.isValid(params.id)) {
+            track = await Track.findById(params.id);
+        } else {
+            track = await Track.findOne({ slug: params.id });
+        }
 
         if (!track) {
             return NextResponse.json({ error: 'Track not found' }, { status: 404 });

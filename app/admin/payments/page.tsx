@@ -1,54 +1,92 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiSearch, FiDownload, FiRefreshCw, FiCheckCircle, FiXCircle, FiClock } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiSearch, FiDownload, FiRefreshCw, FiCheckCircle, FiXCircle, FiClock, FiEye } from 'react-icons/fi';
 
 interface Payment {
-    id: string;
-    student: string;
-    course: string;
+    _id: string;
+    user: { _id: string; name: string; email: string };
+    track: { _id: string; title: string };
     amount: number;
-    status: 'paid' | 'pending' | 'failed' | 'refunded';
+    status: 'paid' | 'pending' | 'failed' | 'refunded' | 'approved' | 'rejected';
     method: string;
-    date: string;
+    proofImage: string;
+    createdAt: string;
 }
 
-// Mock data until real payment API is integrated
-const mockPayments: Payment[] = [
-    { id: 'TXN-001', student: 'Ahmed Mohamed', course: 'Full Stack Web Dev', amount: 49, status: 'paid', method: 'Card', date: '2026-02-28' },
-    { id: 'TXN-002', student: 'Sara Hassan', course: 'UI/UX Fundamentals', amount: 0, status: 'paid', method: 'Free', date: '2026-02-27' },
-    { id: 'TXN-003', student: 'Omar Zaid', course: 'Advanced Hacking', amount: 99, status: 'pending', method: 'InstaPay', date: '2026-02-27' },
-    { id: 'TXN-004', student: 'Layla Mostafa', course: 'Machine Learning', amount: 79, status: 'paid', method: 'Vodafone Cash', date: '2026-02-26' },
-    { id: 'TXN-005', student: 'Kareem Samir', course: 'Machine Learning', amount: 79, status: 'refunded', method: 'Card', date: '2026-02-25' },
-    { id: 'TXN-006', student: 'Fatma Ali', course: 'Flutter Dev', amount: 59, status: 'failed', method: 'Fawry', date: '2026-02-25' },
-];
-
 export default function PaymentsPage() {
-    const [payments] = useState<Payment[]>(mockPayments);
+    const [payments, setPayments] = useState<Payment[]>([]);
+    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        fetchPayments();
+    }, []);
+
+    const fetchPayments = async () => {
+        try {
+            const res = await fetch('/api/admin/payments', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setPayments(data);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAction = async (id: string, status: 'approved' | 'rejected') => {
+        if (!confirm(`Are you sure you want to ${status} this payment?`)) return;
+        try {
+            const res = await fetch(`/api/admin/payments/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) {
+                fetchPayments();
+            } else {
+                alert('Failed to update status');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const filtered = payments.filter(p => {
-        const matchSearch = !search || p.student.toLowerCase().includes(search.toLowerCase()) || p.id.toLowerCase().includes(search.toLowerCase());
+        const matchSearch = !search ||
+            (p.user?.name || '').toLowerCase().includes(search.toLowerCase()) ||
+            (p._id || '').toLowerCase().includes(search.toLowerCase());
         const matchStatus = statusFilter === 'all' || p.status === statusFilter;
         return matchSearch && matchStatus;
     });
 
-    const totalRevenue = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + p.amount, 0);
-    const refunded = payments.filter(p => p.status === 'refunded').reduce((sum, p) => sum + p.amount, 0);
+    const totalRevenue = payments.filter(p => p.status === 'approved' || p.status === 'paid').reduce((sum, p) => sum + p.amount, 0);
     const pending = payments.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0);
+    const rejected = payments.filter(p => p.status === 'rejected' || p.status === 'failed').reduce((sum, p) => sum + p.amount, 0);
+
+    const refunded = payments.filter(p => p.status === 'refunded').reduce((sum, p) => sum + p.amount, 0);
 
     const getStatusIcon = (status: string) => {
-        if (status === 'paid') return <FiCheckCircle className="text-green-400" />;
-        if (status === 'failed') return <FiXCircle className="text-red-400" />;
+        if (status === 'approved' || status === 'paid') return <FiCheckCircle className="text-green-400" />;
+        if (status === 'rejected' || status === 'failed') return <FiXCircle className="text-red-400" />;
         if (status === 'refunded') return <FiRefreshCw className="text-yellow-400" />;
         return <FiClock className="text-gray-400" />;
     };
 
     const getStatusStyle = (status: string) => {
-        if (status === 'paid') return 'bg-green-400/10 text-green-400 border-green-400/20';
-        if (status === 'failed') return 'bg-red-400/10 text-red-400 border-red-400/20';
+        if (status === 'approved' || status === 'paid') return 'bg-green-400/10 text-green-400 border-green-400/20';
+        if (status === 'rejected' || status === 'failed') return 'bg-red-400/10 text-red-400 border-red-400/20';
         if (status === 'refunded') return 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20';
         return 'bg-gray-400/10 text-gray-400 border-gray-400/20';
     };
@@ -92,7 +130,7 @@ export default function PaymentsPage() {
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    {['all', 'paid', 'pending', 'failed', 'refunded'].map(s => (
+                    {['all', 'approved', 'pending', 'rejected', 'refunded'].map(s => (
                         <button
                             key={s}
                             onClick={() => setStatusFilter(s)}
@@ -118,34 +156,55 @@ export default function PaymentsPage() {
                         <tbody className="divide-y divide-white/5">
                             {filtered.map((p, i) => (
                                 <motion.tr
-                                    key={p.id}
+                                    key={p._id}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: i * 0.04 }}
                                     className="hover:bg-white/3 transition-colors"
                                 >
-                                    <td className="p-4 text-xs font-mono text-primary">{p.id}</td>
-                                    <td className="p-4 text-white font-bold text-sm whitespace-nowrap">{p.student}</td>
-                                    <td className="p-4 text-gray-400 text-sm whitespace-nowrap">{p.course}</td>
-                                    <td className="p-4 text-white font-black">${p.amount}</td>
+                                    <td className="p-4 text-xs font-mono text-primary">{p._id.substring(0, 8)}...</td>
+                                    <td className="p-4 text-white font-bold text-sm whitespace-nowrap">
+                                        <div className="flex flex-col">
+                                            <span>{p.user?.name || 'Unknown User'}</span>
+                                            <span className="text-[10px] text-gray-500 font-medium lowercase">{p.user?.email}</span>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 text-gray-400 text-sm whitespace-nowrap">{p.track?.title || 'Unknown Track'}</td>
+                                    <td className="p-4 text-white font-black">{p.amount} EGP</td>
                                     <td className="p-4 text-gray-500 font-bold text-xs uppercase">{p.method}</td>
-                                    <td className="p-4 text-gray-500 font-bold text-xs whitespace-nowrap">{p.date}</td>
+                                    <td className="p-4 text-gray-500 font-bold text-xs whitespace-nowrap">
+                                        {new Date(p.createdAt).toLocaleDateString()}
+                                    </td>
                                     <td className="p-4">
                                         <span className={`flex items-center gap-1.5 text-[10px] font-black uppercase border px-2 py-1 rounded-lg w-max ${getStatusStyle(p.status)}`}>
                                             {getStatusIcon(p.status)} {p.status}
                                         </span>
                                     </td>
                                     <td className="p-4">
-                                        {p.status === 'paid' && (
-                                            <button className="text-[10px] font-black uppercase tracking-widest text-yellow-400 hover:bg-yellow-400/10 border border-yellow-400/20 px-2 py-1 rounded-lg transition-colors">
-                                                <FiRefreshCw className="inline mr-1" />Refund
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => setSelectedImage(p.proofImage)}
+                                                className="text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 border border-primary/20 px-2 py-1 rounded-lg transition-colors"
+                                            >
+                                                View Proof
                                             </button>
-                                        )}
-                                        {p.status === 'pending' && (
-                                            <button className="text-[10px] font-black uppercase tracking-widest text-green-400 hover:bg-green-400/10 border border-green-400/20 px-2 py-1 rounded-lg transition-colors">
-                                                <FiCheckCircle className="inline mr-1" />Approve
-                                            </button>
-                                        )}
+                                            {p.status === 'pending' && (
+                                                <>
+                                                    <button
+                                                        onClick={() => handleAction(p._id, 'approved')}
+                                                        className="text-[10px] font-black uppercase tracking-widest text-green-400 hover:bg-green-400/10 border border-green-400/20 px-2 py-1 rounded-lg transition-colors"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleAction(p._id, 'rejected')}
+                                                        className="text-[10px] font-black uppercase tracking-widest text-red-400 hover:bg-red-400/10 border border-red-400/20 px-2 py-1 rounded-lg transition-colors"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
                                     </td>
                                 </motion.tr>
                             ))}
@@ -153,6 +212,29 @@ export default function PaymentsPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Image Preview Modal */}
+            <AnimatePresence>
+                {selectedImage && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedImage(null)}>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="relative max-w-5xl max-h-full"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <button
+                                onClick={() => setSelectedImage(null)}
+                                className="absolute -top-12 right-0 text-white hover:text-primary transition-colors"
+                            >
+                                <FiXCircle size={32} />
+                            </button>
+                            <img src={selectedImage} alt="Payment Proof" className="rounded-2xl shadow-2xl max-h-[80vh] object-contain" />
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

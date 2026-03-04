@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import connectDB from '@/lib/mongodb';
+import { generateToken } from '@/lib/auth';
 import User from '@/models/User';
+import InstructorDetail from '@/models/InstructorDetail';
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,11 +45,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'arqam_platform_secret_key_2026_secure',
-      { expiresIn: '7d' }
-    );
+    const token = generateToken({
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role
+    });
 
     return NextResponse.json(
       {
@@ -62,6 +63,7 @@ export async function POST(request: NextRequest) {
           status: user.status,
           phone: user.phone,
           targetGoal: user.targetGoal,
+          enrolledTracks: user.enrolledTracks || [],
           createdAt: user.createdAt
         }
       },

@@ -18,6 +18,7 @@ interface Track {
     level: string;
     duration: string;
     price: number;
+    slug: string;
     lessons: Lesson[];
 }
 
@@ -35,6 +36,7 @@ export default function AdminTracks() {
         level: 'Beginner',
         duration: '',
         price: 0,
+        slug: '',
         lessons: []
     });
 
@@ -122,6 +124,7 @@ export default function AdminTracks() {
                     level: 'Beginner',
                     duration: '',
                     price: 0,
+                    slug: '',
                     lessons: []
                 });
             }
@@ -149,6 +152,7 @@ export default function AdminTracks() {
                             level: 'Beginner',
                             duration: '',
                             price: 0,
+                            slug: '',
                             lessons: []
                         });
                         setShowModal(true);
@@ -184,6 +188,9 @@ export default function AdminTracks() {
                             <span className="px-3 py-1 bg-primary/20 text-primary rounded-full font-bold">{track.level}</span>
                             <span className="px-3 py-1 bg-white/5 text-gray-300 rounded-full font-bold">{track.duration}</span>
                             <span className="px-3 py-1 bg-accent/20 text-accent rounded-full font-bold">{track.lessons.length} Lessons</span>
+                            {track.price !== undefined && (
+                                <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full font-bold">{track.price} EGP</span>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -230,8 +237,28 @@ export default function AdminTracks() {
                                             required
                                         />
                                     </div>
+                                    <div className="space-y-2">
+                                        <label className="text-gray-400 block">Price (EGP)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none"
+                                            placeholder="e.g. 1000"
+                                            value={formData.price}
+                                            onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-gray-400 block">Slug (URL Segment)</label>
+                                        <input
+                                            type="text"
+                                            className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-primary outline-none"
+                                            placeholder="e.g. python-fundamentals"
+                                            value={formData.slug}
+                                            onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                                            required
+                                        />
+                                    </div>
                                 </div>
-
                                 <div className="space-y-2">
                                     <label className="text-gray-400 block">Description</label>
                                     <textarea
@@ -278,7 +305,7 @@ export default function AdminTracks() {
                                                     />
                                                     <input
                                                         type="text"
-                                                        placeholder="Dailymotion Video URL or ID"
+                                                        placeholder="YouTube Video URL or ID"
                                                         className="bg-dark/60 border border-white/10 rounded-lg p-2 text-white outline-none"
                                                         value={lesson.videoUrl}
                                                         onChange={(e) => updateLesson(index, 'videoUrl', e.target.value)}

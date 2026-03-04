@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import connectDB from '@/lib/mongodb';
+import { generateToken } from '@/lib/auth';
 import User from '@/models/User';
 import InstructorDetail from '@/models/InstructorDetail';
 
@@ -60,11 +60,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate Token
-    const token = jwt.sign(
-      { id: newUser._id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRET || 'arqam_platform_secret_key_2026_secure',
-      { expiresIn: '7d' }
-    );
+    const token = generateToken({
+      userId: newUser._id.toString(),
+      email: newUser.email,
+      role: newUser.role
+    });
 
     return NextResponse.json(
       {

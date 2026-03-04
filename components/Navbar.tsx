@@ -24,9 +24,27 @@ export default function Navbar() {
   const { lang, setLang, t } = useLanguage();
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
+  const [tracks, setTracks] = useState<{ href: string; label: string }[]>([]);
 
   useEffect(() => {
     setMounted(true);
+
+    const fetchTracks = async () => {
+      try {
+        const res = await fetch('/api/tracks');
+        if (res.ok) {
+          const data = await res.json();
+          const trackLinks = data.map((track: any) => ({
+            href: `/tracks/${track._id}`,
+            label: track.title
+          }));
+          setTracks(trackLinks);
+        }
+      } catch (err) {
+        console.error('Failed to fetch tracks for navbar:', err);
+      }
+    };
+    fetchTracks();
 
     const handleClickOutside = (event: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
@@ -45,7 +63,7 @@ export default function Navbar() {
     { href: '/', label: t('home'), icon: FiHome },
     {
       label: t('tracks'),
-      dropdown: [
+      dropdown: tracks.length > 0 ? tracks : [
         { href: '/tracks/web', label: t('track_web') },
         { href: '/tracks/mobile', label: t('track_mobile') },
         { href: '/tracks/cyber', label: t('track_cyber') },
