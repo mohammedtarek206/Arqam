@@ -29,7 +29,12 @@ export default function PublicCoursesPage() {
         fetchCourses();
     }, []);
 
-    const filteredCourses = filter === 'all' ? courses : courses.filter(c => c.category === filter || c.trackName?.toLowerCase().includes(filter));
+    const filteredCourses = filter === 'all'
+        ? courses
+        : courses.filter(c =>
+            c.track?.title?.toLowerCase().includes(filter.toLowerCase()) ||
+            c.level?.toLowerCase().includes(filter.toLowerCase())
+        );
 
     if (loading) {
         return (
@@ -66,7 +71,7 @@ export default function PublicCoursesPage() {
                         <button
                             key={f.id}
                             onClick={() => setFilter(f.id)}
-                            className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f.id ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-gray-500 hover:text-white hover:bg-white/10'
+                            className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f.id ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
                                 }`}
                         >
                             {f.name}
@@ -92,7 +97,7 @@ export default function PublicCoursesPage() {
                                 </div>
 
                                 <div className="p-6 flex-1 flex flex-col justify-between relative z-10 -mt-6">
-                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-dark px-3 py-1 rounded w-max border border-white/5 mb-3">{course.category || 'Professional'}</span>
+                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-dark px-3 py-1 rounded w-max border border-white/5 mb-3">{course.track?.title || 'Professional'}</span>
 
                                     <div>
                                         <h3 className="text-xl font-black text-white group-hover:text-primary transition-colors leading-tight mb-2">

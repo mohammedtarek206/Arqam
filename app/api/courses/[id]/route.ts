@@ -13,7 +13,9 @@ export async function GET(
 
         let course;
         if (mongoose.Types.ObjectId.isValid(id)) {
-            course = await Course.findById(id).populate('instructor', 'name bio profileImage');
+            course = await Course.findById(id)
+                .populate('instructor', 'name bio profileImage')
+                .populate('track', 'title');
         }
 
         if (!course) {
