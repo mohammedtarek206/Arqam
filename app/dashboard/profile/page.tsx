@@ -4,6 +4,7 @@ import React from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiPhone, FiTarget, FiEdit3 } from 'react-icons/fi';
+import Link from 'next/link';
 
 export default function StudentProfilePage() {
     const { user } = useAuth();
@@ -15,9 +16,9 @@ export default function StudentProfilePage() {
                     <h1 className="text-4xl font-black text-white uppercase tracking-tighter">My Profile</h1>
                     <p className="text-gray-400 font-bold mt-1">Manage your account settings and preferences.</p>
                 </div>
-                <button className="hidden sm:flex px-6 py-3 bg-white/5 rounded-xl border border-white/5 text-xs font-black text-white uppercase tracking-widest items-center gap-2 hover:bg-white/10 transition-colors">
+                <Link href="/dashboard/settings" className="hidden sm:flex px-6 py-3 bg-white/5 rounded-xl border border-white/5 text-xs font-black text-white uppercase tracking-widest items-center gap-2 hover:bg-white/10 transition-colors">
                     <FiEdit3 /> Edit Profile
-                </button>
+                </Link>
             </header>
 
             {/* Main Profile Card */}

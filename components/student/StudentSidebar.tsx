@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
     FiHome, FiBook, FiAward, FiUser,
-    FiSettings, FiLogOut, FiActivity
+    FiSettings, FiLogOut, FiActivity, FiCreditCard
 } from 'react-icons/fi';
 
 export default function StudentSidebar() {
@@ -20,6 +20,7 @@ export default function StudentSidebar() {
         { name: t('dashboard'), href: '/dashboard', icon: <FiHome /> },
         { name: t('my_courses'), href: '/dashboard/courses', icon: <FiBook /> },
         { name: t('certificates'), href: '/dashboard/certificates', icon: <FiAward /> },
+        { name: lang === 'ar' ? 'المشتريات' : 'Purchases', href: '/dashboard/purchases', icon: <FiCreditCard /> },
         { name: 'Leaderboard', href: '/dashboard/leaderboard', icon: <FiAward /> },
         { name: 'Progress', href: '/dashboard/progress', icon: <FiActivity /> },
         { name: t('profile'), href: '/dashboard/profile', icon: <FiUser /> },
@@ -82,9 +83,9 @@ export default function StudentSidebar() {
 
             <div className="p-4 mt-auto w-full">
                 <div className="glass p-4 rounded-2xl border border-white/5 space-y-2">
-                    <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-gray-400 hover:text-white hover:bg-white/5 transition-all uppercase tracking-widest">
+                    <Link href="/dashboard/settings" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-gray-400 hover:text-white hover:bg-white/5 transition-all uppercase tracking-widest">
                         <FiSettings className="text-lg" /> Settings
-                    </button>
+                    </Link>
                     <button
                         onClick={logout}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest"
