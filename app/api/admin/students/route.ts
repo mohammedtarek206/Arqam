@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
         }
 
         await connectDB();
-        const users = await User.find().sort({ createdAt: -1 });
+        const users = await User.find({ role: 'student' }).sort({ createdAt: -1 });
 
         return NextResponse.json(users, { status: 200 });
     } catch (error: any) {

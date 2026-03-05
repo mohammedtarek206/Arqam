@@ -12,8 +12,8 @@ export async function GET(request: NextRequest) {
 
         await connectDB();
         const instructors = await User.find({
-            role: { $in: ['instructor', 'admin'] }
-        }).select('name email role').sort({ name: 1 });
+            role: 'instructor'
+        }).select('name email role status createdAt phone').sort({ name: 1 });
 
         return NextResponse.json(instructors, { status: 200 });
     } catch (error: any) {
