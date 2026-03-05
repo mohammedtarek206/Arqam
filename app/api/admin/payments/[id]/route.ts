@@ -34,10 +34,16 @@ export async function PATCH(
         await payment.save();
 
         if (status === 'approved') {
-            // Add track to user's enrolledTracks
-            await User.findByIdAndUpdate(payment.user, {
-                $addToSet: { enrolledTracks: payment.track }
-            });
+            const update: any = {};
+            if (payment.track) {
+                update.$addToSet = { enrolledTracks: payment.track };
+            } else if (payment.course) {
+                update.$addToSet = { enrolledCourses: payment.course };
+            }
+
+            if (Object.keys(update).length > 0) {
+                await User.findByIdAndUpdate(payment.user, update);
+            }
         }
 
         return NextResponse.json(

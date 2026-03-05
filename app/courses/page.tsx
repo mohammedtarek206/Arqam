@@ -5,9 +5,11 @@ import { useLanguage } from '@/lib/LanguageContext';
 import { motion } from 'framer-motion';
 import { FiMonitor, FiSmartphone, FiShield, FiCpu, FiBriefcase, FiCheck, FiArrowRight, FiBook, FiClock } from 'react-icons/fi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function PublicCoursesPage() {
     const { t } = useLanguage();
+    const router = useRouter();
     const [filter, setFilter] = useState('all');
     const [courses, setCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -28,6 +30,42 @@ export default function PublicCoursesPage() {
         };
         fetchCourses();
     }, []);
+
+    const enrollCourse = async (e: React.MouseEvent, course: any) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            router.push('/signup');
+            return;
+        }
+
+        if (course.price > 0) {
+            router.push(`/courses/${course._id || course.id}`);
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/student/enroll', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ courseId: course._id || course.id })
+            });
+            if (res.ok) {
+                alert('Enrolled successfully!');
+                router.push('/dashboard');
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Enrollment failed');
+            }
+        } catch (err) {
+            console.error('Enrollment error:', err);
+            alert('An error occurred during enrollment');
+        }
+    };
 
     const filteredCourses = filter === 'all'
         ? courses
@@ -111,11 +149,12 @@ export default function PublicCoursesPage() {
                                         <span className="flex items-center gap-1.5"><FiClock /> 40 Hours</span>
                                     </div>
 
-                                    <div
+                                    <button
+                                        onClick={(e) => enrollCourse(e, course)}
                                         className="mt-6 w-full py-3 bg-white/5 group-hover:bg-primary group-hover:text-white text-white font-black text-xs uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10"
                                     >
-                                        Enroll Now
-                                    </div>
+                                        {course.price > 0 ? 'Buy Now' : 'Enroll Now'}
+                                    </button>
                                 </div>
                             </motion.div>
                         </Link>

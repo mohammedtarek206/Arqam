@@ -14,6 +14,7 @@ export interface IUser extends Document {
   level: number;
   badges: { badgeId: string; earnedAt: Date }[];
   enrolledTracks: mongoose.Types.ObjectId[];
+  enrolledCourses: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,6 +50,7 @@ const UserSchema: Schema = new Schema(
       },
     ],
     enrolledTracks: [{ type: Schema.Types.ObjectId, ref: 'Track' }],
+    enrolledCourses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   },
   {
     timestamps: true,

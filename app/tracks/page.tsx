@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { motion } from 'framer-motion';
 import { FiMonitor, FiSmartphone, FiShield, FiCpu, FiBriefcase, FiArrowRight, FiCheck } from 'react-icons/fi';
@@ -8,60 +8,39 @@ import Link from 'next/link';
 
 export default function TracksExplorer() {
   const { t, lang } = useLanguage();
-  const [activeTrack, setActiveTrack] = useState<number | null>(null);
+  const [tracks, setTracks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
 
-  const tracks = [
-    {
-      id: 1,
-      name: t('track_web'),
-      icon: <FiMonitor />,
-      color: 'from-blue-600 to-cyan-400',
-      description: t('track_web_desc'),
-      courses: 8,
-      duration: '6 Months',
-      features: ['HTML/CSS/JS', 'React & Next.js', 'Node.js & MongoDB', 'Cloud Deployment']
-    },
-    {
-      id: 2,
-      name: t('track_cyber'),
-      icon: <FiShield />,
-      color: 'from-accent to-pink-500',
-      description: t('track_cyber_desc'),
-      courses: 10,
-      duration: '8 Months',
-      features: ['Network Security', 'Ethical Hacking', 'Cryptography', 'Risk Assessment']
-    },
-    {
-      id: 3,
-      name: t('track_ai'),
-      icon: <FiCpu />,
-      color: 'from-purple-600 to-indigo-500',
-      description: t('track_ai_desc'),
-      courses: 7,
-      duration: '5 Months',
-      features: ['Python Basics', 'Machine Learning', 'Deep Learning', 'Computer Vision']
-    },
-    {
-      id: 4,
-      name: t('track_mobile'),
-      icon: <FiSmartphone />,
-      color: 'from-emerald-500 to-teal-400',
-      description: t('track_mobile_desc'),
-      courses: 6,
-      duration: '4 Months',
-      features: ['Dart Programming', 'Flutter Framework', 'State Management', 'App Publishing']
-    },
-    {
-      id: 5,
-      name: t('track_freelancing'),
-      icon: <FiBriefcase />,
-      color: 'from-orange-500 to-yellow-400',
-      description: t('track_freelancing_desc'),
-      courses: 3,
-      duration: '2 Months',
-      features: ['Profile Building', 'Client Acquisition', 'Pricing Strategies', 'Communication Skills']
-    }
-  ];
+  useEffect(() => {
+    const fetchTracks = async () => {
+      try {
+        const res = await fetch('/api/tracks');
+        if (res.ok) {
+          const data = await res.json();
+          setTracks(data.map((t: any) => ({
+            ...t,
+            icon: <FiMonitor />, // Default icon, can be improved if model has icon field
+            color: 'from-primary to-accent',
+            features: t.curriculum || []
+          })));
+        }
+      } catch (err) {
+        console.error('Failed to fetch tracks:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTracks();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-dark py-32 px-4 md:px-8 relative overflow-hidden">
@@ -73,7 +52,7 @@ export default function TracksExplorer() {
         <div className="text-center max-w-3xl mx-auto space-y-6">
           <span className="px-4 py-2 bg-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-primary border border-white/10 backdrop-blur-md">Career Paths</span>
           <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none">
-            {t('tracks_subtitle')}
+            {t('tracks_subtitle') || 'Master Your Craft'}
           </h1>
           <p className="text-lg text-gray-400 font-medium pt-2">
             Carefully curated learning paths designed to take you from a beginner to an industry-ready professional.
@@ -83,14 +62,14 @@ export default function TracksExplorer() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {tracks.map((track, i) => (
             <motion.div
-              key={track.id}
+              key={track._id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              onMouseEnter={() => setActiveTrack(track.id)}
-              onMouseLeave={() => setActiveTrack(null)}
-              className={`glass p-8 md:p-10 rounded-[3rem] border transition-all duration-500 relative overflow-hidden group ${activeTrack === track.id ? 'border-white/20 scale-[1.02] shadow-2xl' : 'border-white/5'
+              onMouseEnter={() => setHoveredTrack(track._id)}
+              onMouseLeave={() => setHoveredTrack(null)}
+              className={`glass p-8 md:p-10 rounded-[3rem] border transition-all duration-500 relative overflow-hidden group ${hoveredTrack === track._id ? 'border-white/20 scale-[1.02] shadow-2xl' : 'border-white/5'
                 }`}
             >
               <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${track.color} opacity-0 group-hover:opacity-10 blur-3xl transition-opacity duration-700 rounded-full`} />
@@ -100,18 +79,18 @@ export default function TracksExplorer() {
                   {track.icon}
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{track.courses} Courses</p>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{track.lessons?.length || 0} Lessons</p>
                   <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{track.duration}</p>
                 </div>
               </div>
 
               <div className="space-y-4 mb-8 relative z-10">
-                <h3 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">{track.name}</h3>
-                <p className="text-sm font-bold text-gray-400 leading-relaxed">{track.description}</p>
+                <h3 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">{track.title}</h3>
+                <p className="text-sm font-bold text-gray-400 leading-relaxed line-clamp-3">{track.description}</p>
               </div>
 
               <div className="space-y-3 mb-10 relative z-10">
-                {track.features.map((f, j) => (
+                {track.features.slice(0, 4).map((f: string, j: number) => (
                   <div key={j} className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full bg-white/5 flex items-center justify-center border border-white/5 shrink-0 text-white group-hover:bg-white group-hover:text-black transition-colors">
                       <FiCheck className="text-xs font-bold" />
@@ -122,7 +101,7 @@ export default function TracksExplorer() {
               </div>
 
               <Link
-                href={`/tracks/${track.id}`}
+                href={`/tracks/${track._id}`}
                 className="w-full py-4 bg-white/5 group-hover:bg-white group-hover:text-dark text-white font-black text-xs uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 transition-all border border-white/10 relative z-10"
               >
                 View Syllabus <FiArrowRight className={`text-lg transition-transform ${lang === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />

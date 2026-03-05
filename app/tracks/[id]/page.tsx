@@ -163,7 +163,7 @@ export default function TrackDetailPage() {
         }
     };
 
-    const handleEnroll = () => {
+    const handleEnroll = async () => {
         if (!user) {
             router.push('/signup');
             return;
@@ -172,7 +172,29 @@ export default function TrackDetailPage() {
         if (track.price && track.price > 0) {
             setShowPaymentModal(true);
         } else {
-            router.push('/dashboard');
+            setLoading(true);
+            try {
+                const res = await fetch('/api/student/enroll', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ trackId })
+                });
+                if (res.ok) {
+                    setEnrollmentStatus('enrolled');
+                    router.push('/dashboard');
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Enrollment failed');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred during enrollment');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -269,22 +291,21 @@ export default function TrackDetailPage() {
                         <h3 className="text-2xl font-black text-white mb-8 uppercase tracking-tight">Track Syllabus</h3>
 
                         <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-4 rtl:before:right-4 before:w-0.5 before:bg-white/5">
-                            {[
-                                { step: 1, title: 'Fundamentals & Basics', desc: 'Lay the groundwork and learn the core languages and tools.' },
-                                { step: 2, title: 'Intermediate Concepts', desc: 'Dive deeper into frameworks and standard industry practices.' },
-                                { step: 3, title: 'Advanced Architecture', desc: 'Master advanced design patterns and performance optimization.' },
-                                { step: 4, title: 'Final Capstone Project', desc: 'Build and deploy a comprehensive project to graduate.' },
-                            ].map((item, i) => (
-                                <div key={i} className="relative z-10 flex gap-6 group">
-                                    <div className="w-8 h-8 rounded-full bg-dark border-2 border-white/10 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:bg-primary/20 transition-all">
-                                        <span className="text-xs font-black text-white">{item.step}</span>
+                            {track.lessons && track.lessons.length > 0 ? (
+                                track.lessons.map((item: any, i: number) => (
+                                    <div key={i} className="relative z-10 flex gap-6 group">
+                                        <div className="w-8 h-8 rounded-full bg-dark border-2 border-white/10 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:bg-primary/20 transition-all">
+                                            <span className="text-xs font-black text-white">{i + 1}</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-black text-white leading-none mb-2">{item.title}</h4>
+                                            <p className="text-xs font-bold text-gray-400 leading-relaxed line-clamp-2">{item.description || 'Learn key concepts and practical applications in this lesson.'}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 className="text-lg font-black text-white leading-none mb-2">{item.title}</h4>
-                                        <p className="text-xs font-bold text-gray-400 leading-relaxed">{item.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="text-gray-500 font-bold">No syllabus available yet.</p>
+                            )}
                         </div>
 
                         <div className="mt-10 p-6 bg-white/5 rounded-2xl border border-white/10 flex items-start gap-4">
