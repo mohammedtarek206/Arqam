@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiPlus, FiTrash2, FiImage, FiX, FiCheck } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiImage, FiX, FiCheck, FiUpload, FiEdit } from 'react-icons/fi';
 
 interface Partner {
     _id: string;
@@ -13,8 +13,10 @@ interface Partner {
 export default function AdminPartners() {
     const [partners, setPartners] = useState<Partner[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
     const [name, setName] = useState('');
     const [logoUrl, setLogoUrl] = useState('');
+    const [previewImage, setPreviewImage] = useState<string>('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -31,13 +33,29 @@ export default function AdminPartners() {
         }
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                setPreviewImage(base64);
+                setLogoUrl(base64);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/partners', {
-                method: 'POST',
+            const method = editingPartner ? 'PATCH' : 'POST';
+            const url = editingPartner ? `/api/admin/partners?id=${editingPartner._id}` : '/api/admin/partners';
+
+            const res = await fetch(url, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -47,9 +65,7 @@ export default function AdminPartners() {
 
             if (res.ok) {
                 fetchPartners();
-                setShowModal(false);
-                setName('');
-                setLogoUrl('');
+                closeModal();
             }
         } catch (err) {
             console.error(err);
@@ -59,7 +75,7 @@ export default function AdminPartners() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure?')) return;
+        if (!confirm('Are you sure you want to remove this partner?')) return;
         try {
             const token = localStorage.getItem('token');
             const res = await fetch(`/api/admin/partners?id=${id}`, {
@@ -72,12 +88,28 @@ export default function AdminPartners() {
         }
     };
 
+    const openEditModal = (partner: Partner) => {
+        setEditingPartner(partner);
+        setName(partner.name);
+        setLogoUrl(partner.logoUrl);
+        setPreviewImage(partner.logoUrl);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setEditingPartner(null);
+        setName('');
+        setLogoUrl('');
+        setPreviewImage('');
+    };
+
     return (
         <div className="space-y-8">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Our Partners</h1>
-                    <p className="text-gray-400">Manage companies and organizations logos.</p>
+                    <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Our Partners</h1>
+                    <p className="text-gray-400">Manage companies and organizations logos that we collaborate with.</p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
@@ -90,21 +122,34 @@ export default function AdminPartners() {
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {partners.map((partner) => (
                     <div key={partner._id} className="glass p-6 rounded-2xl border border-white/5 relative group hover:border-accent/50 transition-all flex flex-col items-center">
-                        <button
-                            onClick={() => handleDelete(partner._id)}
-                            className="absolute -top-2 -right-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg"
-                        >
-                            <FiTrash2 size={14} />
-                        </button>
+                        <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                            <button
+                                onClick={() => openEditModal(partner)}
+                                className="p-2 bg-dark-light text-white rounded-lg shadow-lg hover:text-accent"
+                            >
+                                <FiEdit size={12} />
+                            </button>
+                            <button
+                                onClick={() => handleDelete(partner._id)}
+                                className="p-2 bg-red-500 text-white rounded-lg shadow-lg"
+                            >
+                                <FiTrash2 size={12} />
+                            </button>
+                        </div>
                         <div className="aspect-square w-full bg-white/5 rounded-xl flex items-center justify-center p-4 mb-3">
                             <img src={partner.logoUrl} alt={partner.name} className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all" />
                         </div>
                         <p className="text-xs font-bold text-gray-400 text-center truncate w-full">{partner.name}</p>
                     </div>
                 ))}
+                {partners.length === 0 && (
+                    <div className="col-span-full py-12 text-center glass rounded-2xl border border-dashed border-white/10">
+                        <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">No partners added yet</p>
+                    </div>
+                )}
             </div>
 
-            {/* Add Modal */}
+            {/* Add/Edit Modal */}
             <AnimatePresence>
                 {showModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
@@ -115,15 +160,37 @@ export default function AdminPartners() {
                             className="bg-dark-light w-full max-w-md rounded-3xl p-8 border border-white/10"
                         >
                             <div className="flex justify-between items-center mb-8">
-                                <h2 className="text-2xl font-bold text-white">Add Partner</h2>
-                                <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white">
-                                    <FiX size={24} />
+                                <h2 className="text-2xl font-black text-white tracking-tight">
+                                    {editingPartner ? 'Edit Partner' : 'Add Partner'}
+                                </h2>
+                                <button onClick={closeModal} className="text-gray-400 hover:text-white p-2 bg-white/5 rounded-full transition-colors">
+                                    <FiX size={20} />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm font-bold uppercase tracking-wider">Partner Name</label>
+                                    <label className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] ml-1">Partner Logo</label>
+                                    <div className="flex gap-4 items-center">
+                                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center p-2 shrink-0">
+                                            {previewImage ? (
+                                                <img src={previewImage} className="max-w-full max-h-full object-contain" alt="Preview" />
+                                            ) : (
+                                                <FiImage className="text-2xl text-gray-700" />
+                                            )}
+                                        </div>
+                                        <label className="flex-1 cursor-pointer">
+                                            <div className="w-full py-4 border border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center hover:bg-white/5 transition-all group">
+                                                <FiUpload className="text-gray-500 group-hover:text-accent transition-colors mb-1" />
+                                                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Upload Logo</span>
+                                            </div>
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] ml-1">Company Name</label>
                                     <input
                                         type="text"
                                         className="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white focus:border-accent outline-none"
@@ -133,27 +200,13 @@ export default function AdminPartners() {
                                         required
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm font-bold uppercase tracking-wider">Logo URL</label>
-                                    <div className="relative group">
-                                        <FiImage className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
-                                        <input
-                                            type="text"
-                                            className="w-full bg-dark/50 border border-white/10 rounded-xl p-4 pl-12 text-white focus:border-accent outline-none"
-                                            placeholder="https://..."
-                                            value={logoUrl}
-                                            onChange={(e) => setLogoUrl(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                </div>
 
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-accent hover:bg-accent/80 text-dark font-black py-4 rounded-xl text-lg transition-all"
+                                    className="w-full bg-accent hover:shadow-xl hover:shadow-accent/20 text-dark font-black py-4 rounded-xl text-lg transition-all"
                                 >
-                                    {loading ? 'Adding...' : 'ADD PARTNER'}
+                                    {loading ? 'Adding...' : (editingPartner ? 'UPDATE PARTNER' : 'ADD PARTNER')}
                                 </button>
                             </form>
                         </motion.div>

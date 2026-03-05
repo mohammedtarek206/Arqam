@@ -2,74 +2,37 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { FiLinkedin, FiTwitter, FiGithub, FiMail } from 'react-icons/fi';
+import { FiLinkedin, FiTwitter, FiGithub, FiMail, FiUser } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
 
 export default function TeamPage() {
-  const team = [
-    {
-      id: 1,
-      name: 'Muhammed Tarek',
-      role: 'Founder & CEO',
-      bio: 'Tech entrepreneur with 3+ years of experience in software development and education.',
-      image: '/team/mohammed.svg',
-      socials: {
-        linkedin: 'https://linkedin.com/in/ahmed',
-        twitter: 'https://twitter.com/ahmed',
-        github: 'https://github.com/ahmed',
-      },
-    },
-    {
-      id: 2,
-      name: 'Jana Amr Mohamed ',
-      role: 'Founder & CEO',
-      bio: 'Certified Ethical Hacker with expertise in network security and penetration testing.',
-      image: '/team/fatima.svg',
-      socials: {
-        linkedin: 'https://linkedin.com/in/fatima',
-        twitter: 'https://twitter.com/fatima',
-        github: 'https://github.com/fatima',
-      },
-    },
-    {
-      id: 3,
-      name: 'Mohammed Abdullah',
-      role: 'AI Research Lead',
-      bio: 'PhD in Machine Learning, specializing in deep learning and computer vision.',
-      image: '/team/mohammed-abdullah.svg',
-      socials: {
-        linkedin: 'https://linkedin.com/in/mohammed',
-        twitter: 'https://twitter.com/mohammed',
-        github: 'https://github.com/mohammed',
-      },
-    },
-    {
-      id: 4,
-      name: 'Sara Ibrahim',
-      role: 'Lead Full-Stack Developer',
-      bio: 'Expert in React, Node.js, and cloud technologies with a passion for teaching.',
-      image: '/team/sara.svg',
-      socials: {
-        linkedin: 'https://linkedin.com/in/sara',
-        twitter: 'https://twitter.com/sara',
-        github: 'https://github.com/sara',
-      },
-    },
-  ];
+  const [team, setTeam] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/team')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setTeam(data);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-b from-dark via-dark-light to-dark">
-      <div className="container mx-auto px-4 py-16">
+    <div className="min-h-screen pt-20 bg-gradient-to-b from-dark via-dark-light to-dark text-white">
+      <div className="container mx-auto px-4 py-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
+          className="text-center mb-24"
         >
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-cyber bg-clip-text text-transparent">
-            Our Team
+          <span className="text-primary font-black uppercase tracking-[0.3em] text-xs mb-4 block">Our Experts</span>
+          <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter uppercase italic">
+            THE <span className="text-primary">TEAM</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Meet the passionate educators and industry experts who are dedicated to your success.
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto font-medium leading-relaxed">
+            Meet the innovators and educators driving the future of digital skills at <span className="text-white">Arqam</span>.
           </p>
         </motion.div>
 
@@ -77,48 +40,65 @@ export default function TeamPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {team.map((member, index) => (
             <motion.div
-              key={member.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              key={member._id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="text-center"
+              className="group"
             >
-              <div className="glass rounded-2xl p-6 hover:scale-105 transition-transform">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent p-1 overflow-hidden">
-                  {member.image ? (
-                    <Image
-                      src={member.image}
+              <div className="glass rounded-[2.5rem] p-8 border border-white/5 hover:border-primary/40 transition-all duration-500 flex flex-col items-center h-full">
+                <div className="relative mb-8">
+                  <div className="w-32 h-32 rounded-[2rem] overflow-hidden border-2 border-primary/20 group-hover:border-primary transition-all duration-500 rotate-3 group-hover:rotate-0">
+                    <img
+                      src={member.imageUrl}
                       alt={member.name}
-                      width={124}
-                      height={124}
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
                     />
-                  ) : (
-                    <div className="w-full h-full rounded-full bg-dark-light flex items-center justify-center">
-                      <span className="text-4xl text-white font-bold">
-                        {member.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
-                  )}
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-dark shadow-xl">
+                    <FiUser className="text-xl" />
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
-                <p className="text-accent mb-4">{member.role}</p>
-                <p className="text-gray-300 text-sm mb-4">{member.bio}</p>
-                <div className="flex justify-center space-x-3">
-                  <a href={member.socials.linkedin} className="text-gray-400 hover:text-primary transition-colors">
-                    <FiLinkedin className="w-5 h-5" />
-                  </a>
-                  <a href={member.socials.twitter} className="text-gray-400 hover:text-primary transition-colors">
-                    <FiTwitter className="w-5 h-5" />
-                  </a>
-                  <a href={member.socials.github} className="text-gray-400 hover:text-primary transition-colors">
-                    <FiGithub className="w-5 h-5" />
-                  </a>
+
+                <div className="text-center space-y-2 flex-1">
+                  <h3 className="text-2xl font-black tracking-tight text-white group-hover:text-primary transition-colors">{member.name}</h3>
+                  <p className="text-primary font-bold uppercase tracking-widest text-[10px]">{member.role}</p>
+                  <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 pt-2">{member.bio}</p>
+                </div>
+
+                <div className="flex justify-center space-x-4 mt-8 pt-6 border-t border-white/5 w-full">
+                  {member.socials.linkedin && (
+                    <a href={member.socials.linkedin} target="_blank" className="text-gray-500 hover:text-white transition-colors">
+                      <FiLinkedin size={18} />
+                    </a>
+                  )}
+                  {member.socials.twitter && (
+                    <a href={member.socials.twitter} target="_blank" className="text-gray-500 hover:text-white transition-colors">
+                      <FiTwitter size={18} />
+                    </a>
+                  )}
+                  {member.socials.github && (
+                    <a href={member.socials.github} target="_blank" className="text-gray-500 hover:text-white transition-colors">
+                      <FiGithub size={18} />
+                    </a>
+                  )}
+                  {member.socials.email && (
+                    <a href={`mailto:${member.socials.email}`} className="text-gray-500 hover:text-white transition-colors">
+                      <FiMail size={18} />
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {!loading && team.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-gray-500 font-bold uppercase tracking-widest italic">Recruiting the best minds...</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -41,3 +41,51 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const user = await authenticateRequest(request);
+    if (!user || user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+    const data = await request.json();
+    await connectDB();
+
+    const teamMember = await Team.findByIdAndUpdate(id, data, { new: true });
+    if (!teamMember) {
+      return NextResponse.json({ error: 'Team member not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(teamMember, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Update failed' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await authenticateRequest(request);
+    if (!user || user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+    await connectDB();
+    const teamMember = await Team.findByIdAndDelete(id);
+    if (!teamMember) {
+      return NextResponse.json({ error: 'Team member not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Deleted successfully' });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
+  }
+}

@@ -9,7 +9,7 @@ import {
     FiMenu, FiX, FiFileText, FiGrid, FiAward,
     FiDollarSign, FiBarChart2, FiBell, FiSettings,
     FiShield, FiCreditCard, FiUserCheck, FiPackage,
-    FiChevronRight
+    FiChevronRight, FiImage, FiHeart
 } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -77,6 +77,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             items: [
                 { title: 'Payments', icon: FiCreditCard, href: '/admin/payments' },
                 { title: 'Subscriptions', icon: FiPackage, href: '/admin/subscriptions' },
+            ]
+        },
+        {
+            label: 'CMS / Marketing',
+            items: [
+                { title: 'Exhibition', icon: FiImage, href: '/admin/projects' },
+                { title: 'Our Team', icon: FiUsers, href: '/admin/team' },
+                { title: 'Partners', icon: FiHeart, href: '/admin/partners' },
             ]
         },
         {

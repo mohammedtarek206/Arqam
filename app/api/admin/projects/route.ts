@@ -47,3 +47,28 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
     }
 }
+
+export async function PATCH(request: NextRequest) {
+    try {
+        const user = await authenticateRequest(request);
+        if (!user || user.role !== 'admin') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+        if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
+
+        const data = await request.json();
+        await connectDB();
+
+        const project = await Project.findByIdAndUpdate(id, data, { new: true });
+        if (!project) {
+            return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+        }
+
+        return NextResponse.json(project, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: 'Update failed' }, { status: 500 });
+    }
+}
