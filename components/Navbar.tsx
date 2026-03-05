@@ -90,22 +90,22 @@ export default function Navbar() {
       case 'admin':
         return [
           { href: '/admin/dashboard', label: t('admin_panel'), icon: FiLayout },
-          { href: '/admin/users', label: t('user_management'), icon: FiUser },
-          { href: '/admin/reports', label: t('reports'), icon: FiPieChart },
+          { href: '/admin/students', label: t('user_management'), icon: FiUser },
+          { href: '/admin/analytics', label: t('reports'), icon: FiPieChart },
         ];
       case 'instructor':
         return [
           { href: '/instructor/dashboard', label: t('instructor_dashboard'), icon: FiLayout },
           { href: '/instructor/courses', label: t('manage_courses'), icon: FiBook },
           { href: '/instructor/exams', label: t('manage_exams'), icon: FiAward },
-          { href: '/instructor/earnings', label: t('earnings'), icon: FiDollarSign },
+          { href: '/instructor/stats', label: t('earnings'), icon: FiDollarSign },
         ];
       default: // student
         return [
           { href: '/dashboard', label: t('dashboard'), icon: FiLayout },
           { href: '/dashboard/courses', label: t('my_courses'), icon: FiBook },
           { href: '/dashboard/certificates', label: t('certificates'), icon: FiAward },
-          { href: '/profile', label: t('profile'), icon: FiUser },
+          { href: '/dashboard/profile', label: t('profile'), icon: FiUser },
         ];
     }
   };
