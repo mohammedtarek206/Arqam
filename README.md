@@ -1,4 +1,4 @@
-# 🚀 Switch Code Platform
+# 🚀 Arqam Academy Platform
 
 A full-stack tech education platform built with Next.js, TypeScript, and MongoDB. This bilingual (Arabic/English) platform showcases training tracks, team members, projects, and provides a modern interface for tech education.
 
@@ -201,11 +201,11 @@ MIT License
 
 ## 👥 Contributors
 
-- Switch Code Team
+- Arqam Academy Team
 
 ## 📧 Contact
 
-- Email: info@switchcode.tech
+- Email: arqam.co1@gmail.com
 - Website: www.switchcode.tech
 
 ## 🎓 Educational Use

@@ -2,7 +2,8 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IPayment extends Document {
     user: mongoose.Types.ObjectId;
-    track: mongoose.Types.ObjectId;
+    track?: mongoose.Types.ObjectId;
+    course?: mongoose.Types.ObjectId;
     amount: number;
     method: 'Vodafone Cash' | 'InstaPay' | 'Visa';
     status: 'pending' | 'approved' | 'rejected';
@@ -14,7 +15,8 @@ export interface IPayment extends Document {
 const PaymentSchema: Schema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        track: { type: Schema.Types.ObjectId, ref: 'Track', required: true },
+        track: { type: Schema.Types.ObjectId, ref: 'Track', required: false },
+        course: { type: Schema.Types.ObjectId, ref: 'Course', required: false },
         amount: { type: Number, required: true },
         method: {
             type: String,

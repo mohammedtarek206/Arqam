@@ -60,10 +60,10 @@ export default function AdminLoginPage() {
                         animate={{ y: 0 }}
                         className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl shadow-xl shadow-primary/20 mb-6"
                     >
-                        <span className="text-white font-black text-2xl uppercase">SC</span>
+                        <span className="text-white font-black text-2xl uppercase">AA</span>
                     </motion.div>
                     <h1 className="text-4xl font-black text-white tracking-tighter mb-2">ADMIN PORTAL</h1>
-                    <p className="text-gray-500 font-medium">Enter your credentials to manage Switch Code</p>
+                    <p className="text-gray-500 font-medium">Enter your credentials to manage Arqam Academy</p>
                 </div>
 
                 <div className="glass p-10 rounded-[2.5rem] border border-white/10 shadow-2xl relative">
@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="block w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
-                                    placeholder="admin@switchcode.tech"
+                                    placeholder="admin@arqam-academy.com"
                                     required
                                 />
                             </div>
@@ -134,7 +134,7 @@ export default function AdminLoginPage() {
                 </div>
 
                 <p className="text-center mt-8 text-sm text-gray-600">
-                    Switch Code Platform Administration v1.0
+                    Arqam Academy Platform Administration v1.0
                 </p>
             </motion.div>
         </div>

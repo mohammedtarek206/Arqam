@@ -7,7 +7,8 @@ import { FiSearch, FiDownload, FiRefreshCw, FiCheckCircle, FiXCircle, FiClock, F
 interface Payment {
     _id: string;
     user: { _id: string; name: string; email: string };
-    track: { _id: string; title: string };
+    track?: { _id: string; title: string };
+    course?: { _id: string; title: string };
     amount: number;
     status: 'paid' | 'pending' | 'failed' | 'refunded' | 'approved' | 'rejected';
     method: string;
@@ -169,7 +170,9 @@ export default function PaymentsPage() {
                                             <span className="text-[10px] text-gray-500 font-medium lowercase">{p.user?.email}</span>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-gray-400 text-sm whitespace-nowrap">{p.track?.title || 'Unknown Track'}</td>
+                                    <td className="p-4 text-gray-400 text-sm whitespace-nowrap">
+                                        {p.course?.title || p.track?.title || 'Unknown Product'}
+                                    </td>
                                     <td className="p-4 text-white font-black">{p.amount} EGP</td>
                                     <td className="p-4 text-gray-500 font-bold text-xs uppercase">{p.method}</td>
                                     <td className="p-4 text-gray-500 font-bold text-xs whitespace-nowrap">

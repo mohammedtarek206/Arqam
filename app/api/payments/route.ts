@@ -16,40 +16,55 @@ export async function POST(request: NextRequest) {
             // Technically instructors or admins could buy too, but let's stick to students for now or allow all
         }
 
-        const { trackId, amount, method, proofImage } = await request.json();
+        const { trackId, courseId, amount, method, proofImage } = await request.json();
 
-        if (!trackId || !amount || !method || !proofImage) {
+        if ((!trackId && !courseId) || !amount || !method || !proofImage) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
         await connectDB();
 
-        let actualTrackId = trackId;
-        if (!mongoose.Types.ObjectId.isValid(trackId)) {
-            const track = await Track.findOne({ slug: trackId });
-            if (!track) {
-                return NextResponse.json({ error: 'Track not found by slug' }, { status: 404 });
+        let actualTrackId = null;
+        let actualCourseId = null;
+
+        if (trackId) {
+            if (!mongoose.Types.ObjectId.isValid(trackId)) {
+                const track = await Track.findOne({ slug: trackId });
+                if (!track) {
+                    return NextResponse.json({ error: 'Track not found by slug' }, { status: 404 });
+                }
+                actualTrackId = track._id;
+            } else {
+                actualTrackId = trackId;
             }
-            actualTrackId = track._id;
         }
 
-        // Check if there's already a pending or approved payment for this track by this user
-        const existingPayment = await Payment.findOne({
+        if (courseId) {
+            actualCourseId = courseId;
+        }
+
+        // Check if there's already a pending or approved payment for this track/course by this user
+        const query: any = {
             user: user.userId,
-            track: actualTrackId,
             status: { $in: ['pending', 'approved'] }
-        });
+        };
+
+        if (actualTrackId) query.track = actualTrackId;
+        if (actualCourseId) query.course = actualCourseId;
+
+        const existingPayment = await Payment.findOne(query);
 
         if (existingPayment) {
             return NextResponse.json(
-                { error: 'You already have a pending or approved payment for this track' },
+                { error: `You already have a pending or approved payment for this ${actualTrackId ? 'track' : 'course'}` },
                 { status: 400 }
             );
         }
 
         const payment = new Payment({
             user: user.userId,
-            track: actualTrackId,
+            track: actualTrackId || undefined,
+            course: actualCourseId || undefined,
             amount,
             method,
             proofImage,
@@ -85,7 +100,10 @@ export async function GET(request: NextRequest) {
         }
 
         await connectDB();
-        const payments = await Payment.find({ user: user.userId }).populate('track', 'title').sort({ createdAt: -1 });
+        const payments = await Payment.find({ user: user.userId })
+            .populate('track', 'title')
+            .populate('course', 'title')
+            .sort({ createdAt: -1 });
         return NextResponse.json(payments, { status: 200 });
     } catch (error: unknown) {
         console.error('Fetch payments error:', error);

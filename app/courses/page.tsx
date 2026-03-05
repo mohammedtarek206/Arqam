@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { motion } from 'framer-motion';
 import { FiMonitor, FiSmartphone, FiShield, FiCpu, FiBriefcase, FiCheck, FiArrowRight, FiBook, FiClock } from 'react-icons/fi';
@@ -9,66 +9,35 @@ import Link from 'next/link';
 export default function PublicCoursesPage() {
     const { t } = useLanguage();
     const [filter, setFilter] = useState('all');
+    const [courses, setCourses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const allCourses = [
-        {
-            id: 1,
-            title: 'Full Stack Web Development with Next.js',
-            instructor: 'Ahmed Shendy',
-            price: '$49',
-            thumbnail: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop',
-            track: 'web',
-            trackName: 'Web Development',
-            level: 'Beginner to Pro',
-            duration: '40 Hours'
-        },
-        {
-            id: 2,
-            title: 'UI/UX Design Fundamentals',
-            instructor: 'Sara Hassan',
-            price: 'Free',
-            thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=250&fit=crop',
-            track: 'design',
-            trackName: 'Design',
-            level: 'Beginner',
-            duration: '12 Hours'
-        },
-        {
-            id: 3,
-            title: 'Advanced Ethical Hacking',
-            instructor: 'Omar Zaid',
-            price: '$99',
-            thumbnail: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop',
-            track: 'cyber',
-            trackName: 'Cyber Security',
-            level: 'Advanced',
-            duration: '60 Hours'
-        },
-        {
-            id: 4,
-            title: 'Flutter Mobile App Development',
-            instructor: 'Mai Ahmed',
-            price: '$59',
-            thumbnail: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop',
-            track: 'mobile',
-            trackName: 'Mobile Development',
-            level: 'Intermediate',
-            duration: '45 Hours'
-        },
-        {
-            id: 5,
-            title: 'Machine Learning with Python',
-            instructor: 'Dr. Tarek',
-            price: '$79',
-            thumbnail: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&h=250&fit=crop',
-            track: 'ai',
-            trackName: 'Artificial Intelligence',
-            level: 'Intermediate',
-            duration: '50 Hours'
-        }
-    ];
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await fetch('/api/courses');
+                if (res.ok) {
+                    const data = await res.json();
+                    setCourses(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch courses:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
 
-    const filteredCourses = filter === 'all' ? allCourses : allCourses.filter(c => c.track === filter);
+    const filteredCourses = filter === 'all' ? courses : courses.filter(c => c.category === filter || c.trackName?.toLowerCase().includes(filter));
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-dark pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
@@ -107,7 +76,7 @@ export default function PublicCoursesPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredCourses.map((course, i) => (
-                        <Link href={`/courses/${course.id}`} key={course.id}>
+                        <Link href={`/courses/${course._id || course.id}`} key={course._id || course.id}>
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -115,26 +84,26 @@ export default function PublicCoursesPage() {
                                 className="glass rounded-[2rem] border border-white/5 overflow-hidden group hover:border-primary/30 hover:shadow-[0_0_30px_rgba(var(--primary),0.15)] transition-all flex flex-col relative h-full cursor-pointer"
                             >
                                 <div className="w-full h-48 relative overflow-hidden shrink-0">
-                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <img src={course.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800'} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                     <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-xl px-3 py-1.5 border border-white/20">
-                                        <span className="text-xs font-black text-white">{course.price}</span>
+                                        <span className="text-xs font-black text-white">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
                                     </div>
                                     <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-dark to-transparent" />
                                 </div>
 
                                 <div className="p-6 flex-1 flex flex-col justify-between relative z-10 -mt-6">
-                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-dark px-3 py-1 rounded w-max border border-white/5 mb-3">{course.trackName}</span>
+                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-dark px-3 py-1 rounded w-max border border-white/5 mb-3">{course.category || 'Professional'}</span>
 
                                     <div>
                                         <h3 className="text-xl font-black text-white group-hover:text-primary transition-colors leading-tight mb-2">
                                             {course.title}
                                         </h3>
-                                        <p className="text-xs font-bold text-gray-400">By {course.instructor}</p>
+                                        <p className="text-xs font-bold text-gray-400">By {course.instructor?.name || 'Instructor'}</p>
                                     </div>
 
                                     <div className="flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase mt-6 pt-4 border-t border-white/5">
-                                        <span className="flex items-center gap-1.5"><FiBook /> {course.level}</span>
-                                        <span className="flex items-center gap-1.5"><FiClock /> {course.duration}</span>
+                                        <span className="flex items-center gap-1.5"><FiBook /> {course.level || 'All Levels'}</span>
+                                        <span className="flex items-center gap-1.5"><FiClock /> 40 Hours</span>
                                     </div>
 
                                     <div
@@ -147,6 +116,9 @@ export default function PublicCoursesPage() {
                         </Link>
                     ))}
                 </div>
+                {filteredCourses.length === 0 && (
+                    <p className="text-center text-gray-500 font-bold py-12">No courses found matching this category.</p>
+                )}
             </div>
         </div>
     );

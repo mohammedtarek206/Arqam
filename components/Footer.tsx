@@ -10,9 +10,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">SC</span>
+                <span className="text-white font-bold">AA</span>
               </div>
-              <span className="text-xl font-bold text-white">Switch Code</span>
+              <span className="text-xl font-bold text-white">أكاديمية أرقام</span>
             </div>
             <p className="text-gray-400 text-sm">
               Empowering the next generation of tech leaders through world-class education.
@@ -46,11 +46,11 @@ export default function Footer() {
             <ul className="space-y-3 text-gray-400 text-sm">
               <li className="flex items-center">
                 <FiMail className="mr-2 text-accent" />
-                info@switchcode.tech
+                arqam.co1@gmail.com
               </li>
               <li className="flex items-center">
                 <FiPhone className="mr-2 text-accent" />
-                +1 (555) 123-4567
+                01008465861
               </li>
               <li className="flex items-center">
                 <FiMapPin className="mr-2 text-accent" />
@@ -73,7 +73,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-primary/20 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-          <p>© {new Date().getFullYear()} Switch Code. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Arqam Academy. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-accent transition-colors">Terms of Service</Link>

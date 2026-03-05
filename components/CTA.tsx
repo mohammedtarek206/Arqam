@@ -24,7 +24,7 @@ export default function CTA() {
             Ready to Start Your Tech Journey?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Join hundreds of students who are already building their future with Switch Code
+            Join hundreds of students who are already building their future with Arqam Academy
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -34,7 +34,7 @@ export default function CTA() {
               Get Started <FiArrowRight className="ml-2" />
             </Link>
             <Link
-              href="mailto:info@switchcode.tech"
+              href="mailto:arqam.co1@gmail.com"
               className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-semibold hover:bg-white/10 transition-colors"
             >
               <FiMail className="mr-2" />

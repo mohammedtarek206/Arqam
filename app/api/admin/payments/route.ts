@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
         const payments = await Payment.find({})
             .populate('user', 'name email')
             .populate('track', 'title')
+            .populate('course', 'title')
             .sort({ createdAt: -1 });
 
         return NextResponse.json(payments, { status: 200 });

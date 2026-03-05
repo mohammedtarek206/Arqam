@@ -7,7 +7,7 @@ export async function GET() {
     try {
         await connectDB();
 
-        const adminEmail = 'admin@switchcode.tech';
+        const adminEmail = 'admin@arqam-academy.com';
         const existingAdmin = await User.findOne({ email: adminEmail });
 
         if (existingAdmin) {

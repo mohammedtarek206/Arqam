@@ -62,7 +62,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">Email</h3>
-                  <p className="text-gray-400">info@switchcode.tech</p>
+                  <p className="text-gray-400">arqam.co1@gmail.com</p>
                 </div>
               </div>
 
@@ -72,7 +72,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold mb-1">Phone</h3>
-                  <p className="text-gray-400">+1 (555) 123-4567</p>
+                  <p className="text-gray-400">01008465861</p>
                 </div>
               </div>
 
@@ -95,7 +95,7 @@ export default function ContactPage() {
           >
             <div className="glass rounded-2xl p-8">
               <h2 className="text-3xl font-bold text-white mb-6">Send Message</h2>
-              
+
               {submitted ? (
                 <div className="text-center py-12">
                   <div className="w-20 h-20 bg-gradient-to-br from-accent to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
