@@ -61,16 +61,18 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const payment = new Payment({
+        const paymentData: any = {
             user: user.userId,
-            track: actualTrackId || undefined,
-            course: actualCourseId || undefined,
             amount,
             method,
             proofImage,
             status: 'pending'
-        });
+        };
 
+        if (actualTrackId) paymentData.track = actualTrackId;
+        if (actualCourseId) paymentData.course = actualCourseId;
+
+        const payment = new Payment(paymentData);
         await payment.save();
 
         return NextResponse.json(

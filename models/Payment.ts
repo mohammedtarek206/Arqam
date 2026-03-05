@@ -15,8 +15,8 @@ export interface IPayment extends Document {
 const PaymentSchema: Schema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        track: { type: Schema.Types.ObjectId, ref: 'Track', required: false },
-        course: { type: Schema.Types.ObjectId, ref: 'Course', required: false },
+        track: { type: Schema.Types.ObjectId, ref: 'Track' },
+        course: { type: Schema.Types.ObjectId, ref: 'Course' },
         amount: { type: Number, required: true },
         method: {
             type: String,
