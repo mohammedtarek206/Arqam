@@ -1,23 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiSearch, FiUserCheck, FiUserX, FiEdit2, FiDollarSign, FiCheckCircle, FiXCircle, FiClock, FiTrash2 } from 'react-icons/fi';
-
-const mockInstructors = [
-    { id: '1', name: 'Ahmed Shendy', email: 'ahmed@arqam.edu', specialty: 'Web Development', status: 'approved', revenueSplit: 70, courses: 3, earnings: 4200 },
-    { id: '2', name: 'Sara Hassan', email: 'sara@design.com', specialty: 'UI/UX Design', status: 'approved', revenueSplit: 65, courses: 1, earnings: 1200 },
-    { id: '3', name: 'Omar Zaid', email: 'omar@cyber.io', specialty: 'Cyber Security', status: 'approved', revenueSplit: 70, courses: 2, earnings: 3800 },
-    { id: '4', name: 'Khaled Hassan', email: 'khaled@dev.com', specialty: 'Mobile Dev', status: 'pending', revenueSplit: 70, courses: 0, earnings: 0 },
-    { id: '5', name: 'Mai Sayed', email: 'mai@ai.io', specialty: 'AI & Data Science', status: 'pending', revenueSplit: 70, courses: 0, earnings: 0 },
-];
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiSearch, FiUserCheck, FiUserX, FiEdit2, FiDollarSign, FiCheckCircle, FiXCircle, FiClock, FiTrash2, FiEye, FiFileText } from 'react-icons/fi';
 
 export default function InstructorsManagementPage() {
     const [instructors, setInstructors] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [editSplit, setEditSplit] = useState<{ id: string, value: number } | null>(null);
+    const [selectedInstructor, setSelectedInstructor] = useState<any | null>(null);
 
     useEffect(() => {
         fetchInstructors();
@@ -90,13 +82,6 @@ export default function InstructorsManagementPage() {
         } catch (err) {
             console.error(err);
         }
-    };
-
-    const saveSplit = () => {
-        if (!editSplit) return;
-        // Logic for saving split to DB would go here (need API)
-        alert('Revenue split update logic to be implemented on backend');
-        setEditSplit(null);
     };
 
     const getStatusStyle = (status: string) => {
@@ -186,7 +171,14 @@ export default function InstructorsManagementPage() {
                                         </span>
                                     </td>
                                     <td className="p-4">
-                                        <div className="flex items-center gap-1">
+                                        <div className="flex items-center justify-center gap-1">
+                                            <button
+                                                onClick={() => setSelectedInstructor(instructor)}
+                                                className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                                                title="View Details"
+                                            >
+                                                <FiEye />
+                                            </button>
                                             {instructor.status === 'pending' && (
                                                 <>
                                                     <button onClick={() => approve(instructor._id)} className="p-1.5 rounded-lg text-green-400 hover:bg-green-400/10 transition-colors" title="Approve"><FiCheckCircle /></button>
@@ -211,6 +203,108 @@ export default function InstructorsManagementPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Details Modal */}
+            <AnimatePresence>
+                {selectedInstructor && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedInstructor(null)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-dark border border-white/10 rounded-[2.5rem] w-full max-w-2xl relative z-10 overflow-hidden shadow-2xl"
+                        >
+                            <div className="p-8 md:p-12">
+                                <div className="flex justify-between items-start mb-8">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-black">
+                                            {selectedInstructor.name?.charAt(0) || 'I'}
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-black text-white uppercase tracking-tight">{selectedInstructor.name}</h2>
+                                            <p className="text-primary font-bold text-sm tracking-widest uppercase">{selectedInstructor.email}</p>
+                                        </div>
+                                    </div>
+                                    <button onClick={() => setSelectedInstructor(null)} className="p-2 text-gray-500 hover:text-white transition-colors">
+                                        <FiXCircle size={24} />
+                                    </button>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-8 mb-8">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Category / Specialty</label>
+                                            <p className="text-white font-bold">{selectedInstructor.details?.category || 'Not specified'}</p>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Phone Number</label>
+                                            <p className="text-white font-bold">{selectedInstructor.phone || 'N/A'}</p>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Joining Date</label>
+                                            <p className="text-white font-bold">{new Date(selectedInstructor.createdAt).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">CV / Portfolio</label>
+                                            {selectedInstructor.details?.cvUrl ? (
+                                                <a
+                                                    href={selectedInstructor.details.cvUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 text-primary hover:underline font-black text-sm"
+                                                >
+                                                    <FiFileText /> VIEW RESUME / CV
+                                                </a>
+                                            ) : (
+                                                <p className="text-gray-500 font-bold italic text-sm">No CV uploaded</p>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Current Status</label>
+                                            <span className={`text-[10px] font-black uppercase border px-2 py-1 rounded-lg ${getStatusStyle(selectedInstructor.status)}`}>
+                                                {selectedInstructor.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2 mb-8 p-6 bg-white/5 rounded-3xl border border-white/10">
+                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block">Biography</label>
+                                    <p className="text-gray-300 text-sm leading-relaxed overflow-y-auto max-h-40 pr-2">
+                                        {selectedInstructor.details?.bio || 'No biography provided.'}
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={() => setSelectedInstructor(null)}
+                                        className="flex-1 py-4 bg-white/5 border border-white/10 text-white font-black rounded-2xl hover:bg-white/10 transition-all uppercase tracking-widest text-xs"
+                                    >
+                                        Close
+                                    </button>
+                                    {selectedInstructor.status === 'pending' && (
+                                        <button
+                                            onClick={() => { approve(selectedInstructor._id); setSelectedInstructor(null); }}
+                                            className="flex-1 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all uppercase tracking-widest text-xs"
+                                        >
+                                            Approve Instructor
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

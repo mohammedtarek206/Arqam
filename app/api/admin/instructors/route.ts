@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 import { authenticateRequest } from '@/lib/auth';
+import InstructorDetail from '@/models/InstructorDetail';
 
 export async function GET(request: NextRequest) {
     try {
@@ -15,7 +16,18 @@ export async function GET(request: NextRequest) {
             role: 'instructor'
         }).select('name email role status createdAt phone').sort({ name: 1 });
 
-        return NextResponse.json(instructors, { status: 200 });
+        // Fetch details for each instructor
+        const instructorsWithDetails = await Promise.all(
+            instructors.map(async (inst) => {
+                const details = await InstructorDetail.findOne({ user: inst._id });
+                return {
+                    ...inst.toObject(),
+                    details: details || null
+                };
+            })
+        );
+
+        return NextResponse.json(instructorsWithDetails, { status: 200 });
     } catch (error: any) {
         console.error('Admin Instructors API error:', error);
         return NextResponse.json(
