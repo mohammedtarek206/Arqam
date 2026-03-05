@@ -428,13 +428,27 @@ export default function TrackDetailPage() {
                                 </div>
                             ) : (
                                 <div className="space-y-6">
-                                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
-                                        <h4 className="text-white font-bold mb-2">Instructions:</h4>
-                                        <p className="text-gray-400 text-xs leading-relaxed">
-                                            {selectedMethod === 'Vodafone Cash' && "الرجاء تحويل المبلغ إلى رقم فودافون كاش: 01018698114"}
-                                            {selectedMethod === 'InstaPay' && "الرجاء تحويل المبلغ إلى عنوان انستا باي: mo.tarek@instapay"}
-                                            {" "}ثم قم برفع صورة التحويل أدناه.
-                                        </p>
+                                    <div className="p-6 bg-primary/10 border border-primary/30 rounded-2xl space-y-4">
+                                        <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-2">
+                                            <FiInfo className="text-primary" /> Instructions / تعليمات الدفع
+                                        </h4>
+                                        <div className="space-y-4">
+                                            {selectedMethod === 'Vodafone Cash' && (
+                                                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
+                                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">تحويل فودافون كاش إلى الرقم التالي:</p>
+                                                    <p className="text-3xl font-black text-primary tracking-tighter select-all cursor-pointer">01006093939</p>
+                                                </div>
+                                            )}
+                                            {selectedMethod === 'InstaPay' && (
+                                                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
+                                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">تحويل انستا باي إلى الحساب التالي:</p>
+                                                    <p className="text-xl font-black text-primary tracking-tight select-all cursor-pointer">mo.tarek@instapay</p>
+                                                </div>
+                                            )}
+                                            <p className="text-gray-400 text-[10px] font-bold text-center uppercase tracking-widest">
+                                                بعد التحويل، يرجى رفع صورة الإيصال أو لقطة الشاشة أدناه
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div className="space-y-2">

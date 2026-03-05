@@ -222,8 +222,9 @@ export default function PaymentPage() {
                                     {paymentMethod === 'vodafone' && (
                                         <div className="bg-black/20 border border-white/10 rounded-2xl p-6 space-y-4">
                                             <p className="text-sm text-gray-400 text-center mb-4">Transfer to our Vodafone Cash wallet:</p>
-                                            <div className="bg-white/5 p-4 rounded-xl flex justify-between items-center">
-                                                <span className="text-white font-mono font-bold text-lg">0100 123 4567</span>
+                                            <div className="bg-primary/10 p-6 rounded-2xl border border-primary/30 flex flex-col items-center justify-center gap-2 shadow-[0_0_30px_rgba(var(--primary),0.1)]">
+                                                <span className="text-4xl font-black text-white tracking-widest select-all">01006093939</span>
+                                                <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Vodafone Cash Number</span>
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">Your Mobile Number</label>
