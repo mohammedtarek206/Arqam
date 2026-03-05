@@ -131,29 +131,69 @@ function CoursePreviewModal({ course, onClose }: { course: Course; onClose: () =
 
 export default function ManageCourses() {
     const { t } = useLanguage();
-    const [courses, setCourses] = useState<Course[]>(initialCourses);
+    const [courses, setCourses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showBuilder, setShowBuilder] = useState(false);
-    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-    const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
+    const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+    const [previewCourse, setPreviewCourse] = useState<any | null>(null);
+
+    React.useEffect(() => {
+        if (!showBuilder) {
+            fetchCourses();
+        }
+    }, [showBuilder]);
+
+    const fetchCourses = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/instructor/courses', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCourses(data);
+            }
+        } catch (err) {
+            console.error('Fetch error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleCreateNew = () => {
         setSelectedCourse(null);
         setShowBuilder(true);
     };
 
-    const handleEdit = (course: Course) => {
+    const handleEdit = (course: any) => {
         setSelectedCourse(course);
         setShowBuilder(true);
     };
 
-    const handleView = (course: Course) => {
+    const handleView = (course: any) => {
         setPreviewCourse(course);
     };
 
-    const handleDelete = (id: number) => {
+    const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this course?')) return;
-        setCourses(prev => prev.filter(c => c.id !== id));
+        try {
+            const res = await fetch(`/api/instructor/courses/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            if (res.ok) fetchCourses();
+        } catch (err) {
+            console.error(err);
+        }
     };
+
+    if (loading && !showBuilder) {
+        return (
+            <div className="h-[60vh] flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 pb-20">
@@ -189,36 +229,36 @@ export default function ManageCourses() {
                     >
                         {courses.map((course, i) => (
                             <motion.div
-                                key={course.id}
+                                key={course._id}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
                                 className="glass rounded-[2.5rem] border border-white/5 overflow-hidden group hover:border-primary/30 transition-all flex flex-col sm:flex-row"
                             >
                                 <div className="w-full sm:w-44 h-44 sm:h-full relative overflow-hidden shrink-0">
-                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    <img src={course.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=250&fit=crop'} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className="absolute top-3 left-3">
-                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${course.status === 'active' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-dark'}`}>
-                                            {course.status}
+                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${course.isActive ? 'bg-green-500 text-white' : 'bg-yellow-500 text-dark'}`}>
+                                            {course.isActive ? 'active' : 'pending/draft'}
                                         </span>
                                     </div>
                                 </div>
 
                                 <div className="p-6 flex-1 flex flex-col justify-between">
                                     <div>
-                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">{course.track}</span>
+                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">{course.track?.title || 'Professional'}</span>
                                         <h3 className="text-base font-black text-white group-hover:text-primary transition-colors leading-tight mb-3 mt-1">
                                             {course.title}
                                         </h3>
                                         <div className="flex items-center gap-4 text-xs font-bold text-gray-500">
-                                            <span className="flex items-center gap-1.5"><FiLayers className="text-primary" /> {course.modules} Units</span>
-                                            <span className="flex items-center gap-1.5"><FiVideo className="text-primary" /> {course.lessons} Lessons</span>
+                                            <span className="flex items-center gap-1.5"><FiLayers className="text-primary" /> {course.modules?.length || 0} Units</span>
+                                            <span className="flex items-center gap-1.5"><FiVideo className="text-primary" /> {course.modules?.reduce((a: any, m: any) => a + (m.lessons?.length || 0), 0) || 0} Lessons</span>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center justify-between mt-5">
                                         <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
-                                            <FiUsers className="text-primary" /> {course.students} students
+                                            <FiUsers className="text-primary" /> {course.students || 0} students
                                         </div>
                                         <div className="flex gap-2">
                                             {/* View button */}
@@ -239,7 +279,7 @@ export default function ManageCourses() {
                                             </button>
                                             {/* Delete button */}
                                             <button
-                                                onClick={() => handleDelete(course.id)}
+                                                onClick={() => handleDelete(course._id)}
                                                 title="Delete Course"
                                                 className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-all"
                                             >

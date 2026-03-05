@@ -168,9 +168,46 @@ export default function CourseBuilder({ course, onCancel }: { course?: any; onCa
         }
     };
 
-    const handleSave = () => {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+    const handleSave = async () => {
+        try {
+            const method = course?._id ? 'PATCH' : 'POST';
+            const url = course?._id ? `/api/instructor/courses/${course._id}` : '/api/instructor/courses';
+
+            const payload = {
+                ...courseInfo,
+                modules: modules.map(m => ({
+                    title: m.title,
+                    lessons: m.lessons.map(l => ({
+                        title: l.title,
+                        type: l.type,
+                        examQuestions: l.examQuestions
+                    }))
+                }))
+            };
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                setSaved(true);
+                setTimeout(() => {
+                    setSaved(false);
+                    onCancel(); // Return to list after save
+                }, 1500);
+            } else {
+                const err = await res.json();
+                alert(`Failed to save: ${err.error || 'Unknown error'}`);
+            }
+        } catch (err) {
+            console.error('Save error:', err);
+            alert('An error occurred while saving.');
+        }
     };
 
     const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
