@@ -151,6 +151,8 @@ export default function TrackDetailPage() {
                 setProofImage('');
                 setVisaData({ number: '', expiry: '', cvv: '' });
                 alert('تم إرسال طلب الدفع بنجاح. بانتظار موافقة الإدارة.');
+                const langUrl = lang === 'ar' ? '/ar' : '';
+                router.push(`${langUrl}/dashboard`);
             } else {
                 const error = await res.json();
                 alert(error.error || 'فشل إرسال طلب الدفع');

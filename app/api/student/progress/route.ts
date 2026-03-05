@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
+import User from '@/models/User';
 import Progress from '@/models/Progress';
-import Lesson from '@/models/Lesson';
+import Course from '@/models/Course';
+import Track from '@/models/Track';
 import { authenticateRequest } from '@/lib/auth';
 
-export async function PATCH(request: NextRequest) {
+// GET: Return user's enrolled courses, tracks and progress per course
+export async function GET(request: NextRequest) {
     try {
         const payload = await authenticateRequest(request);
         if (!payload) {
@@ -12,40 +15,44 @@ export async function PATCH(request: NextRequest) {
         }
 
         await connectDB();
-        const { courseId, lessonId } = await request.json();
-
-        if (!courseId || !lessonId) {
-            return NextResponse.json({ error: 'Missing courseId or lessonId' }, { status: 400 });
+        const user = await User.findById(payload.userId)
+            .populate('enrolledCourses')
+            .populate('enrolledTracks');
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        // 1. Update or create progress record
-        let progress = await Progress.findOne({ user: payload.userId, course: courseId });
+        // Fetch progress records for all enrolled courses
+        const progressRecords = await Progress.find({
+            user: payload.userId,
+            course: { $in: user.enrolledCourses?.map((c: any) => c._id) },
+        });
 
-        if (!progress) {
-            progress = new Progress({
-                user: payload.userId,
-                course: courseId,
-                completedLessons: [lessonId]
-            });
-        } else {
-            if (!progress.completedLessons.includes(lessonId)) {
-                progress.completedLessons.push(lessonId);
-            }
-        }
+        const progressMap: Record<string, any> = {};
+        progressRecords.forEach((p) => {
+            progressMap[p.course.toString()] = {
+                completedLessons: p.completedLessons,
+                progressPercentage: p.progressPercentage,
+                lastAccessed: p.lastAccessed,
+            };
+        });
 
-        progress.lastAccessed = new Date();
+        const courses = (user.enrolledCourses as any[])?.map((c) => ({
+            _id: c._id,
+            title: c.title,
+            description: c.description,
+            progress: progressMap[c._id.toString()] || null,
+        }));
 
-        // 2. Calculate progress percentage
-        // This is a bit tricky since we need total lessons for this course
-        // For now, satisfy the user by saving it
-        await progress.save();
+        const tracks = (user.enrolledTracks as any[])?.map((t) => ({
+            _id: t._id,
+            title: t.title,
+            description: t.description,
+        }));
 
-        return NextResponse.json({ message: 'Progress updated', progress }, { status: 200 });
+        return NextResponse.json({ courses, tracks }, { status: 200 });
     } catch (error: any) {
-        console.error('Progress API error:', error);
-        return NextResponse.json(
-            { error: 'Failed to update progress' },
-            { status: 500 }
-        );
+        console.error('Progress GET error:', error);
+        return NextResponse.json({ error: 'Failed to fetch progress' }, { status: 500 });
     }
 }

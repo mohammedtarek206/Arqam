@@ -15,8 +15,8 @@ export interface IPayment extends Document {
 const PaymentSchema: Schema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        track: { type: Schema.Types.ObjectId, ref: 'Track' },
-        course: { type: Schema.Types.ObjectId, ref: 'Course' },
+        track: { type: Schema.Types.ObjectId, ref: 'Track', required: false },
+        course: { type: Schema.Types.ObjectId, ref: 'Course', required: false },
         amount: { type: Number, required: true },
         method: {
             type: String,
@@ -34,5 +34,10 @@ const PaymentSchema: Schema = new Schema(
         timestamps: true,
     }
 );
+
+// Clear mongoose models cache during development to apply schema changes
+if (mongoose.models.Payment) {
+    delete mongoose.models.Payment;
+}
 
 export default mongoose.models.Payment || mongoose.model<IPayment>('Payment', PaymentSchema);

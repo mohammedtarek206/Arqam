@@ -1,47 +1,49 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { motion } from 'framer-motion';
-import { FiPlayCircle, FiMoreVertical, FiCheckCircle, FiClock, FiStar, FiSearch } from 'react-icons/fi';
+import { FiPlayCircle, FiMoreVertical, FiCheckCircle, FiClock, FiStar, FiSearch, FiMonitor } from 'react-icons/fi';
 import Link from 'next/link';
 
 export default function MyCoursesPage() {
     const { t } = useLanguage();
     const [filter, setFilter] = useState('all');
+    const [courses, setCourses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const courses = [
-        {
-            id: 1,
-            title: 'Full Stack Web Development with Next.js',
-            instructor: 'Ahmed Shendy',
-            progress: 65,
-            thumbnail: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop',
-            track: 'Web Development',
-            status: 'in-progress',
-            lastAccessed: '2 hours ago'
-        },
-        {
-            id: 2,
-            title: 'UI/UX Design Fundamentals',
-            instructor: 'Sara Hassan',
-            progress: 100,
-            thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=250&fit=crop',
-            track: 'Design',
-            status: 'completed',
-            lastAccessed: '1 week ago'
-        },
-        {
-            id: 3,
-            title: 'Advanced Ethical Hacking',
-            instructor: 'Omar Zaid',
-            progress: 0,
-            thumbnail: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=250&fit=crop',
-            track: 'Cyber Security',
-            status: 'not-started',
-            lastAccessed: 'Never'
-        }
-    ];
+    useEffect(() => {
+        const fetchProgress = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/student/progress', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.courses) {
+                        setCourses(data.courses.map((c: any) => ({
+                            id: c._id,
+                            title: c.title,
+                            instructor: 'Instructor', // Can be populated if needed
+                            progress: c.progress?.progressPercentage || 0,
+                            thumbnail: c.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800',
+                            track: c.track?.title || 'Professional',
+                            status: c.progress?.progressPercentage === 100 ? 'completed' : (c.progress?.progressPercentage > 0 ? 'in-progress' : 'not-started'),
+                            lastAccessed: c.progress?.lastAccessed ? new Date(c.progress.lastAccessed).toLocaleDateString() : 'Never'
+                        })));
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch progress:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProgress();
+    }, []);
 
     const filteredCourses = courses.filter(c => {
         if (filter === 'all') return true;
@@ -49,6 +51,14 @@ export default function MyCoursesPage() {
         if (filter === 'completed') return c.progress === 100;
         return true;
     });
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 pb-20 max-w-7xl mx-auto">
@@ -117,7 +127,7 @@ export default function MyCoursesPage() {
                                 <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-black/50 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10">{course.track}</span>
                             </div>
 
-                            {course.progress > 0 && course.progress < 100 && (
+                            {course.progress < 100 && (
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
                                     <Link href={`/learn/${course.id}`} className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl hover:scale-110 transition-transform shadow-xl shadow-primary/20">
                                         <FiPlayCircle />
@@ -158,7 +168,9 @@ export default function MyCoursesPage() {
 
                                 <div className="pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase">
                                     <span className="flex items-center gap-1.5"><FiClock /> {course.lastAccessed}</span>
-                                    <button className="hover:text-white transition-colors"><FiMoreVertical className="text-lg" /></button>
+                                    {course.progress === 100 && (
+                                        <button className="hover:text-primary transition-colors flex items-center gap-1"><FiCheckCircle className="text-lg" /> Certificate</button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -167,9 +179,9 @@ export default function MyCoursesPage() {
 
                 {filteredCourses.length === 0 && (
                     <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-white/10">
-                        <FiPlayCircle className="mx-auto text-5xl text-gray-700 mb-4" />
-                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">No {filter} courses found.</p>
-                        <Link href="/tracks" className="inline-block mt-6 px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-black uppercase text-xs rounded-xl transition-all border border-white/10">Browse Library</Link>
+                        <FiMonitor className="mx-auto text-5xl text-gray-700 mb-4" />
+                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">No {filter !== 'all' ? filter : ''} courses enrolled.</p>
+                        <Link href="/courses" className="inline-block mt-6 px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-black uppercase text-xs rounded-xl transition-all border border-white/10">Browse Library</Link>
                     </div>
                 )}
             </div>

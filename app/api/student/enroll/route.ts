@@ -19,11 +19,25 @@ export async function POST(request: NextRequest) {
 
         await connectDB();
 
+        // Fetch the user to check existing enrollments
+        const user = await User.findById(payload.userId);
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
         let item: any = null;
         if (trackId) {
             item = await Track.findById(trackId);
+            // Check if already enrolled in this track
+            if (user.enrolledTracks?.includes(trackId)) {
+                return NextResponse.json({ message: 'Already enrolled in this track' }, { status: 200 });
+            }
         } else if (courseId) {
             item = await Course.findById(courseId);
+            // Check if already enrolled in this course
+            if (user.enrolledCourses?.includes(courseId)) {
+                return NextResponse.json({ message: 'Already enrolled in this course' }, { status: 200 });
+            }
         }
 
         if (!item) {

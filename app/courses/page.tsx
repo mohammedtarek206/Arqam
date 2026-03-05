@@ -12,6 +12,7 @@ export default function PublicCoursesPage() {
     const router = useRouter();
     const [filter, setFilter] = useState('all');
     const [courses, setCourses] = useState<any[]>([]);
+    const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -28,7 +29,27 @@ export default function PublicCoursesPage() {
                 setLoading(false);
             }
         };
+
+        const fetchEnrolledCourses = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/student/progress', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.courses) {
+                        setEnrolledCourseIds(data.courses.map((c: any) => c._id));
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch enrolled courses:', err);
+            }
+        };
+
         fetchCourses();
+        fetchEnrolledCourses();
     }, []);
 
     const enrollCourse = async (e: React.MouseEvent, course: any) => {
@@ -150,10 +171,17 @@ export default function PublicCoursesPage() {
                                     </div>
 
                                     <button
-                                        onClick={(e) => enrollCourse(e, course)}
+                                        onClick={(e) => {
+                                            if (enrolledCourseIds.includes(course._id || course.id)) {
+                                                e.preventDefault();
+                                                router.push(`/learn/${course._id || course.id}`);
+                                            } else {
+                                                enrollCourse(e, course);
+                                            }
+                                        }}
                                         className="mt-6 w-full py-3 bg-white/5 group-hover:bg-primary group-hover:text-white text-white font-black text-xs uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10"
                                     >
-                                        {course.price > 0 ? 'Buy Now' : 'Enroll Now'}
+                                        {enrolledCourseIds.includes(course._id || course.id) ? 'Go to Course' : (course.price > 0 ? 'Buy Now' : 'Enroll Now')}
                                     </button>
                                 </div>
                             </motion.div>
@@ -164,6 +192,6 @@ export default function PublicCoursesPage() {
                     <p className="text-center text-gray-500 font-bold py-12">No courses found matching this category.</p>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

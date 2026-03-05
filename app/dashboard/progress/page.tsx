@@ -1,10 +1,90 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiActivity, FiTarget, FiTrendingUp, FiAward, FiClock } from 'react-icons/fi';
 
 export default function StudentProgressPage() {
+    const [stats, setStats] = useState({
+        overallCompletion: 0,
+        learningStreak: 0,
+        hoursWatched: 0,
+        skills: [] as { skill: string, progress: number, color: string }[]
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProgress = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const res = await fetch('/api/student/progress', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+
+                    // Simple logic to mock deriving stats from courses.
+                    // Ideally the backend would return aggregated statistics.
+                    let totalCompletion = 0;
+                    let tracksEnrolled = data.tracks?.length || 0;
+                    let coursesEnrolled = data.courses?.length || 0;
+                    let activeCourses = 0;
+
+                    const extractedSkills: any[] = [];
+                    const colors = [
+                        'from-blue-500 to-cyan-400',
+                        'from-green-500 to-emerald-400',
+                        'from-accent to-pink-500',
+                        'from-yellow-400 to-orange-500',
+                        'from-purple-500 to-indigo-500'
+                    ];
+
+                    data.courses?.forEach((c: any, i: number) => {
+                        const progress = c.progress?.progressPercentage || 0;
+                        if (progress > 0) activeCourses++;
+                        totalCompletion += progress;
+
+                        // Add track name as a skill placeholder
+                        if (c.track && !extractedSkills.find(s => s.skill === c.track)) {
+                            extractedSkills.push({
+                                skill: c.track || c.title.split(' ')[0],
+                                progress: progress,
+                                color: colors[i % colors.length]
+                            });
+                        }
+                    });
+
+                    const avgCompletion = coursesEnrolled > 0 ? Math.round(totalCompletion / coursesEnrolled) : 0;
+
+                    setStats({
+                        overallCompletion: avgCompletion,
+                        learningStreak: activeCourses * 2, // arbitrary mock multiplier for demo
+                        hoursWatched: coursesEnrolled * 5, // arbitrary mock calculation
+                        skills: extractedSkills.length > 0 ? extractedSkills : [
+                            { skill: 'Web Development', progress: 0, color: 'from-blue-500 to-cyan-400' },
+                            { skill: 'Programming Basics', progress: 0, color: 'from-green-500 to-emerald-400' }
+                        ]
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to fetch progress stats:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProgress();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-8 pb-20 max-w-7xl mx-auto">
             <header>
@@ -15,9 +95,9 @@ export default function StudentProgressPage() {
             {/* Main Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'Overall Completion', value: '45%', icon: <FiTarget />, color: 'text-primary' },
-                    { label: 'Learning Streak', value: '12 Days', icon: <FiTrendingUp />, color: 'text-green-500' },
-                    { label: 'Hours Watched', value: '87h', icon: <FiClock />, color: 'text-accent' },
+                    { label: 'Overall Completion', value: `${stats.overallCompletion}%`, icon: <FiTarget />, color: 'text-primary' },
+                    { label: 'Learning Streak', value: `${stats.learningStreak} Days`, icon: <FiTrendingUp />, color: 'text-green-500' },
+                    { label: 'Hours Watched', value: `${stats.hoursWatched}h`, icon: <FiClock />, color: 'text-accent' },
                     { label: 'Rank', value: 'Top 10%', icon: <FiAward />, color: 'text-yellow-500' },
                 ].map((stat, i) => (
                     <motion.div
@@ -56,7 +136,7 @@ export default function StudentProgressPage() {
                             <div key={i} className="flex flex-col items-center gap-2 flex-1 group">
                                 <motion.div
                                     initial={{ height: 0 }}
-                                    animate={{ height: `${h}%` }}
+                                    animate={{ height: `${stats.overallCompletion > 0 ? h : 0}%` }}
                                     transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
                                     className="w-full bg-white/5 hover:bg-primary/50 transition-colors rounded-t-xl shrink-0 group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)]"
                                 />
@@ -77,12 +157,7 @@ export default function StudentProgressPage() {
                 >
                     <h3 className="text-xl font-black text-white uppercase tracking-tight mb-8">Skill Mastery</h3>
                     <div className="space-y-6">
-                        {[
-                            { skill: 'React.js', progress: 85, color: 'from-blue-500 to-cyan-400' },
-                            { skill: 'Node.js', progress: 60, color: 'from-green-500 to-emerald-400' },
-                            { skill: 'MongoDB', progress: 40, color: 'from-green-600 to-green-400' },
-                            { skill: 'UI/UX Basics', progress: 20, color: 'from-accent to-pink-500' },
-                        ].map((skill, i) => (
+                        {stats.skills.map((skill, i) => (
                             <div key={i}>
                                 <div className="flex justify-between text-xs font-black uppercase text-gray-400 mb-2">
                                     <span className="text-white">{skill.skill}</span>

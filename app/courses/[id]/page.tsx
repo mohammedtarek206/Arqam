@@ -96,6 +96,8 @@ export default function CourseDetailsPage() {
                 setProofImage('');
                 setVisaData({ number: '', expiry: '', cvv: '' });
                 alert(lang === 'ar' ? 'تم إرسال طلب الدفع بنجاح. بانتظار موافقة الإدارة.' : 'Payment submitted successfully. Waiting for admin approval.');
+                const langUrl = lang === 'ar' ? '/ar' : '';
+                router.push(`${langUrl}/dashboard`);
             } else {
                 const error = await res.json();
                 alert(error.error || 'Failed to submit payment');
