@@ -20,8 +20,11 @@ export async function GET(request: NextRequest) {
             })
             .populate({
                 path: 'enrolledCourses',
-                select: 'title description thumbnail level price isFree instructor',
-                populate: { path: 'instructor', select: 'name' }
+                select: 'title description thumbnail level price isFree instructor track',
+                populate: [
+                    { path: 'instructor', select: 'name' },
+                    { path: 'track', select: 'title' }
+                ]
             });
 
         if (!user) {

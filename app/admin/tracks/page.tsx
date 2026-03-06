@@ -8,6 +8,7 @@ interface Lesson {
     title: string;
     description: string;
     videoUrl: string;
+    duration?: string;
 }
 
 interface Track {
@@ -60,7 +61,7 @@ export default function AdminTracks() {
     const handleAddLesson = () => {
         setFormData({
             ...formData,
-            lessons: [...formData.lessons, { title: '', description: '', videoUrl: '' }]
+            lessons: [...formData.lessons, { title: '', description: '', videoUrl: '', duration: '0:00' }]
         });
     };
 
@@ -310,6 +311,13 @@ export default function AdminTracks() {
                                                         value={lesson.videoUrl}
                                                         onChange={(e) => updateLesson(index, 'videoUrl', e.target.value)}
                                                         required
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Duration (e.g. 10:30)"
+                                                        className="bg-surface border border-border rounded-lg p-2 text-foreground outline-none text-sm font-bold"
+                                                        value={lesson.duration}
+                                                        onChange={(e) => updateLesson(index, 'duration', e.target.value)}
                                                     />
                                                 </div>
                                                 <textarea

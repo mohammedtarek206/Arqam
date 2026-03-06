@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
 
         await connectDB();
         const user = await User.findById(payload.userId)
-            .populate('enrolledCourses')
+            .populate({
+                path: 'enrolledCourses',
+                populate: { path: 'track', select: 'title' }
+            })
             .populate('enrolledTracks');
         if (!user) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -41,6 +44,8 @@ export async function GET(request: NextRequest) {
             _id: c._id,
             title: c.title,
             description: c.description,
+            thumbnail: c.thumbnail,
+            track: c.track?.title || 'Professional',
             progress: progressMap[c._id.toString()] || null,
         }));
 

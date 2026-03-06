@@ -122,7 +122,15 @@ export default function MyCoursesPage() {
                         )}
 
                         <div className="w-full h-48 relative overflow-hidden shrink-0">
-                            <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            <img
+                                src={course.thumbnail}
+                                alt={course.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                onError={(e) => {
+                                    const img = e.target as HTMLImageElement;
+                                    img.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800';
+                                }}
+                            />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
                                 <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-black/50 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10">{course.track}</span>
                             </div>

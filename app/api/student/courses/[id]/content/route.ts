@@ -64,7 +64,7 @@ export async function GET(
                         id: `l${idx}`,
                         title: l.title,
                         type: 'video', // Tracks currently have videoUrl
-                        duration: '0:00',
+                        duration: l.duration || '0:00',
                         contentUrl: l.videoUrl,
                         description: l.description,
                         completed: completedLessonIds.includes(`l${idx}`)

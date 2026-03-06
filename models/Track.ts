@@ -4,6 +4,7 @@ export interface ILesson {
   title: string;
   description: string;
   videoUrl: string; // YouTube URL or ID
+  duration?: string;
 }
 
 export interface ITrack extends Document {
@@ -41,6 +42,7 @@ const TrackSchema: Schema = new Schema(
         title: { type: String, required: true },
         description: { type: String },
         videoUrl: { type: String, required: true },
+        duration: { type: String, default: '0:00' },
       },
     ],
     price: { type: Number, default: 0 },

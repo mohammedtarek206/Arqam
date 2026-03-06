@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
                             type: lessonData.type,
                             contentUrl: lessonData.contentUrl,
                             examQuestions: lessonData.examQuestions,
+                            duration: lessonData.duration, // Add duration
                             order: j
                         });
                         await lesson.save();

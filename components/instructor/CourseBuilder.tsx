@@ -5,7 +5,7 @@ import { useLanguage } from '@/lib/LanguageContext';
 import {
     FiArrowLeft, FiPlus, FiTrash2, FiMove,
     FiVideo, FiFileText, FiChevronDown, FiChevronUp,
-    FiSave, FiUpload, FiBook, FiCheckSquare, FiEdit2, FiX
+    FiSave, FiUpload, FiBook, FiCheckSquare, FiEdit2, FiX, FiClock
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,6 +17,7 @@ interface Lesson {
     fileName?: string;
     videoUrl?: string; // New field for YouTube
     examQuestions?: number;
+    duration?: string; // e.g. "10:30"
 }
 
 interface Module {
@@ -74,6 +75,15 @@ function LessonRow({
                             className="flex-1 bg-black/30 border border-white/10 rounded-lg px-3 py-1.5 text-[10px] font-bold text-white focus:outline-none focus:border-primary/50"
                             placeholder="Enter YouTube URL..."
                         />
+                        <div className="flex items-center gap-1 shrink-0">
+                            <FiClock className="text-gray-500 text-[10px]" />
+                            <input
+                                value={lesson.duration || ''}
+                                onChange={e => onUpdate(moduleId, lesson.id, { duration: e.target.value })}
+                                className="w-14 bg-black/30 border border-white/10 rounded-lg p-1 text-white text-[10px] font-black text-center focus:outline-none focus:border-primary/50"
+                                placeholder="0:00"
+                            />
+                        </div>
                     </div>
                 )}
 
@@ -257,7 +267,8 @@ export default function CourseBuilder({ course, onCancel }: { course?: any; onCa
                         title: l.title,
                         type: l.type,
                         contentUrl: l.type === 'video' ? l.videoUrl : l.fileName,
-                        examQuestions: l.examQuestions
+                        examQuestions: l.examQuestions,
+                        duration: l.duration
                     }))
                 }))
             };

@@ -177,7 +177,9 @@ export default function LessonsPage() {
                                             </h4>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <FiPlay size={10} className={activeLessonIndex === index ? 'text-primary' : 'text-gray-600'} />
-                                                <span className="text-[10px] font-bold text-gray-600 uppercase tracking-tighter">Video Lesson</span>
+                                                <span className="text-[10px] font-bold text-gray-600 uppercase tracking-tighter">
+                                                    {lesson.duration || '0:00'} • Video Lesson
+                                                </span>
                                             </div>
                                         </div>
                                     </button>

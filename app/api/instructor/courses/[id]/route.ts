@@ -96,6 +96,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
                             type: lessonData.type,
                             contentUrl: lessonData.contentUrl,
                             examQuestions: lessonData.examQuestions,
+                            duration: lessonData.duration, // Add duration
                             order: j
                         });
                         await lesson.save();

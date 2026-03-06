@@ -301,6 +301,10 @@ export default function TrackDetailPage() {
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-black text-foreground leading-none mb-2">{item.title}</h4>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <FiClock className="text-primary text-xs" />
+                                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.duration || '0:00'}</span>
+                                            </div>
                                             <p className="text-xs font-bold text-foreground/40 leading-relaxed line-clamp-2">{item.description || 'Learn key concepts and practical applications in this lesson.'}</p>
                                         </div>
                                     </div>

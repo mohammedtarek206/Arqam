@@ -146,7 +146,15 @@ export default function StudentDashboardOverview() {
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10 group-hover:bg-primary/20 transition-all" />
 
                                 <div className="w-full sm:w-48 h-48 sm:h-full relative overflow-hidden shrink-0">
-                                    <img src={course.thumbnail || 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop'} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                    <img
+                                        src={course.thumbnail || 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop'}
+                                        alt={course.title}
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                        onError={(e) => {
+                                            const img = e.target as HTMLImageElement;
+                                            img.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800';
+                                        }}
+                                    />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
                                         <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-black/50 px-2 py-1 rounded backdrop-blur-md border border-white/10">{course.track?.title || 'Professional'}</span>
                                     </div>
