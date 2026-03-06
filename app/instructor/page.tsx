@@ -6,24 +6,48 @@ import { useAuth } from '@/lib/AuthContext';
 import { motion } from 'framer-motion';
 import {
     FiUsers, FiEye, FiStar, FiDollarSign,
-    FiBell, FiChevronRight, FiCheckCircle, FiClock, FiMessageSquare
+    FiBell, FiChevronRight, FiCheckCircle, FiClock, FiMessageSquare, FiShield
 } from 'react-icons/fi';
 
 export default function InstructorOverview() {
     const { t, lang } = useLanguage();
     const { user } = useAuth();
 
+    if (user?.status === 'pending') {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 px-4 text-center space-y-8 animate-in fade-in duration-700">
+                <div className="w-24 h-24 bg-primary/10 rounded-[2rem] flex items-center justify-center text-primary text-4xl shadow-xl shadow-primary/5">
+                    <FiShield />
+                </div>
+                <div className="max-w-md space-y-4">
+                    <h1 className="text-4xl font-black text-foreground uppercase tracking-tight leading-none">
+                        Account Pending Approval
+                    </h1>
+                    <p className="text-foreground/40 font-bold text-sm leading-relaxed">
+                        Welcome to Arqam Academy! Your instructor application is currently under review by our administration team. You will be notified via email once your account is activated.
+                    </p>
+                </div>
+                <div className="flex gap-4 p-4 bg-surface border border-border rounded-3xl items-center text-left max-w-sm">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                        <FiClock />
+                    </div>
+                    <p className="text-xs font-bold text-foreground/60 leading-tight">
+                        Approval typically takes 24-48 hours. Thank you for your patience.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     const stats = [
-        { title: t('total_students'), value: '1,250', icon: <FiUsers />, color: 'bg-blue-500' },
-        { title: t('course_views'), value: '45,000', icon: <FiEye />, color: 'bg-purple-500' },
-        { title: t('avg_rating'), value: '4.8', icon: <FiStar />, color: 'bg-yellow-500' },
-        { title: t('earnings'), value: '$4,200', icon: <FiDollarSign />, color: 'bg-green-500' },
+        { title: t('total_students'), value: '0', icon: <FiUsers />, color: 'bg-blue-500' },
+        { title: t('course_views'), value: '0', icon: <FiEye />, color: 'bg-purple-500' },
+        { title: t('avg_rating'), value: '0.0', icon: <FiStar />, color: 'bg-yellow-500' },
+        { title: t('earnings'), value: '$0', icon: <FiDollarSign />, color: 'bg-green-500' },
     ];
 
     const notifications = [
-        { id: 1, text: 'New student enrolled in "Web Development Level 1"', time: '2 mins ago' },
-        { id: 2, text: 'Student submitted project for "UI/UX Design"', time: '1 hour ago' },
-        { id: 3, text: 'Admin approved your new Python course', time: '3 hours ago' },
+        { id: 1, text: 'Welcome to Arqam Academy! Start by creating your first course.', time: 'Just now' },
     ];
 
     return (
@@ -40,7 +64,7 @@ export default function InstructorOverview() {
                 <button className="px-6 py-3 bg-foreground/5 border border-border rounded-2xl flex items-center gap-2 hover:bg-foreground/10 transition-all font-black text-xs uppercase tracking-widest text-foreground/60">
                     <FiBell className="text-primary text-lg" />
                     {t('notifications')}
-                    <span className="bg-primary text-[10px] text-white px-1.5 py-0.5 rounded-full ml-1">4</span>
+                    <span className="bg-primary text-[10px] text-white px-1.5 py-0.5 rounded-full ml-1">1</span>
                 </button>
             </header>
 
@@ -90,16 +114,16 @@ export default function InstructorOverview() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="glass p-8 rounded-[3rem] border border-border bg-surface">
+                <div className="glass p-8 rounded-[3rem] border border-border bg-surface shadow-sm hover:shadow-xl transition-all">
                     <h2 className="text-2xl font-black text-foreground mb-8 uppercase tracking-tight">Quick Actions</h2>
                     <div className="space-y-4">
-                        <button className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em]">
+                        <button className="w-full py-5 bg-primary text-white font-black rounded-2xl hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em] active:scale-[0.98]">
                             <FiPlus className="w-5 h-5" /> {t('create_course')}
                         </button>
-                        <button className="w-full py-4 bg-accent text-white font-black rounded-2xl hover:bg-accent/90 transition-all shadow-xl shadow-accent/20 flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em]">
+                        <button className="w-full py-5 bg-accent text-white font-black rounded-2xl hover:bg-accent/90 transition-all shadow-xl shadow-accent/20 flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em] active:scale-[0.98]">
                             <FiPlus className="w-5 h-5" /> {t('create_exam')}
                         </button>
-                        <button className="w-full py-4 bg-foreground/5 border border-border text-foreground font-black rounded-2xl hover:bg-foreground/10 transition-all flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em]">
+                        <button className="w-full py-5 bg-foreground/5 border border-border text-foreground font-black rounded-2xl hover:bg-foreground/10 transition-all flex items-center justify-center gap-3 uppercase text-xs tracking-[0.15em] active:scale-[0.98]">
                             <FiMessageSquare className="w-5 h-5 text-primary" /> {t('send_announcement')}
                         </button>
                     </div>

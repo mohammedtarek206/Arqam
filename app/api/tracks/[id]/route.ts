@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as mongoose from 'mongoose';
 import connectDB from '@/lib/mongodb';
 import Track from '@/models/Track';
+import Course from '@/models/Course';
 import Exam from '@/models/Exam';
 import { authenticateRequest } from '@/lib/auth';
 
@@ -24,10 +25,13 @@ export async function GET(
         }
 
         const exams = await Exam.find({ trackId: params.id });
+        const courses = await Course.find({ track: track._id, isActive: true })
+            .populate('instructor', 'name');
 
         return NextResponse.json({
             ...track.toObject(),
-            exams
+            exams,
+            associatedCourses: courses
         }, { status: 200 });
     } catch (error: unknown) {
         console.error('Fetch track error:', error);

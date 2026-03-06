@@ -15,7 +15,13 @@ export default function InstructorDashboardLayout({
     const router = useRouter();
     const { lang } = useLanguage();
 
-    if (isLoading) return null;
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
+            </div>
+        );
+    }
 
     if (!user || (user.role !== 'instructor' && user.role !== 'admin')) {
         router.push('/login');
@@ -23,7 +29,7 @@ export default function InstructorDashboardLayout({
     }
 
     return (
-        <div className="min-h-screen bg-dark text-white">
+        <div className="min-h-screen bg-background text-foreground">
             <InstructorSidebar />
             <div className={`${lang === 'ar' ? 'md:mr-64' : 'md:ml-64'} min-h-screen p-4 md:p-8 transition-all`}>
                 <div className="max-w-7xl mx-auto pt-4">

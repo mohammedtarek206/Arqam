@@ -3,6 +3,7 @@
 import { useAuth } from '@/lib/AuthContext';
 import { useLanguage } from '@/lib/LanguageContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -25,7 +26,7 @@ export default function InstructorSidebar() {
     ];
 
     return (
-        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-72 bg-background/50 backdrop-blur-xl border-r border-border z-30 transition-all hidden md:flex flex-col`}>
+        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-72 bg-surface border-r border-border z-30 transition-all hidden md:flex flex-col shadow-sm`}>
             {/* Logo */}
             <div className="p-8 border-b border-border">
                 <Link href="/" className="flex items-center gap-3 group">
@@ -84,13 +85,13 @@ export default function InstructorSidebar() {
                 })}
             </nav>
 
-            <div className="p-4 border-t border-white/5 shrink-0">
-                <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-gray-500 hover:text-white hover:bg-white/5 transition-all uppercase tracking-widest mb-1">
+            <div className="p-4 border-t border-border shrink-0">
+                <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-foreground/40 hover:text-primary hover:bg-primary/5 transition-all uppercase tracking-widest mb-1">
                     View Site
                 </Link>
                 <button
                     onClick={logout}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest mt-1"
                 >
                     <FiLogOut className="text-base" /> Logout
                 </button>

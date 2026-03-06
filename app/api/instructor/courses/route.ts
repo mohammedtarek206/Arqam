@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Course from '@/models/Course';
+import Module from '@/models/Module';
+import Lesson from '@/models/Lesson';
 import { authenticateRequest } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -33,17 +35,45 @@ export async function POST(request: NextRequest) {
         }
 
         const data = await request.json();
+        const { modules, ...courseData } = data;
+
         await connectDB();
 
-        // Ensure instructor is the logged-in user
-        const courseData = {
-            ...data,
+        // Create Course
+        const course = new Course({
+            ...courseData,
             instructor: user.userId,
-            isActive: false // New courses from instructors start as inactive/pending
-        };
-
-        const course = new Course(courseData);
+            isActive: true // Auto-activate for now to show to students
+        });
         await course.save();
+
+        // Handle modules and lessons if provided
+        if (modules && Array.isArray(modules)) {
+            for (let i = 0; i < modules.length; i++) {
+                const modData = modules[i];
+                const module = new Module({
+                    title: modData.title,
+                    course: course._id,
+                    order: i
+                });
+                await module.save();
+
+                if (modData.lessons && Array.isArray(modData.lessons)) {
+                    for (let j = 0; j < modData.lessons.length; j++) {
+                        const lessonData = modData.lessons[j];
+                        const lesson = new Lesson({
+                            title: lessonData.title,
+                            module: module._id,
+                            type: lessonData.type,
+                            contentUrl: lessonData.contentUrl,
+                            examQuestions: lessonData.examQuestions,
+                            order: j
+                        });
+                        await lesson.save();
+                    }
+                }
+            }
+        }
 
         return NextResponse.json(
             { message: 'Course created successfully', course },
@@ -52,7 +82,7 @@ export async function POST(request: NextRequest) {
     } catch (error: any) {
         console.error('Instructor Courses API POST error:', error);
         return NextResponse.json(
-            { error: 'Failed to create course' },
+            { error: error.message || 'Failed to create course' },
             { status: 500 }
         );
     }

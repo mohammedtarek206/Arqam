@@ -39,32 +39,26 @@ export default function AdminDashboard() {
         students: 0, instructors: 0, courses: 0, revenue: 0,
         activeSubscriptions: 0, monthRevenue: 0
     });
+    const [charts, setCharts] = useState<any>(null);
+    const [topStudents, setTopStudents] = useState<any[]>([]);
+    const [recentActivity, setRecentActivity] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const headers = { 'Authorization': `Bearer ${token}` };
-
-                const [studentsRes, tracksRes] = await Promise.all([
-                    fetch('/api/admin/students', { headers }),
-                    fetch('/api/tracks'),
-                ]);
-
-                const [students, tracks] = await Promise.all([
-                    studentsRes.json(),
-                    tracksRes.json(),
-                ]);
-
-                setStats({
-                    students: Array.isArray(students) ? students.length : 0,
-                    instructors: 3, // placeholder
-                    courses: Array.isArray(tracks) ? tracks.length : 0,
-                    revenue: 12840,
-                    activeSubscriptions: 48,
-                    monthRevenue: 3240,
+                const res = await fetch('/api/admin/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
+                const data = await res.json();
+
+                if (data.stats) {
+                    setStats(data.stats);
+                    setCharts(data.charts);
+                    setTopStudents(data.topStudents);
+                    setRecentActivity(data.recentActivity);
+                }
             } catch (err) {
                 console.error('Failed to fetch stats:', err);
             } finally {
@@ -74,20 +68,7 @@ export default function AdminDashboard() {
         fetchStats();
     }, []);
 
-    const recentActivity = [
-        { name: 'Ahmed Mohamed', action: 'enrolled in', item: 'Full Stack Web Dev', time: '2m ago', status: 'success' },
-        { name: 'Sara Ahmed', action: 'completed exam in', item: 'UI/UX Fundamentals', time: '15m ago', status: 'success' },
-        { name: 'Omar Hassan', action: 'subscribed to', item: 'Pro Plan', time: '1h ago', status: 'info' },
-        { name: 'Layla Mostafa', action: 'registered as', item: 'New Student', time: '2h ago', status: 'info' },
-        { name: 'Kareem Samir', action: 'requested refund for', item: 'Machine Learning', time: '3h ago', status: 'warning' },
-    ];
 
-    const topCourses = [
-        { name: 'Full Stack Web Dev', students: 142, revenue: '$6,958', rating: 4.9 },
-        { name: 'Machine Learning with Python', students: 98, revenue: '$7,742', rating: 4.8 },
-        { name: 'Advanced Ethical Hacking', students: 76, revenue: '$7,524', rating: 4.7 },
-        { name: 'Flutter Mobile Dev', students: 64, revenue: '$3,776', rating: 4.6 },
-    ];
 
     const quickLinks = [
         { label: 'Add New Course', href: '/admin/courses-control', icon: FiBook, color: 'text-primary border-primary/20 bg-primary/5 hover:bg-primary/10' },
@@ -159,7 +140,9 @@ export default function AdminDashboard() {
                                         {item.action} <span className="text-foreground/80">{item.item}</span>
                                     </p>
                                 </div>
-                                <span className="text-[10px] text-foreground/30 font-black uppercase tracking-widest whitespace-nowrap">{item.time}</span>
+                                <span className="text-[10px] text-foreground/30 font-black uppercase tracking-widest whitespace-nowrap">
+                                    {new Date(item.time).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                </span>
                             </div>
                         ))}
                     </div>
@@ -179,21 +162,18 @@ export default function AdminDashboard() {
                         </Link>
                     </div>
                     <div className="divide-y divide-border">
-                        {topCourses.map((course, i) => (
+                        {topStudents.map((student, i) => (
                             <div key={i} className="flex items-center gap-4 p-5 hover:bg-foreground/[0.02] transition-colors">
                                 <div className="w-10 h-10 rounded-2xl bg-background border border-border flex items-center justify-center font-black text-foreground/20 text-xs shrink-0 shadow-sm">
                                     #{i + 1}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-foreground font-black uppercase tracking-tighter truncate">{course.name}</p>
+                                    <p className="text-sm text-foreground font-black uppercase tracking-tighter truncate">{student.name}</p>
                                     <div className="flex items-center gap-3 mt-1">
-                                        <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">{course.students} students</span>
-                                        <span className="flex items-center gap-1 text-[10px] text-yellow-600 font-bold bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">
-                                            <FiStar className="fill-current text-[8px]" /> {course.rating}
-                                        </span>
+                                        <span className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">{student.courses} courses</span>
                                     </div>
                                 </div>
-                                <span className="text-md font-black text-green-600 bg-green-500/10 px-3 py-1.5 rounded-2xl border border-green-500/20 whitespace-nowrap">{course.revenue}</span>
+                                <span className="text-md font-black text-primary bg-primary/10 px-3 py-1.5 rounded-2xl border border-primary/20 whitespace-nowrap">{student.points} PTS</span>
                             </div>
                         ))}
                     </div>

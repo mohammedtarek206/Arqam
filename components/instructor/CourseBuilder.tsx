@@ -15,6 +15,7 @@ interface Lesson {
     type: 'video' | 'pdf' | 'exam';
     file?: File | null;
     fileName?: string;
+    videoUrl?: string; // New field for YouTube
     examQuestions?: number;
 }
 
@@ -63,8 +64,21 @@ function LessonRow({
                     className="flex-1 bg-transparent border-none text-sm font-bold text-white focus:outline-none min-w-0"
                     placeholder="Lesson title..."
                 />
-                {/* File upload for video/pdf */}
-                {lesson.type !== 'exam' && (
+                {/* YouTube Link for Video */}
+                {lesson.type === 'video' && (
+                    <div className="flex-1 flex items-center gap-2">
+                        <FiVideo className="text-blue-400 shrink-0" />
+                        <input
+                            value={lesson.videoUrl || ''}
+                            onChange={e => onUpdate(moduleId, lesson.id, { videoUrl: e.target.value })}
+                            className="flex-1 bg-black/30 border border-white/10 rounded-lg px-3 py-1.5 text-[10px] font-bold text-white focus:outline-none focus:border-primary/50"
+                            placeholder="Enter YouTube URL..."
+                        />
+                    </div>
+                )}
+
+                {/* File upload for pdf only */}
+                {lesson.type === 'pdf' && (
                     <>
                         <input
                             ref={fileRef}
@@ -78,7 +92,7 @@ function LessonRow({
                             className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${lesson.fileName ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-white/5 text-gray-500 hover:text-white border border-white/10'}`}
                         >
                             <FiUpload className="text-xs" />
-                            {lesson.fileName ? lesson.fileName.slice(0, 14) + '…' : 'Upload'}
+                            {lesson.fileName ? lesson.fileName.slice(0, 14) + '…' : 'Upload PDF'}
                         </button>
                     </>
                 )}
@@ -110,15 +124,68 @@ export default function CourseBuilder({ course, onCancel }: { course?: any; onCa
     const { t } = useLanguage();
     const [modules, setModules] = useState<Module[]>([]);
     const [saved, setSaved] = useState(false);
+    const [fetching, setFetching] = useState(false);
+    const [availableTracks, setAvailableTracks] = useState<any[]>([]);
     const [courseInfo, setCourseInfo] = useState({
         title: course?.title || '',
-        description: '',
-        track: course?.track || '',
-        level: 'Beginner',
+        description: course?.description || '',
+        track: typeof course?.track === 'object' ? course?.track?._id : (course?.track || ''),
+        level: course?.level || 'Beginner',
         thumbnail: null as File | null,
         thumbnailPreview: course?.thumbnail || '',
     });
     const thumbRef = useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+        fetchTracks();
+        if (course?._id) {
+            fetchCourseDetails();
+        }
+    }, [course?._id]);
+
+    const fetchCourseDetails = async () => {
+        setFetching(true);
+        try {
+            const res = await fetch(`/api/instructor/courses/${course._id}`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCourseInfo({
+                    title: data.title,
+                    description: data.description || '',
+                    track: data.track?._id || data.track,
+                    level: data.level || 'Beginner',
+                    thumbnail: null,
+                    thumbnailPreview: data.thumbnail || '',
+                });
+                if (data.modules) {
+                    setModules(data.modules.map((m: any) => ({
+                        id: m._id,
+                        title: m.title,
+                        isOpen: false,
+                        lessons: m.lessons || []
+                    })));
+                }
+            }
+        } catch (err) {
+            console.error('Fetch course details error:', err);
+        } finally {
+            setFetching(false);
+        }
+    };
+
+    const fetchTracks = async () => {
+        try {
+            const res = await fetch('/api/tracks');
+            if (res.ok) {
+                const data = await res.json();
+                setAvailableTracks(data);
+            }
+        } catch (err) {
+            console.error('Fetch tracks error:', err);
+        }
+    };
 
     const addModule = () => {
         setModules(prev => [...prev, {
@@ -173,13 +240,23 @@ export default function CourseBuilder({ course, onCancel }: { course?: any; onCa
             const method = course?._id ? 'PATCH' : 'POST';
             const url = course?._id ? `/api/instructor/courses/${course._id}` : '/api/instructor/courses';
 
+            if (!courseInfo.title || !courseInfo.track) {
+                alert('Please provide a title and select a track.');
+                return;
+            }
+
             const payload = {
-                ...courseInfo,
+                title: courseInfo.title,
+                description: courseInfo.description,
+                track: courseInfo.track,
+                level: courseInfo.level,
+                thumbnail: courseInfo.thumbnailPreview,
                 modules: modules.map(m => ({
                     title: m.title,
                     lessons: m.lessons.map(l => ({
                         title: l.title,
                         type: l.type,
+                        contentUrl: l.type === 'video' ? l.videoUrl : l.fileName,
                         examQuestions: l.examQuestions
                     }))
                 }))
@@ -212,8 +289,16 @@ export default function CourseBuilder({ course, onCancel }: { course?: any; onCa
 
     const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
 
+    if (fetching) {
+        return (
+            <div className="h-[60vh] flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 pb-24">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <button onClick={onCancel} className="flex items-center gap-2 text-gray-500 hover:text-white font-bold transition-colors">
@@ -364,8 +449,8 @@ export default function CourseBuilder({ course, onCancel }: { course?: any; onCa
                                     className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                                 >
                                     <option value="" className="bg-dark">Select track</option>
-                                    {['Web Development', 'Design', 'Cyber Security', 'Mobile Dev', 'AI & Data'].map(t => (
-                                        <option key={t} value={t} className="bg-dark">{t}</option>
+                                    {availableTracks.map(t => (
+                                        <option key={t._id} value={t._id} className="bg-dark">{t.title}</option>
                                     ))}
                                 </select>
                             </div>
