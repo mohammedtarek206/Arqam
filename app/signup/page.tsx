@@ -93,7 +93,7 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-dark px-4 py-20 relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 py-20 relative overflow-hidden">
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] -z-10" />
@@ -123,39 +123,39 @@ export default function SignUpPage() {
                             exit={{ opacity: 0, x: -20 }}
                             className="text-center"
                         >
-                            <h2 className="text-3xl font-black text-white mb-4 uppercase tracking-tight">{t('role_selection')}</h2>
-                            <p className="text-gray-500 mb-10">{t('hero_desc')}</p>
+                            <h2 className="text-3xl font-black text-foreground mb-4 uppercase tracking-tight">{t('role_selection')}</h2>
+                            <p className="text-foreground/40 mb-10">{t('hero_desc')}</p>
 
                             <div className="grid sm:grid-cols-2 gap-6">
                                 <button
                                     onClick={() => setRole('student')}
-                                    className={`p-8 rounded-[2rem] border-2 transition-all group ${role === 'student' ? 'border-primary bg-primary/10 ring-4 ring-primary/20' : 'border-white/5 bg-white/5 hover:border-white/20'
+                                    className={`p-8 rounded-[2rem] border-2 transition-all group ${role === 'student' ? 'border-primary bg-primary/10 ring-4 ring-primary/20' : 'border-border bg-surface hover:border-primary/20'
                                         }`}
                                 >
                                     <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                                         <FiUser className="text-primary w-8 h-8" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">{t('role_student')}</h3>
-                                    <p className="text-xs text-gray-500">{t('hero_desc').split('.')[0]}</p>
+                                    <h3 className="text-xl font-bold text-foreground mb-2">{t('role_student')}</h3>
+                                    <p className="text-xs text-foreground/40">{t('hero_desc').split('.')[0]}</p>
                                 </button>
 
                                 <button
                                     onClick={() => setRole('instructor')}
-                                    className={`p-8 rounded-[2rem] border-2 transition-all group ${role === 'instructor' ? 'border-accent bg-accent/10 ring-4 ring-accent/20' : 'border-white/5 bg-white/5 hover:border-white/20'
+                                    className={`p-8 rounded-[2rem] border-2 transition-all group ${role === 'instructor' ? 'border-accent bg-accent/10 ring-4 ring-accent/20' : 'border-border bg-surface hover:border-accent/20'
                                         }`}
                                 >
                                     <div className="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                                         <FiBriefcase className="text-accent w-8 h-8" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">{t('role_instructor')}</h3>
-                                    <p className="text-xs text-gray-500">Share your expertise and grow</p>
+                                    <h3 className="text-xl font-bold text-foreground mb-2">{t('role_instructor')}</h3>
+                                    <p className="text-xs text-foreground/40">Share your expertise and grow</p>
                                 </button>
                             </div>
 
                             <div className="mt-12">
                                 <button
                                     onClick={handleNext}
-                                    className="px-12 py-4 bg-white text-dark font-black rounded-2xl flex items-center gap-3 mx-auto hover:bg-primary hover:text-white transition-all"
+                                    className="px-12 py-4 bg-primary text-white font-black rounded-2xl flex items-center gap-3 mx-auto hover:shadow-lg transition-all"
                                 >
                                     {t('start_journey')} <FiArrowRight />
                                 </button>
@@ -170,19 +170,19 @@ export default function SignUpPage() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                         >
-                            <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">{t('full_name')}</h2>
-                            <p className="text-gray-500 mb-8">Basic details for your account</p>
+                            <h2 className="text-3xl font-black text-foreground mb-2 uppercase tracking-tight">{t('full_name')}</h2>
+                            <p className="text-foreground/40 mb-8">Basic details for your account</p>
 
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t('full_name')}</label>
                                     <div className="relative">
-                                        <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                                        <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                                         <input
                                             name="name"
                                             value={formData.name}
                                             onChange={handleInputChange}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-primary/50 transition-all"
+                                            className="w-full bg-surface border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground focus:outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
                                             placeholder="Ahmed Ali"
                                         />
                                     </div>
@@ -191,12 +191,12 @@ export default function SignUpPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-primary uppercase tracking-widest">{t('email_label')}</label>
                                     <div className="relative">
-                                        <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                                        <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                                         <input
                                             name="email"
                                             value={formData.email}
                                             onChange={handleInputChange}
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-primary/50 transition-all"
+                                            className="w-full bg-surface border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground focus:outline-none focus:border-primary/50 transition-all placeholder:text-foreground/20"
                                             placeholder="email@example.com"
                                         />
                                     </div>
@@ -222,11 +222,11 @@ export default function SignUpPage() {
                                         name="targetGoal"
                                         value={formData.targetGoal}
                                         onChange={handleInputChange}
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white focus:outline-none focus:border-primary/50 transition-all"
+                                        className="w-full bg-surface border border-border rounded-2xl py-4 px-4 text-foreground focus:outline-none focus:border-primary/50 transition-all"
                                     >
-                                        <option value="job">{t('goal_job')}</option>
-                                        <option value="freelance">{t('goal_freelance')}</option>
-                                        <option value="skill">{t('goal_skill')}</option>
+                                        <option value="job" className="bg-background text-foreground">{t('goal_job')}</option>
+                                        <option value="freelance" className="bg-background text-foreground">{t('goal_freelance')}</option>
+                                        <option value="skill" className="bg-background text-foreground">{t('goal_skill')}</option>
                                     </select>
                                 </div>
                             </div>

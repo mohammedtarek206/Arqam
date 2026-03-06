@@ -61,18 +61,18 @@ export default function PricingPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-dark pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
+        <div className="min-h-screen bg-background pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
             <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-primary/10 via-accent/5 to-transparent -z-10" />
 
             <div className="max-w-7xl mx-auto space-y-16">
                 <div className="text-center max-w-2xl mx-auto space-y-4">
-                    <span className="px-4 py-2 bg-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-primary border border-white/10 backdrop-blur-md">
+                    <span className="px-4 py-2 bg-surface rounded-full text-[10px] font-black uppercase tracking-widest text-primary border border-border backdrop-blur-md">
                         Simple Pricing
                     </span>
-                    <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none mt-4">
+                    <h1 className="text-4xl md:text-6xl font-black text-foreground uppercase tracking-tighter leading-none mt-4">
                         Invest in your <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">future</span>
                     </h1>
-                    <p className="text-gray-400 font-bold max-w-xl mx-auto mt-4">
+                    <p className="text-foreground/60 font-bold max-w-xl mx-auto mt-4">
                         Choose the plan that fits your learning goals. No hidden fees, cancel anytime.
                     </p>
                 </div>
@@ -84,7 +84,7 @@ export default function PricingPage() {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className={`relative glass rounded-[3rem] p-8 md:p-10 border transition-all ${plan.popular ? 'border-primary/50 scale-105 shadow-[0_0_40px_rgba(var(--primary),0.2)] z-10' : 'border-white/10 hover:border-white/30'
+                            className={`relative glass rounded-[3rem] p-8 md:p-10 border transition-all ${plan.popular ? 'border-primary/50 scale-105 shadow-[0_0_40px_rgba(var(--primary),0.2)] z-10' : 'border-border hover:border-primary/20'
                                 }`}
                         >
                             {plan.popular && (
@@ -94,11 +94,11 @@ export default function PricingPage() {
                             )}
 
                             <div className="mb-8">
-                                <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">{plan.name}</h3>
-                                <p className="text-xs font-bold text-gray-400 mb-6 h-10">{plan.description}</p>
+                                <h3 className="text-xl font-black text-foreground uppercase tracking-tight mb-2">{plan.name}</h3>
+                                <p className="text-xs font-bold text-foreground/40 mb-6 h-10">{plan.description}</p>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl font-black text-white">{plan.price}</span>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">/{plan.period}</span>
+                                    <span className="text-5xl font-black text-foreground">{plan.price}</span>
+                                    <span className="text-xs font-bold text-foreground/40 uppercase tracking-widest">/{plan.period}</span>
                                 </div>
                             </div>
 
@@ -108,7 +108,7 @@ export default function PricingPage() {
                                         <div className={`mt-0.5 shrink-0 ${feature.included ? 'text-primary' : 'text-gray-600'}`}>
                                             {feature.included ? <FiCheck strokeWidth={3} /> : <FiX strokeWidth={3} />}
                                         </div>
-                                        <span className={`text-sm font-bold ${feature.included ? 'text-gray-300' : 'text-gray-600'}`}>
+                                        <span className={`text-sm font-bold ${feature.included ? 'text-foreground/80' : 'text-foreground/30'}`}>
                                             {feature.name}
                                         </span>
                                     </div>
@@ -118,8 +118,8 @@ export default function PricingPage() {
                             <Link
                                 href={plan.price === '$0' ? '/signup' : '/payment'}
                                 className={`w-full py-4 text-white font-black text-xs uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 transition-all block text-center ${plan.popular
-                                        ? 'bg-gradient-to-r from-primary to-accent shadow-xl shadow-primary/20 hover:opacity-90'
-                                        : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                                    ? 'bg-gradient-to-r from-primary to-accent shadow-xl shadow-primary/20 hover:opacity-90'
+                                    : 'bg-surface border border-border hover:bg-foreground/5'
                                     }`}
                             >
                                 {plan.buttonText} {plan.popular && <FiZap className="fill-current" />}
@@ -128,10 +128,10 @@ export default function PricingPage() {
                     ))}
                 </div>
 
-                <div className="text-center mt-20 pt-10 border-t border-white/5">
-                    <h3 className="text-2xl font-black text-white uppercase mb-2">Need a custom plan for your school or team?</h3>
-                    <p className="text-gray-400 font-bold mb-6">Contact our sales team for tailored packages and volume discounts.</p>
-                    <Link href="/contact" className="inline-block px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-black uppercase tracking-widest text-xs transition-colors">
+                <div className="text-center mt-20 pt-10 border-t border-border">
+                    <h3 className="text-2xl font-black text-foreground uppercase mb-2">Need a custom plan for your school or team?</h3>
+                    <p className="text-foreground/60 font-bold mb-6">Contact our sales team for tailored packages and volume discounts.</p>
+                    <Link href="/contact" className="inline-block px-8 py-3 bg-surface hover:bg-foreground/5 border border-border rounded-xl text-foreground font-black uppercase tracking-widest text-xs transition-colors">
                         Contact Sales
                     </Link>
                 </div>

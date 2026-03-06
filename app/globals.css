@@ -5,12 +5,24 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #0A0E27;
+  --foreground: #001a4d;
+  --primary: #0066ff;
+  --primary-dark: #0044cc;
+  --accent: #0052cc;
+  --surface: #f0f7ff;
+  --border: #e6f0ff;
+  --card: #ffffff;
 }
 
 .dark {
-  --background: #0A0E27;
+  --background: #0a0e27;
   --foreground: #ffffff;
+  --primary: #0066ff;
+  --primary-dark: #0044cc;
+  --accent: #00ff88;
+  --surface: #1a1f3a;
+  --border: rgba(255, 255, 255, 0.1);
+  --card: rgba(255, 255, 255, 0.05);
 }
 
 * {
@@ -50,12 +62,12 @@ html[dir="rtl"] body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #0066FF, #00FF88);
+  background: var(--primary);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #0044CC, #00CC6E);
+  background: var(--primary-dark);
 }
 
 /* Animations */
@@ -63,9 +75,11 @@ html[dir="rtl"] body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -78,19 +92,19 @@ html[dir="rtl"] body {
 
 /* Glass morphism effect */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--card);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border);
 }
 
 .dark .glass {
-  background: rgba(10, 14, 39, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 /* Cyber grid background */
 .cyber-grid {
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 102, 255, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 102, 255, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -101,6 +115,7 @@ html[dir="rtl"] body {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }

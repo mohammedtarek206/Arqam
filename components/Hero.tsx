@@ -9,9 +9,9 @@ export default function Hero() {
   const { t, lang } = useLanguage();
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-dark via-dark-light to-dark pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-20">
       {/* Animated Background */}
-      <div className="absolute inset-0 cyber-grid opacity-20"></div>
+      <div className="absolute inset-0 cyber-grid opacity-5"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-accent/20 animate-gradient"></div>
 
       {/* Content */}
@@ -31,7 +31,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-300 mb-8"
+              className="text-xl md:text-2xl text-foreground/80 mb-8"
             >
               {t('hero_subtitle')}
             </motion.p>
@@ -40,7 +40,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-gray-400 mb-12 max-w-2xl mx-auto lg:mx-0"
+              className="text-foreground/60 mb-12 max-w-2xl mx-auto lg:mx-0"
             >
               {t('hero_desc')}
             </motion.p>
@@ -103,11 +103,11 @@ export default function Hero() {
           ].map((item, index) => (
             <div
               key={index}
-              className="glass rounded-2xl p-6 hover:scale-105 transition-transform border border-white/5"
+              className="glass rounded-2xl p-6 hover:scale-105 transition-transform border border-border/10"
             >
-              <item.icon className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-center">{item.title}</h3>
-              <p className="text-gray-400 text-center">{item.desc}</p>
+              <item.icon className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="text-xl font-bold mb-2 text-center text-foreground">{item.title}</h3>
+              <p className="text-foreground/60 text-center">{item.desc}</p>
             </div>
           ))}
         </motion.div>

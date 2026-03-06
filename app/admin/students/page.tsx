@@ -77,23 +77,23 @@ export default function StudentsManagementPage() {
     };
 
     const getStatusStyle = (status: string) => {
-        if (status === 'active') return 'bg-green-400/10 text-green-400 border-green-400/20';
-        if (status === 'banned') return 'bg-red-400/10 text-red-400 border-red-400/20';
-        return 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20';
+        if (status === 'active') return 'bg-green-500/10 text-green-500 border-green-500/20';
+        if (status === 'banned') return 'bg-red-500/10 text-red-500 border-red-500/20';
+        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
     };
 
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-white uppercase tracking-tighter">Students Management</h1>
-                    <p className="text-gray-400 font-medium text-sm mt-1">View, search, and manage all registered students.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Students Management</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">View, search, and manage all registered students.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className="text-xs font-black text-gray-500 uppercase tracking-widest bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
-                        Total: <span className="text-white">{students.length}</span>
+                    <span className="text-xs font-black text-foreground/40 uppercase tracking-widest bg-surface border border-border px-4 py-2 rounded-xl">
+                        Total: <span className="text-primary">{students.length}</span>
                     </span>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-black text-gray-400 hover:text-white transition-colors uppercase tracking-widest">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-primary transition-colors uppercase tracking-widest">
                         <FiDownload /> Export
                     </button>
                 </div>
@@ -102,13 +102,13 @@ export default function StudentsManagementPage() {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
-                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                     <input
                         type="text"
                         placeholder="Search by name or email..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                        className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-foreground/20 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                     />
                 </div>
                 <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export default function StudentsManagementPage() {
                         <button
                             key={s}
                             onClick={() => setStatusFilter(s)}
-                            className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}
+                            className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-surface border-border text-foreground/40 hover:text-primary'}`}
                         >
                             {s}
                         </button>
@@ -132,13 +132,13 @@ export default function StudentsManagementPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-white/5">
-                                    <th className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Student</th>
-                                    <th className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest hidden md:table-cell">Email</th>
-                                    <th className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest hidden lg:table-cell">Joined</th>
-                                    <th className="p-4 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest hidden lg:table-cell">Points</th>
-                                    <th className="p-4 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</th>
-                                    <th className="p-4 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest">Actions</th>
+                                <tr className="border-b border-border">
+                                    <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Student</th>
+                                    <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest hidden md:table-cell">Email</th>
+                                    <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest hidden lg:table-cell">Joined</th>
+                                    <th className="p-4 text-center text-[10px] font-black text-foreground/40 uppercase tracking-widest hidden lg:table-cell">Points</th>
+                                    <th className="p-4 text-center text-[10px] font-black text-foreground/40 uppercase tracking-widest">Status</th>
+                                    <th className="p-4 text-center text-[10px] font-black text-foreground/40 uppercase tracking-widest">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5">
@@ -157,16 +157,16 @@ export default function StudentsManagementPage() {
                                                 <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black text-sm uppercase shrink-0">
                                                     {student.name?.charAt(0) || 'S'}
                                                 </div>
-                                                <span className="text-white font-bold text-sm">{student.name}</span>
+                                                <span className="text-foreground font-bold text-sm">{student.name}</span>
                                             </div>
                                         </td>
-                                        <td className="p-4 text-gray-400 text-sm font-medium hidden md:table-cell">{student.email}</td>
-                                        <td className="p-4 text-gray-500 text-xs font-bold hidden lg:table-cell">
+                                        <td className="p-4 text-foreground/60 text-sm font-medium hidden md:table-cell">{student.email}</td>
+                                        <td className="p-4 text-foreground/40 text-xs font-bold hidden lg:table-cell">
                                             {new Date(student.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </td>
                                         <td className="p-4 text-center hidden lg:table-cell">
-                                            <span className="text-white font-black text-sm">{student.points || 0}</span>
-                                            <span className="text-gray-600 text-xs ml-1">pts</span>
+                                            <span className="text-foreground font-black text-sm">{student.points || 0}</span>
+                                            <span className="text-foreground/20 text-xs ml-1">pts</span>
                                         </td>
                                         <td className="p-4 text-center">
                                             <span className={`text-[10px] font-black uppercase tracking-widest border px-3 py-1 rounded-lg ${getStatusStyle(student.status)}`}>
@@ -184,7 +184,7 @@ export default function StudentsManagementPage() {
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(student._id)}
-                                                    className="p-2 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                                                    className="p-2 rounded-lg text-foreground/20 hover:text-red-500 hover:bg-red-500/10 transition-colors"
                                                 >
                                                     <FiTrash2 className="text-sm" />
                                                 </button>

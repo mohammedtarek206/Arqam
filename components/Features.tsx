@@ -43,7 +43,7 @@ export default function Features() {
   ];
 
   return (
-    <section id="features" className="py-24 bg-dark relative" ref={ref}>
+    <section id="features" className="py-24 bg-background relative" ref={ref}>
       <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full translate-y-1/2 -z-10" />
 
       <div className="container mx-auto px-4">
@@ -53,11 +53,11 @@ export default function Features() {
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
             {t('tracks_title')}
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mb-8" />
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="text-foreground/60 max-w-2xl mx-auto text-lg">
             {t('tracks_subtitle')}
           </p>
         </motion.div>
@@ -71,16 +71,16 @@ export default function Features() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="group w-full md:w-[calc(33.333%-2rem)] min-w-[300px]"
             >
-              <div className="glass rounded-3xl p-8 h-full hover:scale-105 transition-all duration-500 cursor-pointer border border-white/5 hover:border-primary/20 relative overflow-hidden">
+              <div className="glass rounded-3xl p-8 h-full hover:scale-105 transition-all duration-500 cursor-pointer border border-border hover:border-primary/20 relative overflow-hidden">
                 <div className={`absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br ${feature.color} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`} />
 
                 <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 shadow-lg transition-transform`}>
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-primary transition-colors">
+                <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-primary transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 leading-relaxed font-medium">
+                <p className="text-foreground/60 leading-relaxed font-medium">
                   {feature.desc}
                 </p>
 

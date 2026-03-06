@@ -56,10 +56,10 @@ export default function StudentDashboardOverview() {
     return (
         <div className="space-y-12 max-w-7xl mx-auto">
             <header>
-                <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+                <h1 className="text-4xl font-black text-foreground uppercase tracking-tighter">
                     {t('welcome_back') || 'WELCOME BACK'}, <span className="text-primary">{user?.name?.split(' ')[0].toUpperCase() || 'STUDENT'}</span>
                 </h1>
-                <p className="text-gray-400 font-bold mt-1">Ready to continue your journey?</p>
+                <p className="text-foreground/60 font-bold mt-1">Ready to continue your journey?</p>
             </header>
 
             {/* Metrics Row */}
@@ -72,12 +72,12 @@ export default function StudentDashboardOverview() {
                         transition={{ delay: i * 0.1 }}
                         className="glass p-8 rounded-[2.5rem] border border-white/5 flex items-center gap-6 group hover:border-white/10 transition-all"
                     >
-                        <div className={`w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-3xl shrink-0 ${m.color} group-hover:scale-110 transition-transform`}>
+                        <div className={`w-16 h-16 rounded-2xl bg-foreground/5 flex items-center justify-center text-3xl shrink-0 ${m.color} group-hover:scale-110 transition-transform`}>
                             {m.icon}
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{m.title}</p>
-                            <h3 className="text-3xl font-black text-white">{m.value}</h3>
+                            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-1">{m.title}</p>
+                            <h3 className="text-3xl font-black text-foreground">{m.value}</h3>
                         </div>
                     </motion.div>
                 ))}
@@ -86,7 +86,7 @@ export default function StudentDashboardOverview() {
             {/* Enrolled Tracks */}
             {currentTracks.length > 0 && (
                 <div>
-                    <h2 className="text-2xl font-black text-white uppercase mb-6">{t('my_tracks') || 'MY TRACKS'}</h2>
+                    <h2 className="text-2xl font-black text-foreground uppercase mb-6">{t('my_tracks') || 'MY TRACKS'}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {currentTracks.map((track: any, i: number) => (
                             <motion.div
@@ -101,13 +101,13 @@ export default function StudentDashboardOverview() {
                                         {track.icon || <FiActivity />}
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-black uppercase text-sm">{track.title}</h3>
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{track.level} • {track.duration}</p>
+                                        <h3 className="text-foreground font-black uppercase text-sm">{track.title}</h3>
+                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">{track.level} • {track.duration}</p>
                                     </div>
                                 </div>
                                 <Link
                                     href={`/tracks/${track._id}`}
-                                    className="w-full py-3 bg-white/5 hover:bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10"
+                                    className="w-full py-3 bg-foreground/5 hover:bg-primary text-foreground hover:text-white font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-border"
                                 >
                                     Continue Track <FiArrowRight />
                                 </Link>
@@ -120,14 +120,14 @@ export default function StudentDashboardOverview() {
             {/* Continue Learning */}
             <div>
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-black text-white uppercase">{t('my_courses')}</h2>
+                    <h2 className="text-2xl font-black text-foreground uppercase">{t('my_courses')}</h2>
                     <Link href="/courses" className="text-xs font-black text-primary hover:text-primary/80 uppercase tracking-widest flex items-center gap-1">
                         Discover More <FiArrowRight className="rtl:rotate-180" />
                     </Link>
                 </div>
                 {currentCourses.length === 0 ? (
-                    <div className="glass p-12 rounded-[2.5rem] border border-white/5 text-center">
-                        <p className="text-gray-500 font-bold mb-6">You haven't enrolled in any courses yet.</p>
+                    <div className="glass p-12 rounded-[2.5rem] border border-border text-center">
+                        <p className="text-foreground/40 font-bold mb-6">You haven't enrolled in any courses yet.</p>
                         <Link href="/courses" className="px-8 py-4 bg-primary text-white font-black rounded-2xl uppercase text-xs tracking-widest hover:bg-primary/80 transition-all">
                             Browse Courses
                         </Link>
@@ -153,19 +153,19 @@ export default function StudentDashboardOverview() {
 
                                 <div className="p-6 flex-1 flex flex-col justify-between">
                                     <div>
-                                        <h3 className="text-lg font-black text-white group-hover:text-primary transition-colors leading-tight mb-1">
+                                        <h3 className="text-lg font-black text-foreground group-hover:text-primary transition-colors leading-tight mb-1">
                                             {course.title}
                                         </h3>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">By {course.instructor?.name || 'Instructor'}</p>
+                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">By {course.instructor?.name || 'Instructor'}</p>
                                     </div>
 
                                     <div className="space-y-4 mt-6">
                                         <div>
-                                            <div className="flex justify-between text-[10px] font-black uppercase text-gray-400 mb-2">
+                                            <div className="flex justify-between text-[10px] font-black uppercase text-foreground/40 mb-2">
                                                 <span>Progress</span>
-                                                <span className="text-white">0%</span>
+                                                <span className="text-foreground">0%</span>
                                             </div>
-                                            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                            <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden">
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `0%` }}
@@ -176,7 +176,7 @@ export default function StudentDashboardOverview() {
 
                                         <Link
                                             href={`/learn/${course._id || course.id}`}
-                                            className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl flex items-center justify-center gap-2 text-xs font-black text-white uppercase transition-all group-hover:bg-primary group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/20"
+                                            className="w-full py-4 bg-foreground/5 hover:bg-primary border border-border rounded-xl flex items-center justify-center gap-2 text-xs font-black text-foreground hover:text-white uppercase transition-all group-hover:shadow-lg group-hover:shadow-primary/20"
                                         >
                                             <FiPlayCircle className="text-lg" /> Start Learning
                                         </Link>

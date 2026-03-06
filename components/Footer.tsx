@@ -4,7 +4,7 @@ import { FiMail, FiPhone, FiMapPin, FiGithub, FiTwitter, FiLinkedin } from 'reac
 
 export default function Footer() {
   return (
-    <footer className="bg-dark-light border-t border-primary/20">
+    <footer className="bg-surface border-t border-border">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -18,37 +18,37 @@ export default function Footer() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-white">أكاديمية أرقام</span>
+              <span className="text-xl font-bold text-foreground">أكاديمية أرقام</span>
             </div>
-            <p className="text-gray-400 text-sm">
+            <p className="text-foreground/60 text-sm">
               Empowering the next generation of tech leaders through world-class education.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-gray-400 text-sm">
-              <li><Link href="/" className="hover:text-accent transition-colors">Home</Link></li>
-              <li><Link href="/tracks" className="hover:text-accent transition-colors">Tracks</Link></li>
-              <li><Link href="/team" className="hover:text-accent transition-colors">Team</Link></li>
-              <li><Link href="/projects" className="hover:text-accent transition-colors">Projects</Link></li>
+            <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
+            <ul className="space-y-2 text-foreground/60 text-sm">
+              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+              <li><Link href="/tracks" className="hover:text-primary transition-colors">Tracks</Link></li>
+              <li><Link href="/team" className="hover:text-primary transition-colors">Team</Link></li>
+              <li><Link href="/projects" className="hover:text-primary transition-colors">Projects</Link></li>
             </ul>
           </div>
 
           {/* Resources */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Resources</h3>
-            <ul className="space-y-2 text-gray-400 text-sm">
-              <li><Link href="/partners" className="hover:text-accent transition-colors">Partners</Link></li>
-              <li><Link href="/media" className="hover:text-accent transition-colors">Gallery</Link></li>
-              <li><Link href="/contact" className="hover:text-accent transition-colors">Contact</Link></li>
+            <h3 className="font-semibold text-foreground mb-4">Resources</h3>
+            <ul className="space-y-2 text-foreground/60 text-sm">
+              <li><Link href="/partners" className="hover:text-primary transition-colors">Partners</Link></li>
+              <li><Link href="/media" className="hover:text-primary transition-colors">Gallery</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Contact</h3>
+            <h3 className="font-semibold text-foreground mb-4">Contact</h3>
             <ul className="space-y-3 text-gray-400 text-sm">
               <li className="flex items-center">
                 <FiMail className="mr-2 text-accent" />

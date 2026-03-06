@@ -11,24 +11,22 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#0066FF',
-          dark: '#0044CC',
-          light: '#3385FF',
+          DEFAULT: 'var(--primary)',
+          dark: 'var(--primary-dark)',
+          light: '#3385ff',
         },
         accent: {
-          DEFAULT: '#00FF88',
-          dark: '#00CC6E',
-          light: '#33FFAA',
-        },
-        cyber: {
-          DEFAULT: '#8B5CF6',
-          dark: '#6D28D9',
-          light: '#A78BFA',
+          DEFAULT: 'var(--accent)',
+          dark: '#00cc6e',
+          light: '#33ffaa',
         },
         dark: {
-          DEFAULT: '#0A0E27',
-          light: '#1A1F3A',
+          DEFAULT: 'var(--background)',
+          light: 'var(--surface)',
         },
+        surface: 'var(--surface)',
+        card: 'var(--card)',
+        border: 'var(--border)',
       },
       fontFamily: {
         arabic: ['Cairo', 'sans-serif'],

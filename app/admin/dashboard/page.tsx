@@ -15,7 +15,7 @@ const StatCard = ({ title, value, icon: Icon, color, bg, change, delay = 0 }: an
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay }}
-        className="glass rounded-2xl p-6 border border-white/5 relative overflow-hidden group hover:border-primary/20 transition-all"
+        className="glass rounded-2xl p-6 border border-border relative overflow-hidden group hover:border-primary/20 transition-all"
     >
         <div className={`absolute top-0 right-0 w-24 h-24 ${bg} rounded-bl-[4rem] opacity-20 group-hover:opacity-30 transition-opacity`} />
         <div className="flex items-start justify-between mb-4">
@@ -23,14 +23,14 @@ const StatCard = ({ title, value, icon: Icon, color, bg, change, delay = 0 }: an
                 <Icon />
             </div>
             {change !== undefined && (
-                <span className={`text-xs font-black flex items-center gap-1 px-2 py-1 rounded-lg ${change >= 0 ? 'text-green-400 bg-green-400/10' : 'text-red-400 bg-red-400/10'}`}>
+                <span className={`text-xs font-black flex items-center gap-1 px-2 py-1 rounded-lg ${change >= 0 ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}`}>
                     {change >= 0 ? <FiArrowUpRight /> : <FiArrowDownRight />}
                     {Math.abs(change)}%
                 </span>
             )}
         </div>
-        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
-        <h3 className="text-3xl font-black text-white">{value}</h3>
+        <p className="text-foreground/40 text-xs font-bold uppercase tracking-widest mb-1">{title}</p>
+        <h3 className="text-3xl font-black text-foreground">{value}</h3>
     </motion.div>
 );
 
@@ -101,10 +101,10 @@ export default function AdminDashboard() {
             {/* Page Header */}
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-white uppercase tracking-tighter">Dashboard Overview</h1>
-                    <p className="text-gray-400 font-medium text-sm mt-1">Welcome back, Admin. Here's what's happening today.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Dashboard Overview</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Welcome back, Admin. Here's what's happening today.</p>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-500 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                <div className="flex items-center gap-2 text-xs font-bold text-foreground/40 bg-surface border border-border px-4 py-2 rounded-xl">
                     <FiClock className="text-sm" />
                     Last updated: {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                 </div>
@@ -141,24 +141,24 @@ export default function AdminDashboard() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="glass rounded-2xl border border-white/5 overflow-hidden"
+                    className="glass rounded-2xl border border-border overflow-hidden"
                 >
-                    <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                        <h3 className="text-lg font-black text-white uppercase tracking-tighter">Recent Activity</h3>
+                    <div className="p-6 border-b border-border flex items-center justify-between">
+                        <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Recent Activity</h3>
                         <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-lg">Live</span>
                     </div>
-                    <div className="divide-y divide-white/5">
+                    <div className="divide-y divide-border">
                         {recentActivity.map((item, i) => (
-                            <div key={i} className="flex items-center gap-4 p-4 hover:bg-white/3 transition-colors">
-                                <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center text-xs font-black ${item.status === 'success' ? 'bg-green-400/10 text-green-400' : item.status === 'warning' ? 'bg-yellow-400/10 text-yellow-400' : 'bg-primary/10 text-primary'}`}>
+                            <div key={i} className="flex items-center gap-4 p-4 hover:bg-foreground/5 transition-colors">
+                                <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center text-xs font-black ${item.status === 'success' ? 'bg-green-500/10 text-green-500' : item.status === 'warning' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-primary/10 text-primary'}`}>
                                     {item.status === 'success' ? <FiCheckCircle /> : item.status === 'warning' ? '!' : <FiActivity />}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-white font-bold truncate">
-                                        <span className="text-primary">{item.name}</span> {item.action} <span className="text-gray-300">{item.item}</span>
+                                    <p className="text-sm text-foreground font-bold truncate">
+                                        <span className="text-primary">{item.name}</span> {item.action} <span className="text-foreground/60">{item.item}</span>
                                     </p>
                                 </div>
-                                <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap">{item.time}</span>
+                                <span className="text-[10px] text-foreground/40 font-bold whitespace-nowrap">{item.time}</span>
                             </div>
                         ))}
                     </div>
@@ -169,30 +169,30 @@ export default function AdminDashboard() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="glass rounded-2xl border border-white/5 overflow-hidden"
+                    className="glass rounded-2xl border border-border overflow-hidden"
                 >
-                    <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                        <h3 className="text-lg font-black text-white uppercase tracking-tighter">Top Courses by Revenue</h3>
-                        <Link href="/admin/courses-control" className="text-[10px] font-black text-gray-500 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-1">
+                    <div className="p-6 border-b border-border flex items-center justify-between">
+                        <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Top Courses by Revenue</h3>
+                        <Link href="/admin/courses-control" className="text-[10px] font-black text-foreground/40 hover:text-primary uppercase tracking-widest transition-colors flex items-center gap-1">
                             View All <FiArrowRight />
                         </Link>
                     </div>
-                    <div className="divide-y divide-white/5">
+                    <div className="divide-y divide-border">
                         {topCourses.map((course, i) => (
-                            <div key={i} className="flex items-center gap-4 p-4 hover:bg-white/3 transition-colors">
-                                <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-gray-400 text-xs shrink-0">
+                            <div key={i} className="flex items-center gap-4 p-4 hover:bg-foreground/5 transition-colors">
+                                <div className="w-8 h-8 rounded-xl bg-surface border border-border flex items-center justify-center font-black text-foreground/40 text-xs shrink-0">
                                     #{i + 1}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-white font-bold truncate">{course.name}</p>
+                                    <p className="text-sm text-foreground font-bold truncate">{course.name}</p>
                                     <div className="flex items-center gap-3 mt-0.5">
-                                        <span className="text-[10px] text-gray-500 font-bold">{course.students} students</span>
-                                        <span className="flex items-center gap-1 text-[10px] text-yellow-400 font-bold">
+                                        <span className="text-[10px] text-foreground/40 font-bold">{course.students} students</span>
+                                        <span className="flex items-center gap-1 text-[10px] text-yellow-500 font-bold">
                                             <FiStar className="fill-current text-[8px]" /> {course.rating}
                                         </span>
                                     </div>
                                 </div>
-                                <span className="text-sm font-black text-green-400 whitespace-nowrap">{course.revenue}</span>
+                                <span className="text-sm font-black text-green-500 whitespace-nowrap">{course.revenue}</span>
                             </div>
                         ))}
                     </div>

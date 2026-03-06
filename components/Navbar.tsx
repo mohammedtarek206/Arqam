@@ -114,7 +114,7 @@ export default function Navbar() {
   if (!mounted) return null;
 
   return (
-    <nav ref={navRef} className="fixed top-0 w-full bg-dark/80 backdrop-blur-xl z-50 border-b border-white/5 transition-all duration-300">
+    <nav ref={navRef} className="fixed top-0 w-full bg-background/80 backdrop-blur-xl z-50 border-b border-border transition-all duration-300">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 gap-4">
 
@@ -142,7 +142,7 @@ export default function Navbar() {
                 {link.dropdown ? (
                   <button
                     onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
-                    className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1 transition-all ${activeDropdown === link.label ? 'bg-primary/10 text-primary' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1 transition-all ${activeDropdown === link.label ? 'bg-primary/10 text-primary' : 'text-foreground/60 hover:text-foreground hover:bg-foreground/5'
                       }`}
                   >
                     {link.label}
@@ -151,7 +151,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={link.href}
-                    className="px-4 py-2 rounded-xl text-sm font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-all block"
+                    className="px-4 py-2 rounded-xl text-sm font-bold text-foreground/60 hover:text-foreground hover:bg-foreground/5 transition-all block"
                   >
                     {link.label}
                   </Link>
@@ -164,14 +164,14 @@ export default function Navbar() {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full mt-2 w-56 glass border border-white/10 rounded-2xl shadow-2xl p-2 left-0 rtl:left-auto rtl:right-0"
+                      className="absolute top-full mt-2 w-56 glass border border-border rounded-2xl shadow-2xl p-2 left-0 rtl:left-auto rtl:right-0"
                     >
                       {link.dropdown.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="block px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:bg-primary/20 hover:text-primary transition-all"
+                          className="block px-4 py-3 rounded-xl text-sm font-medium text-foreground/80 hover:bg-primary/20 hover:text-primary transition-all"
                         >
                           {item.label}
                         </Link>

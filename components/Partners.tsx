@@ -35,14 +35,14 @@ export default function Partners() {
     ];
 
     return (
-        <section className="py-24 bg-dark-light/30 border-y border-white/5">
+        <section className="py-24 bg-surface/30 border-y border-border">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-3xl font-bold mb-4 text-gray-400"
+                        className="text-3xl font-bold mb-4 text-foreground/60"
                     >
                         {t('partners_title')}
                     </motion.h2>
@@ -77,10 +77,10 @@ export default function Partners() {
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="flex items-center gap-3 group px-6 py-3 rounded-2xl hover:bg-white/5 hover:opacity-100 transition-all cursor-default border border-transparent hover:border-white/10"
+                                className="flex items-center gap-3 group px-6 py-3 rounded-2xl hover:bg-foreground/5 hover:opacity-100 transition-all cursor-default border border-transparent hover:border-border"
                             >
                                 <partner.icon className="w-8 h-8 text-primary group-hover:scale-125 transition-transform" />
-                                <span className="text-2xl font-black text-white/50 group-hover:text-white transition-colors tracking-tighter">
+                                <span className="text-2xl font-black text-foreground/40 group-hover:text-foreground transition-colors tracking-tighter">
                                     {partner.name}
                                 </span>
                             </motion.div>

@@ -97,23 +97,23 @@ export default function PublicCoursesPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+            <div className="min-h-screen bg-background pt-32 pb-20 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-dark pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
+        <div className="min-h-screen bg-background pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
             {/* Background Ambience */}
             <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-primary/10 to-transparent -z-10" />
 
             <div className="max-w-7xl mx-auto space-y-12">
                 <div className="text-center max-w-3xl mx-auto space-y-4">
-                    <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                    <h1 className="text-4xl md:text-6xl font-black text-foreground uppercase tracking-tighter leading-none">
                         Explore Library
                     </h1>
-                    <p className="text-gray-400 font-bold max-w-xl mx-auto">
+                    <p className="text-foreground/60 font-bold max-w-xl mx-auto">
                         Discover top-tier courses across multiple disciplines and master the skills you need.
                     </p>
                 </div>
@@ -130,7 +130,7 @@ export default function PublicCoursesPage() {
                         <button
                             key={f.id}
                             onClick={() => setFilter(f.id)}
-                            className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f.id ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
+                            className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f.id ? 'bg-primary text-white shadow-lg' : 'bg-surface text-foreground/40 hover:text-primary hover:bg-foreground/5'
                                 }`}
                         >
                             {f.name}
@@ -149,23 +149,23 @@ export default function PublicCoursesPage() {
                             >
                                 <div className="w-full h-48 relative overflow-hidden shrink-0">
                                     <img src={course.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800'} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                    <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-xl px-3 py-1.5 border border-white/20">
-                                        <span className="text-xs font-black text-white">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
+                                    <div className="absolute top-4 right-4 bg-primary/20 backdrop-blur-md rounded-xl px-3 py-1.5 border border-primary/20">
+                                        <span className="text-xs font-black text-primary">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
                                     </div>
-                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-dark to-transparent" />
+                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent" />
                                 </div>
 
                                 <div className="p-6 flex-1 flex flex-col justify-between relative z-10 -mt-6">
-                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-dark px-3 py-1 rounded w-max border border-white/5 mb-3">{course.track?.title || 'Professional'}</span>
+                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-surface px-3 py-1 rounded w-max border border-border mb-3">{course.track?.title || 'Professional'}</span>
 
                                     <div>
-                                        <h3 className="text-xl font-black text-white group-hover:text-primary transition-colors leading-tight mb-2">
+                                        <h3 className="text-xl font-black text-foreground group-hover:text-primary transition-colors leading-tight mb-2">
                                             {course.title}
                                         </h3>
-                                        <p className="text-xs font-bold text-gray-400">By {course.instructor?.name || 'Instructor'}</p>
+                                        <p className="text-xs font-bold text-foreground/40">By {course.instructor?.name || 'Instructor'}</p>
                                     </div>
 
-                                    <div className="flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase mt-6 pt-4 border-t border-white/5">
+                                    <div className="flex justify-between items-center text-[10px] font-bold text-foreground/40 uppercase mt-6 pt-4 border-t border-border">
                                         <span className="flex items-center gap-1.5"><FiBook /> {course.level || 'All Levels'}</span>
                                         <span className="flex items-center gap-1.5"><FiClock /> 40 Hours</span>
                                     </div>
@@ -179,7 +179,7 @@ export default function PublicCoursesPage() {
                                                 enrollCourse(e, course);
                                             }
                                         }}
-                                        className="mt-6 w-full py-3 bg-white/5 group-hover:bg-primary group-hover:text-white text-white font-black text-xs uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-white/10"
+                                        className="mt-6 w-full py-3 bg-surface hover:bg-primary text-foreground hover:text-white font-black text-xs uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-border"
                                     >
                                         {enrolledCourseIds.includes(course._id || course.id) ? 'Go to Course' : (course.price > 0 ? 'Buy Now' : 'Enroll Now')}
                                     </button>
@@ -189,7 +189,7 @@ export default function PublicCoursesPage() {
                     ))}
                 </div>
                 {filteredCourses.length === 0 && (
-                    <p className="text-center text-gray-500 font-bold py-12">No courses found matching this category.</p>
+                    <p className="text-center text-foreground/40 font-bold py-12">No courses found matching this category.</p>
                 )}
             </div>
         </div >

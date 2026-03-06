@@ -25,16 +25,16 @@ export default function InstructorSidebar() {
     ];
 
     return (
-        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-64 bg-black/50 backdrop-blur-xl border-r border-white/5 z-30 transition-all hidden md:flex flex-col pt-20`}>
+        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-64 bg-background/50 backdrop-blur-xl border-r border-border z-30 transition-all hidden md:flex flex-col pt-20`}>
             {/* User info */}
-            <div className="px-4 py-4 border-b border-white/5 shrink-0">
-                <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-3">
-                    <div className="w-10 h-10 rounded-xl bg-accent/20 text-accent flex items-center justify-center font-black text-sm uppercase shrink-0">
+            <div className="px-4 py-4 border-b border-border shrink-0">
+                <div className="flex items-center gap-3 bg-foreground/5 rounded-2xl p-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-black text-sm uppercase shrink-0">
                         {user?.name?.charAt(0) || 'I'}
                     </div>
                     <div className="overflow-hidden">
-                        <p className="text-sm font-black text-white truncate">{user?.name || 'Instructor'}</p>
-                        <p className="text-[10px] font-bold text-accent uppercase tracking-widest">Instructor</p>
+                        <p className="text-sm font-black text-foreground truncate">{user?.name || 'Instructor'}</p>
+                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Instructor</p>
                     </div>
                 </div>
             </div>
@@ -47,8 +47,8 @@ export default function InstructorSidebar() {
                             <motion.div
                                 whileHover={{ x: lang === 'ar' ? -4 : 4 }}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all relative ${isActive
-                                        ? 'bg-primary/10 text-white border border-primary/20'
-                                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                                    ? 'bg-primary/10 text-primary border border-primary/20'
+                                    : 'text-foreground/60 hover:bg-foreground/5 hover:text-foreground'
                                     }`}
                             >
                                 <span className={`text-xl ${isActive ? 'text-primary' : ''}`}>{item.icon}</span>

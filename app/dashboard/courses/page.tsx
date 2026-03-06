@@ -54,7 +54,7 @@ export default function MyCoursesPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+            <div className="min-h-screen bg-background pt-32 pb-20 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
@@ -64,25 +64,25 @@ export default function MyCoursesPage() {
         <div className="space-y-8 pb-20 max-w-7xl mx-auto">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl font-black text-white uppercase">{t('my_courses')}</h1>
-                    <p className="text-gray-400 font-bold mt-1">Resume learning and track your accomplishments.</p>
+                    <h1 className="text-4xl font-black text-foreground uppercase">{t('my_courses')}</h1>
+                    <p className="text-foreground/40 font-bold mt-1">Resume learning and track your accomplishments.</p>
                 </div>
 
                 <div className="flex gap-4 w-full md:w-auto">
                     <div className="relative flex-1 md:w-64">
-                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                         <input
                             type="text"
                             placeholder="Search courses..."
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50"
+                            className="w-full bg-surface border border-border rounded-2xl py-3 pl-12 pr-4 text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 placeholder:text-foreground/20"
                         />
                     </div>
-                    <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 shrink-0 hidden md:flex">
+                    <div className="flex bg-surface p-1 rounded-2xl border border-border shrink-0 hidden md:flex">
                         {['all', 'active', 'completed'].map((f) => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
-                                className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-gray-500 hover:text-white'
+                                className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-foreground/40 hover:text-foreground'
                                     }`}
                             >
                                 {f}
@@ -93,12 +93,12 @@ export default function MyCoursesPage() {
             </header>
 
             {/* Mobile Filter */}
-            <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 md:hidden overflow-x-auto snap-x">
+            <div className="flex bg-surface p-1 rounded-2xl border border-border md:hidden overflow-x-auto snap-x">
                 {['all', 'active', 'completed'].map((f) => (
                     <button
                         key={f}
                         onClick={() => setFilter(f)}
-                        className={`px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shrink-0 snap-start ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-gray-500 hover:text-white'
+                        className={`px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shrink-0 snap-start ${filter === f ? 'bg-primary text-white shadow-lg' : 'text-foreground/40 hover:text-foreground'
                             }`}
                     >
                         {f}
@@ -113,7 +113,7 @@ export default function MyCoursesPage() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.1 }}
-                        className="glass rounded-[2.5rem] border border-white/5 overflow-hidden group hover:border-white/20 transition-all flex flex-col relative"
+                        className="glass rounded-[2.5rem] border border-border overflow-hidden group hover:border-primary/30 transition-all flex flex-col relative"
                     >
                         {course.progress === 100 && (
                             <div className="absolute top-4 right-4 z-10 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-green-500/20 border-2 border-dark">
@@ -138,12 +138,12 @@ export default function MyCoursesPage() {
 
                         <div className="p-8 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-xl font-black text-white group-hover:text-primary transition-colors leading-tight mb-2">
+                                <h3 className="text-xl font-black text-foreground group-hover:text-primary transition-colors leading-tight mb-2">
                                     {course.title}
                                 </h3>
-                                <p className="text-xs font-bold text-gray-400 flex items-center gap-2">
+                                <p className="text-xs font-bold text-foreground/40 flex items-center gap-2">
                                     By {course.instructor}
-                                    <span className="w-1 h-1 bg-gray-600 rounded-full" />
+                                    <span className="w-1 h-1 bg-border rounded-full" />
                                     <span className="flex items-center gap-1 text-yellow-500"><FiStar className="fill-current" /> 4.9</span>
                                 </p>
                             </div>
@@ -151,12 +151,12 @@ export default function MyCoursesPage() {
                             <div className="space-y-4 mt-8">
                                 <div>
                                     <div className="flex justify-between text-[10px] font-black uppercase mb-2">
-                                        <span className={course.progress === 100 ? 'text-green-500' : 'text-gray-400'}>
+                                        <span className={course.progress === 100 ? 'text-green-500' : 'text-foreground/40'}>
                                             {course.progress === 100 ? 'Completed' : 'Progress'}
                                         </span>
-                                        <span className="text-white">{course.progress}%</span>
+                                        <span className="text-foreground">{course.progress}%</span>
                                     </div>
-                                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                    <div className="w-full h-1.5 bg-foreground/5 rounded-full overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${course.progress}%` }}
@@ -166,7 +166,7 @@ export default function MyCoursesPage() {
                                     </div>
                                 </div>
 
-                                <div className="pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase">
+                                <div className="pt-4 border-t border-border flex justify-between items-center text-[10px] font-bold text-foreground/40 uppercase">
                                     <span className="flex items-center gap-1.5"><FiClock /> {course.lastAccessed}</span>
                                     {course.progress === 100 && (
                                         <button className="hover:text-primary transition-colors flex items-center gap-1"><FiCheckCircle className="text-lg" /> Certificate</button>
@@ -178,10 +178,10 @@ export default function MyCoursesPage() {
                 ))}
 
                 {filteredCourses.length === 0 && (
-                    <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-white/10">
-                        <FiMonitor className="mx-auto text-5xl text-gray-700 mb-4" />
-                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">No {filter !== 'all' ? filter : ''} courses enrolled.</p>
-                        <Link href="/courses" className="inline-block mt-6 px-8 py-3 bg-white/5 hover:bg-white/10 text-white font-black uppercase text-xs rounded-xl transition-all border border-white/10">Browse Library</Link>
+                    <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-border/40">
+                        <FiMonitor className="mx-auto text-5xl text-foreground/10 mb-4" />
+                        <p className="text-foreground/40 font-bold uppercase tracking-widest text-xs">No {filter !== 'all' ? filter : ''} courses enrolled.</p>
+                        <Link href="/courses" className="inline-block mt-6 px-8 py-3 bg-surface hover:bg-foreground/5 text-foreground font-black uppercase text-xs rounded-xl transition-all border border-border">Browse Library</Link>
                     </div>
                 )}
             </div>

@@ -28,7 +28,7 @@ export default function StudentSidebar() {
     ];
 
     return (
-        <aside className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} w-72 bg-black/40 backdrop-blur-xl border-${lang === 'ar' ? 'l' : 'r'} border-white/5 z-40 flex flex-col hidden lg:flex`}>
+        <aside className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} w-72 bg-background/40 backdrop-blur-xl border-${lang === 'ar' ? 'l' : 'r'} border-border z-40 flex flex-col hidden lg:flex`}>
             <div className="p-8">
                 <Link href="/" className="flex items-center gap-3">
                     <div className="relative w-20 h-20 flex items-center justify-center">
@@ -48,13 +48,13 @@ export default function StudentSidebar() {
             </div>
 
             <div className="px-8 pb-6">
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/5 flex items-center gap-4">
+                <div className="p-4 bg-foreground/5 rounded-2xl border border-border flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xl font-black uppercase">
                         {user?.name?.charAt(0) || 'S'}
                     </div>
                     <div>
-                        <h3 className="text-sm font-black text-white rtl:tracking-normal ltr:tracking-tight">{user?.name || 'Student Name'}</h3>
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">{user?.targetGoal || 'Learning'}</p>
+                        <h3 className="text-sm font-black text-foreground rtl:tracking-normal ltr:tracking-tight">{user?.name || 'Student Name'}</h3>
+                        <p className="text-[10px] font-bold text-foreground/40 uppercase">{user?.targetGoal || 'Learning'}</p>
                     </div>
                 </div>
             </div>

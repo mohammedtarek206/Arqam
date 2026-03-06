@@ -17,7 +17,7 @@ export default function About() {
   ];
 
   return (
-    <section id="about" className="py-24 bg-dark-light/50 relative overflow-hidden" ref={ref}>
+    <section id="about" className="py-24 bg-surface/50 relative overflow-hidden" ref={ref}>
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -25,11 +25,11 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
             {lang === 'en' ? 'About' : 'عن'} <span className="text-primary">{t('about_title').replace('About ', '')}</span>
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mb-8" />
-          <p className="text-gray-300 max-w-3xl mx-auto text-lg leading-relaxed">
+          <p className="text-foreground/80 max-w-3xl mx-auto text-lg leading-relaxed">
             {t('about_desc_1')}
           </p>
         </motion.div>
@@ -40,10 +40,10 @@ export default function About() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h3 className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            <h3 className="text-3xl font-bold mb-6 text-foreground">
               {t('about_subtitle')}
             </h3>
-            <p className="text-gray-400 mb-6 text-lg leading-relaxed">
+            <p className="text-foreground/60 mb-6 text-lg leading-relaxed">
               {t('about_desc_2')}
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
@@ -71,9 +71,9 @@ export default function About() {
               { title: t('feature_4_title'), desc: t('feature_4_desc') },
               { title: t('feature_1_title'), desc: t('feature_1_desc') },
             ].map((item, index) => (
-              <div key={index} className="glass rounded-2xl p-6 border border-white/5 hover:border-primary/20 transition-all group">
-                <h4 className="font-bold text-white mb-2 group-hover:text-primary transition-colors">{item.title}</h4>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+              <div key={index} className="glass rounded-2xl p-6 border border-border hover:border-primary/20 transition-all group">
+                <h4 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{item.title}</h4>
+                <p className="text-foreground/40 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </motion.div>
@@ -87,13 +87,13 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.5 + (index * 0.1) }}
-              className="text-center p-8 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/5 hover:bg-white/10 transition-all group"
+              className="text-center p-8 bg-foreground/5 backdrop-blur-sm rounded-3xl border border-border hover:bg-foreground/10 transition-all group"
             >
               <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <stat.icon className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-3xl font-black text-white mb-1">{stat.value}</div>
-              <div className="text-gray-500 text-xs uppercase tracking-widest font-bold">{stat.label}</div>
+              <div className="text-3xl font-black text-foreground mb-1">{stat.value}</div>
+              <div className="text-foreground/40 text-xs uppercase tracking-widest font-bold">{stat.label}</div>
             </motion.div>
           ))}
         </div>

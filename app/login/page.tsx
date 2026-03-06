@@ -46,7 +46,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-dark px-4 py-20 relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4 py-20 relative overflow-hidden">
             {/* Background Orbs */}
             <div className="absolute top-0 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px] -z-10" />
             <div className="absolute bottom-0 -right-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px] -z-10" />
@@ -66,10 +66,10 @@ export default function LoginPage() {
                             priority
                         />
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tighter uppercase">
+                    <h1 className="text-3xl md:text-4xl font-black text-foreground mb-3 tracking-tighter uppercase">
                         {t('login')}
                     </h1>
-                    <p className="text-gray-400 font-medium">
+                    <p className="text-foreground/60 font-medium">
                         {t('hero_subtitle')}
                     </p>
                 </div>
@@ -91,12 +91,12 @@ export default function LoginPage() {
                             {t('email_label')} / {t('phone_label')}
                         </label>
                         <div className="relative group">
-                            <FiMail className="absolute left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors" />
+                            <FiMail className="absolute left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-foreground/40 group-focus-within:text-primary transition-colors" />
                             <input
                                 type="text"
                                 value={identifier}
                                 onChange={(e) => setIdentifier(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-white focus:outline-none focus:border-primary/50 transition-all placeholder:text-gray-600 font-medium"
+                                className="w-full bg-surface border border-border rounded-2xl py-4 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-foreground focus:outline-none focus:border-primary/50 transition-all placeholder:text-foreground/30 font-medium"
                                 placeholder="name@example.com or 01XXXXXXXXX"
                                 required
                             />
@@ -113,12 +113,12 @@ export default function LoginPage() {
                             </Link>
                         </div>
                         <div className="relative group">
-                            <FiLock className="absolute left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors" />
+                            <FiLock className="absolute left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-foreground/40 group-focus-within:text-primary transition-colors" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-white focus:outline-none focus:border-primary/50 transition-all placeholder:text-gray-600 font-medium"
+                                className="w-full bg-surface border border-border rounded-2xl py-4 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-foreground focus:outline-none focus:border-primary/50 transition-all placeholder:text-foreground/30 font-medium"
                                 placeholder="••••••••"
                                 required
                             />
@@ -148,13 +148,13 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div className="mt-10 pt-8 border-t border-white/5 text-center">
-                    <p className="text-gray-500 font-bold mb-4">
+                <div className="mt-10 pt-8 border-t border-border text-center">
+                    <p className="text-foreground/40 font-bold mb-4">
                         {t('dont_have_account')}
                     </p>
                     <Link
                         href="/signup"
-                        className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl border border-white/10 text-white font-black uppercase tracking-widest text-xs hover:bg-white/5 transition-all"
+                        className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl border border-border text-foreground font-black uppercase tracking-widest text-xs hover:bg-foreground/5 transition-all"
                     >
                         {t('signup')}
                     </Link>
