@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiAlertCircle, FiArrowRight } from 'react-icons/fi';
 
@@ -58,9 +59,15 @@ export default function AdminLoginPage() {
                     <motion.div
                         initial={{ y: -20 }}
                         animate={{ y: 0 }}
-                        className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl shadow-xl shadow-primary/20 mb-6"
+                        className="relative inline-flex items-center justify-center w-32 h-32 mb-6"
                     >
-                        <span className="text-white font-black text-2xl uppercase">AA</span>
+                        <Image
+                            src="/logo.png"
+                            alt="Arqam Academy Admin"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </motion.div>
                     <h1 className="text-4xl font-black text-white tracking-tighter mb-2">ADMIN PORTAL</h1>
                     <p className="text-gray-500 font-medium">Enter your credentials to manage Arqam Academy</p>

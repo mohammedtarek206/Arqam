@@ -4,6 +4,7 @@ import React from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useLanguage } from '@/lib/LanguageContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -30,8 +31,14 @@ export default function StudentSidebar() {
         <aside className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} w-72 bg-black/40 backdrop-blur-xl border-${lang === 'ar' ? 'l' : 'r'} border-white/5 z-40 flex flex-col hidden lg:flex`}>
             <div className="p-8">
                 <Link href="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                        <span className="text-white font-black text-lg">AA</span>
+                    <div className="relative w-20 h-20 flex items-center justify-center">
+                        <Image
+                            src="/logo.png"
+                            alt="Arqam Academy Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <div>
                         <span className="text-lg font-black text-white block leading-tight">{t('hero_title')}</span>

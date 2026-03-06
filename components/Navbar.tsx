@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -119,8 +120,14 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse shrink-0">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group hover:scale-110 transition-transform">
-              <span className="text-white font-black text-xl tracking-tighter">AA</span>
+            <div className="relative w-20 h-20 md:w-24 md:h-24 flex items-center justify-center group hover:scale-110 transition-transform">
+              <Image
+                src="/logo.png"
+                alt="Arqam Academy Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
             <div className="hidden lg:block">
               <span className="text-xl font-black text-white uppercase tracking-tighter block leading-none">Arqam</span>

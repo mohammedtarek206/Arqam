@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     FiLayout, FiBook, FiKey, FiUsers, FiLogOut,
@@ -100,8 +101,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Logo */}
             <div className="p-6 flex items-center justify-between border-b border-white/5 shrink-0">
                 <div className={`flex items-center gap-3 overflow-hidden transition-all duration-300 ${!sidebarOpen && 'w-0 opacity-0'}`}>
-                    <div className="w-9 h-9 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-                        <FiShield className="text-white text-sm" />
+                    <div className="relative w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shrink-0">
+                        <Image
+                            src="/logo.png"
+                            alt="Arqam Admin Panel"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                     <div className={`overflow-hidden whitespace-nowrap`}>
                         <span className="text-sm font-black text-white uppercase tracking-widest block leading-none">Arqam</span>
@@ -109,8 +115,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </div>
                 </div>
                 {!sidebarOpen && (
-                    <div className="w-9 h-9 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 mx-auto">
-                        <FiShield className="text-white text-sm" />
+                    <div className="relative w-12 h-12 md:w-16 md:h-16 mx-auto flex items-center justify-center">
+                        <Image
+                            src="/logo.png"
+                            alt="Arqam Admin Panel"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                 )}
                 <button

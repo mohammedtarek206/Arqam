@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/AuthContext';
 import { useLanguage } from '@/lib/LanguageContext';
 import { motion } from 'framer-motion';
@@ -56,8 +57,14 @@ export default function LoginPage() {
                 className="glass p-8 md:p-12 rounded-[2.5rem] w-full max-w-lg border border-white/10 shadow-2xl relative"
             >
                 <div className="text-center mb-10">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/20">
-                        <span className="text-white font-black text-2xl">AA</span>
+                    <div className="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center mx-auto mb-6">
+                        <Image
+                            src="/logo.png"
+                            alt="Arqam Academy Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <h1 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tighter uppercase">
                         {t('login')}

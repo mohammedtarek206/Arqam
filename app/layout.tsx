@@ -13,6 +13,9 @@ const cairo = Cairo({ subsets: ['arabic'], variable: '--font-cairo' });
 export const metadata: Metadata = {
   title: 'Arqam Academy | أكاديمية أرقام',
   description: 'Empowering the Next Generation of Tech Leaders',
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 export default function RootLayout({
