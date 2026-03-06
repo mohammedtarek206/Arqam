@@ -120,12 +120,12 @@ export default function AdminProjects() {
         <div className="space-y-8">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Exhibition & Gallery</h1>
-                    <p className="text-gray-400">Showcase best work and inspiring projects from your students.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-2">Exhibition & Gallery</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Showcase best work and inspiring projects from your students.</p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-primary hover:bg-primary/80 text-white font-black px-6 py-3 rounded-xl flex items-center transition-all shadow-lg"
+                    className="bg-primary hover:scale-[1.02] active:scale-100 text-white font-black px-6 py-4 rounded-xl flex items-center transition-all shadow-lg shadow-primary/20 uppercase tracking-widest text-xs"
                 >
                     <FiPlus className="mr-2" /> Add Piece
                 </button>
@@ -133,14 +133,14 @@ export default function AdminProjects() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {projects.map((project) => (
-                    <div key={project._id} className="glass rounded-[2rem] border border-white/5 overflow-hidden group hover:border-primary/50 transition-all flex flex-col">
+                    <div key={project._id} className="glass rounded-[2.5rem] border border-border overflow-hidden group hover:border-primary/50 transition-all flex flex-col bg-surface shadow-sm hover:shadow-xl hover:shadow-primary/5">
                         <div className="relative aspect-video">
-                            <img src={project.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={project.title} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <img src={project.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={project.title} />
+                            <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent"></div>
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <button
                                     onClick={() => openEditModal(project)}
-                                    className="p-3 bg-white/10 text-white rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-primary"
+                                    className="p-3 bg-white/10 text-white rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:bg-primary border border-white/20"
                                 >
                                     <FiEdit size={16} />
                                 </button>
@@ -153,19 +153,19 @@ export default function AdminProjects() {
                             </div>
                         </div>
                         <div className="p-8 space-y-4 flex-1">
-                            <div className="flex items-center text-xs text-primary font-black uppercase tracking-widest">
+                            <div className="flex items-center text-[10px] text-primary font-black uppercase tracking-[0.2em]">
                                 <FiUser className="mr-2" /> {project.studentName}
                             </div>
-                            <h3 className="text-xl font-bold text-white tracking-tight">{project.title}</h3>
-                            <p className="text-gray-400 text-sm line-clamp-3 leading-relaxed">{project.description}</p>
+                            <h3 className="text-xl font-black text-foreground tracking-tighter uppercase">{project.title}</h3>
+                            <p className="text-foreground/40 text-sm line-clamp-3 leading-relaxed font-medium">{project.description}</p>
                         </div>
                     </div>
                 ))}
                 {projects.length === 0 && (
-                    <div className="col-span-full py-20 text-center glass rounded-3xl border border-dashed border-white/10">
-                        <FiImage className="mx-auto text-4xl text-gray-600 mb-4" />
-                        <h3 className="text-white font-bold">The gallery is empty</h3>
-                        <p className="text-gray-500 text-sm">Add amazing student works to inspire others.</p>
+                    <div className="col-span-full py-20 text-center glass rounded-[2.5rem] border border-dashed border-border bg-foreground/[0.02]">
+                        <FiImage className="mx-auto text-4xl text-foreground/10 mb-4" />
+                        <h3 className="text-foreground font-black uppercase tracking-tighter text-xl">The gallery is empty</h3>
+                        <p className="text-foreground/40 text-sm font-medium">Add amazing student works to inspire others.</p>
                     </div>
                 )}
             </div>
@@ -173,39 +173,39 @@ export default function AdminProjects() {
             {/* Add/Edit Modal */}
             <AnimatePresence>
                 {showModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm overflow-y-auto">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-dark-light w-full max-w-2xl rounded-[2.5rem] p-10 border border-white/10"
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-background w-full max-w-2xl rounded-[3rem] p-12 border border-border my-8 shadow-2xl"
                         >
-                            <div className="flex justify-between items-center mb-10">
-                                <h2 className="text-3xl font-black text-white tracking-tighter">
+                            <div className="flex justify-between items-center mb-10 sticky top-0 bg-background z-10 py-2">
+                                <h2 className="text-3xl font-black text-foreground uppercase tracking-tighter">
                                     {editingProject ? 'Edit Piece' : 'Add to Exhibition'}
                                 </h2>
-                                <button onClick={closeModal} className="text-gray-400 hover:text-white transition-colors p-2 bg-white/5 rounded-full">
+                                <button onClick={closeModal} className="text-foreground/20 hover:text-foreground transition-colors p-2 bg-foreground/5 rounded-full">
                                     <FiX size={20} />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Project Thumbnail</label>
-                                    <div className="flex gap-6 items-center">
-                                        <div className="w-40 h-24 rounded-2xl overflow-hidden bg-white/5 border border-white/10 shrink-0">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] ml-1">Project Thumbnail</label>
+                                    <div className="flex flex-col md:flex-row gap-6 items-center">
+                                        <div className="w-full md:w-60 h-40 rounded-3xl overflow-hidden bg-surface border border-border shrink-0">
                                             {previewImage ? (
                                                 <img src={previewImage} className="w-full h-full object-cover" alt="Preview" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center">
-                                                    <FiImage className="text-2xl text-gray-600" />
+                                                <div className="w-full h-full flex items-center justify-center bg-foreground/5">
+                                                    <FiImage className="text-3xl text-foreground/10" />
                                                 </div>
                                             )}
                                         </div>
-                                        <label className="flex-1 cursor-pointer">
-                                            <div className="w-full py-6 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center hover:bg-white/5 transition-all group">
-                                                <FiUpload className="text-gray-500 group-hover:text-primary transition-colors text-xl mb-2" />
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Pick from device</span>
+                                        <label className="flex-1 w-full cursor-pointer">
+                                            <div className="w-full h-40 border-2 border-dashed border-border rounded-3xl flex flex-col items-center justify-center hover:bg-foreground/5 transition-all group bg-background">
+                                                <FiUpload className="text-foreground/20 group-hover:text-primary transition-colors text-2xl mb-2" />
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/20 group-hover:text-foreground/40 transition-colors text-center px-4">Drag and drop or click to upload</span>
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                                         </label>
@@ -214,10 +214,10 @@ export default function AdminProjects() {
 
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Project Title</label>
+                                        <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-1">Project Title</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:ring-2 focus:ring-primary/50 outline-none"
+                                            className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground font-bold focus:border-primary/50 outline-none"
                                             placeholder="e.g. E-Commerce Dashboard"
                                             value={formData.title}
                                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -225,10 +225,10 @@ export default function AdminProjects() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Student Name</label>
+                                        <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-1">Student Name</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:ring-2 focus:ring-primary/50 outline-none"
+                                            className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground font-bold focus:border-primary/50 outline-none"
                                             placeholder="e.g. Ahmed Ali"
                                             value={formData.studentName}
                                             onChange={(e) => setFormData({ ...formData, studentName: e.target.value })}
@@ -238,9 +238,9 @@ export default function AdminProjects() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Description</label>
+                                    <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-1">Description</label>
                                     <textarea
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:ring-2 focus:ring-primary/50 outline-none h-32 resize-none leading-relaxed"
+                                        className="w-full bg-surface border border-border rounded-2xl py-4 px-6 text-foreground font-medium focus:border-primary/50 outline-none h-32 resize-none leading-relaxed"
                                         placeholder="Explain what makes this project special..."
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -251,7 +251,7 @@ export default function AdminProjects() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-primary hover:shadow-2xl hover:shadow-primary/20 text-white font-black py-5 rounded-2xl text-lg transition-all"
+                                    className="w-full bg-primary hover:shadow-2xl hover:shadow-primary/20 text-white font-black py-5 rounded-[2rem] text-lg transition-all uppercase tracking-widest mt-4"
                                 >
                                     {loading ? 'Processing...' : (editingProject ? 'UPDATE PIECE' : 'PUBLISH TO GALLERY')}
                                 </button>

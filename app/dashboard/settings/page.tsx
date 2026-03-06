@@ -74,10 +74,10 @@ export default function StudentSettingsPage() {
     return (
         <div className="space-y-8 pb-20 max-w-4xl mx-auto">
             <header>
-                <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+                <h1 className="text-4xl font-black text-foreground uppercase tracking-tighter">
                     {lang === 'ar' ? 'إعدادات الحساب' : 'Account Settings'}
                 </h1>
-                <p className="text-gray-400 font-bold mt-1">
+                <p className="text-foreground/40 font-bold mt-1">
                     {lang === 'ar' ? 'قم بتحديث بياناتك الشخصية وكلمة المرور' : 'Update your personal information and security settings.'}
                 </p>
             </header>
@@ -85,7 +85,7 @@ export default function StudentSettingsPage() {
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="glass p-8 md:p-12 rounded-[3rem] border border-white/5 relative overflow-hidden"
+                className="glass p-8 md:p-12 rounded-[3rem] border border-border relative overflow-hidden"
             >
                 {successMsg && (
                     <div className="mb-8 p-4 bg-green-500/10 border border-green-500/30 rounded-2xl flex items-center gap-3 text-green-400 font-bold">
@@ -103,58 +103,58 @@ export default function StudentSettingsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Personal Info */}
                         <div className="space-y-6">
-                            <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest border-b border-white/5 pb-4">
+                            <h3 className="text-xs font-black text-foreground/40 uppercase tracking-widest border-b border-border pb-4">
                                 {lang === 'ar' ? 'المعلومات الشخصية' : 'Personal Info'}
                             </h3>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest rtl:text-right">
+                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest rtl:text-right">
                                     {lang === 'ar' ? 'الاسم بالكامل' : 'Full Name'}
                                 </label>
                                 <div className="relative">
-                                    <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 rtl:right-4 rtl:left-auto" />
+                                    <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 rtl:right-4 rtl:left-auto" />
                                     <input
                                         type="text"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                        className="w-full bg-surface border border-border rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors placeholder:text-foreground/20"
                                         required
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest rtl:text-right">
+                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest rtl:text-right">
                                     {lang === 'ar' ? 'رقم الهاتف' : 'Phone Number'}
                                 </label>
                                 <div className="relative">
-                                    <FiPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 rtl:right-4 rtl:left-auto" />
+                                    <FiPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 rtl:right-4 rtl:left-auto" />
                                     <input
                                         type="tel"
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                        className="w-full bg-surface border border-border rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest rtl:text-right">
+                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest rtl:text-right">
                                     {lang === 'ar' ? 'الهدف من التعلم' : 'Learning Goal'}
                                 </label>
                                 <div className="relative">
-                                    <FiTarget className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 rtl:right-4 rtl:left-auto" />
+                                    <FiTarget className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 rtl:right-4 rtl:left-auto" />
                                     <select
                                         name="targetGoal"
                                         value={formData.targetGoal}
                                         onChange={handleChange}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none"
+                                        className="w-full bg-surface border border-border rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors appearance-none"
                                     >
-                                        <option value="Self Improvement">{lang === 'ar' ? 'تطوير الذات' : 'Self Improvement'}</option>
-                                        <option value="Career Switch">{lang === 'ar' ? 'تغيير المسار المهني' : 'Career Switch'}</option>
-                                        <option value="Freelancing">{lang === 'ar' ? 'العمل الحر' : 'Freelancing'}</option>
+                                        <option value="Self Improvement" className="bg-background text-foreground">{lang === 'ar' ? 'تطوير الذات' : 'Self Improvement'}</option>
+                                        <option value="Career Switch" className="bg-background text-foreground">{lang === 'ar' ? 'تغيير المسار المهني' : 'Career Switch'}</option>
+                                        <option value="Freelancing" className="bg-background text-foreground">{lang === 'ar' ? 'العمل الحر' : 'Freelancing'}</option>
                                     </select>
                                 </div>
                             </div>
@@ -162,12 +162,12 @@ export default function StudentSettingsPage() {
 
                         {/* Security */}
                         <div className="space-y-6">
-                            <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest border-b border-white/5 pb-4">
+                            <h3 className="text-xs font-black text-foreground/40 uppercase tracking-widest border-b border-border pb-4">
                                 {lang === 'ar' ? 'الأمان وكلمة المرور' : 'Security'}
                             </h3>
 
                             <div className="bg-primary/5 border border-primary/10 p-4 rounded-2xl mb-4">
-                                <p className="text-xs text-gray-400 font-bold">
+                                <p className="text-xs text-foreground/40 font-bold">
                                     {lang === 'ar'
                                         ? 'اترك حقول كلمة المرور فارغة إذا كنت لا ترغب في تغييرها.'
                                         : 'Leave password fields blank if you do not wish to change it.'}
@@ -175,40 +175,40 @@ export default function StudentSettingsPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest rtl:text-right">
+                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest rtl:text-right">
                                     {lang === 'ar' ? 'كلمة المرور الجديدة' : 'New Password'}
                                 </label>
                                 <div className="relative">
-                                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 rtl:right-4 rtl:left-auto" />
+                                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 rtl:right-4 rtl:left-auto" />
                                     <input
                                         type="password"
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                        className="w-full bg-surface border border-border rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest rtl:text-right">
+                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest rtl:text-right">
                                     {lang === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password'}
                                 </label>
                                 <div className="relative">
-                                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 rtl:right-4 rtl:left-auto" />
+                                    <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 rtl:right-4 rtl:left-auto" />
                                     <input
                                         type="password"
                                         name="confirmPassword"
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                        className="w-full bg-surface border border-border rounded-2xl py-3 pl-12 pr-4 rtl:pr-12 rtl:pl-4 text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-colors"
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-8 border-t border-white/5 flex justify-end">
+                    <div className="pt-8 border-t border-border flex justify-end">
                         <button
                             type="submit"
                             disabled={saving}

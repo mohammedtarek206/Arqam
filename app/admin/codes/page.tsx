@@ -68,48 +68,48 @@ export default function AdminCodes() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-white mb-2 text-right">أكواد الدخول</h1>
-                <p className="text-gray-400 text-right">قم بتوليد أكواد للطلاب للوصول إلى المنصة.</p>
+                <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-2 text-right">أكواد الدخول</h1>
+                <p className="text-foreground/40 font-medium text-sm text-right">قم بتوليد أكواد للطلاب للوصول إلى المنصة.</p>
             </div>
 
-            <div className="glass p-8 rounded-2xl flex flex-col md:flex-row items-end gap-6 border-accent/20 border-t-2">
+            <div className="glass p-8 rounded-2xl flex flex-col md:flex-row items-end gap-6 border-border border-t-2">
                 <div className="flex-1 w-full space-y-2">
-                    <label className="text-gray-400 text-sm block text-right">عدد الأكواد المطلوب توليدها</label>
+                    <label className="text-foreground/40 text-[10px] font-black uppercase tracking-widest block text-right ml-1">عدد الأكواد المطلوب توليدها</label>
                     <input
                         type="number"
                         min="1"
                         max="100"
                         value={count}
                         onChange={(e) => setCount(parseInt(e.target.value))}
-                        className="w-full bg-dark/50 border border-white/10 rounded-xl p-3 text-white focus:border-accent outline-none text-right"
+                        className="w-full bg-surface border border-border rounded-xl p-3 text-foreground focus:border-primary outline-none text-right font-bold"
                     />
                 </div>
                 <button
                     onClick={handleGenerate}
                     disabled={loading}
-                    className="bg-accent hover:bg-accent/80 text-dark font-black px-8 py-3.5 rounded-xl flex items-center transition-all disabled:opacity-50"
+                    className="bg-primary hover:bg-primary/80 text-white font-black px-8 py-3.5 rounded-xl flex items-center transition-all disabled:opacity-50 uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
                 >
                     {loading ? 'توليد...' : 'توليد الأكواد'} <FiKey className="ml-2" />
                 </button>
             </div>
 
-            <div className="glass rounded-2xl overflow-hidden border border-white/5">
+            <div className="glass rounded-2xl overflow-hidden border border-border">
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
-                        <thead className="bg-white/5">
+                        <thead className="bg-foreground/5">
                             <tr>
-                                <th className="px-6 py-4 text-gray-400 font-medium">الكود</th>
-                                <th className="px-6 py-4 text-gray-400 font-medium">الحالة</th>
-                                <th className="px-6 py-4 text-gray-400 font-medium">الطالب</th>
-                                <th className="px-6 py-4 text-gray-400 font-medium">تاريخ الإنشاء</th>
-                                <th className="px-6 py-4 text-gray-400 font-medium">إجراءات</th>
+                                <th className="px-6 py-4 text-foreground/40 font-black text-[10px] uppercase tracking-widest">الكود</th>
+                                <th className="px-6 py-4 text-foreground/40 font-black text-[10px] uppercase tracking-widest">الحالة</th>
+                                <th className="px-6 py-4 text-foreground/40 font-black text-[10px] uppercase tracking-widest">الطالب</th>
+                                <th className="px-6 py-4 text-foreground/40 font-black text-[10px] uppercase tracking-widest">تاريخ الإنشاء</th>
+                                <th className="px-6 py-4 text-foreground/40 font-black text-[10px] uppercase tracking-widest">إجراءات</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-border">
                             {codes.map((code) => (
-                                <tr key={code._id} className="hover:bg-white/5 transition-colors">
+                                <tr key={code._id} className="hover:bg-foreground/5 transition-colors">
                                     <td className="px-6 py-4">
-                                        <span className="font-mono text-white text-lg font-bold">{code.code}</span>
+                                        <span className="font-mono text-primary text-lg font-black">{code.code}</span>
                                     </td>
                                     <td className="px-6 py-4">
                                         {code.isUsed ? (
@@ -124,21 +124,21 @@ export default function AdminCodes() {
                                     </td>
                                     <td className="px-6 py-4">
                                         {code.studentId ? (
-                                            <div className="flex items-center text-gray-300">
-                                                <FiUser className="ml-2 text-accent" /> {code.studentId.name}
+                                            <div className="flex items-center text-foreground font-bold">
+                                                <FiUser className="ml-2 text-primary" /> {code.studentId.name}
                                             </div>
                                         ) : '-'}
                                     </td>
-                                    <td className="px-6 py-4 text-gray-400 text-sm">
+                                    <td className="px-6 py-4 text-foreground/40 font-bold text-sm">
                                         {new Date(code.createdAt).toLocaleDateString('ar-EG')}
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => copyToClipboard(code.code, code._id)}
-                                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 transition-all hover:text-white"
+                                            className="p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 transition-all hover:text-foreground"
                                             title="نسخ الكود"
                                         >
-                                            {copiedId === code._id ? <FiCheck className="text-green-500" /> : <FiCopy />}
+                                            {copiedId === code._id ? <FiCheck className="text-green-600" /> : <FiCopy />}
                                         </button>
                                     </td>
                                 </tr>

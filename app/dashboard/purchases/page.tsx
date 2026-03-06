@@ -63,7 +63,7 @@ export default function StudentPurchasesPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+            <div className="min-h-screen bg-background pt-32 pb-20 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
@@ -72,18 +72,18 @@ export default function StudentPurchasesPage() {
     return (
         <div className="space-y-8 pb-20 max-w-5xl mx-auto">
             <header>
-                <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+                <h1 className="text-4xl font-black text-foreground uppercase tracking-tighter">
                     {lang === 'ar' ? 'المشتريات' : 'Purchases'}
                 </h1>
-                <p className="text-gray-400 font-bold mt-1">
+                <p className="text-foreground/40 font-bold mt-1">
                     {lang === 'ar' ? 'سجل عمليات الدفع والاشتراكات الخاصة بك.' : 'History of your payments and enrollments.'}
                 </p>
             </header>
 
             {payments.length === 0 ? (
-                <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-white/10">
-                    <FiCreditCard className="mx-auto text-5xl text-gray-700 mb-4" />
-                    <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">
+                <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-dashed border-border">
+                    <FiCreditCard className="mx-auto text-5xl text-foreground/20 mb-4" />
+                    <p className="text-foreground/40 font-bold uppercase tracking-widest text-xs">
                         {lang === 'ar' ? 'لا توجد عمليات شراء سابقة.' : 'No purchase history found.'}
                     </p>
                 </div>
@@ -101,38 +101,38 @@ export default function StudentPurchasesPage() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05 }}
-                                className="glass p-6 rounded-[2rem] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-white/10 transition-colors"
+                                className="glass p-6 rounded-[2rem] border border-border flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:border-primary/20 transition-colors"
                             >
                                 <div className="flex gap-4 items-center">
-                                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-primary text-2xl shrink-0">
+                                    <div className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center text-primary text-2xl shrink-0">
                                         {itemIcon}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-black/40 px-2 py-0.5 rounded">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 bg-foreground/5 px-2 py-0.5 rounded">
                                                 {isCourse ? (lang === 'ar' ? 'كورس' : 'Course') : (lang === 'ar' ? 'تراك' : 'Track')}
                                             </span>
-                                            <span className="text-xs font-bold text-gray-400">
+                                            <span className="text-xs font-bold text-foreground/40">
                                                 {new Date(payment.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                                             </span>
                                         </div>
-                                        <h3 className="text-lg font-black text-white">{itemTitle || 'Unknown Item'}</h3>
+                                        <h3 className="text-lg font-black text-foreground">{itemTitle || 'Unknown Item'}</h3>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-8 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-white/5">
+                                <div className="flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-8 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-border">
                                     <div className="flex-1 md:flex-none">
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">
+                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">
                                             {lang === 'ar' ? 'وسيلة الدفع' : 'Method'}
                                         </p>
-                                        <p className="text-sm font-black text-white">{payment.method}</p>
+                                        <p className="text-sm font-black text-foreground">{payment.method}</p>
                                     </div>
-                                    <div className="w-px h-8 bg-white/10 hidden md:block" />
+                                    <div className="w-px h-8 bg-border hidden md:block" />
                                     <div className="flex-1 md:flex-none">
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">
+                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">
                                             {lang === 'ar' ? 'المبلغ' : 'Amount'}
                                         </p>
-                                        <p className="text-sm font-black text-white">{payment.amount} EGP</p>
+                                        <p className="text-sm font-black text-foreground">{payment.amount} EGP</p>
                                     </div>
                                     <div className="w-full md:w-auto flex justify-end">
                                         <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${status.bg} ${status.border} ${status.color}`}>

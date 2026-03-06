@@ -65,83 +65,83 @@ function EditModal({
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="glass rounded-2xl border border-white/10 w-full max-w-lg shadow-2xl overflow-hidden"
             >
-                <div className="flex items-center justify-between p-6 border-b border-white/5">
-                    <h3 className="text-lg font-black text-white uppercase tracking-tighter">{course._id ? 'Edit Course' : 'Add New Course'}</h3>
-                    <button onClick={onClose} className="p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/10 transition-colors">
+                <div className="flex items-center justify-between p-6 border-b border-border">
+                    <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">{course._id ? 'Edit Course' : 'Add New Course'}</h3>
+                    <button onClick={onClose} className="p-2 rounded-xl text-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-colors">
                         <FiX />
                     </button>
                 </div>
                 <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
                     <div>
-                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Course Title</label>
+                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Course Title</label>
                         <input
                             required
                             value={form.title}
                             onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Description</label>
+                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Description</label>
                         <textarea
                             required
                             rows={3}
                             value={form.description}
                             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Instructor</label>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Instructor</label>
                             <select
                                 required
                                 value={form.instructor}
                                 onChange={e => setForm(f => ({ ...f, instructor: e.target.value }))}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                             >
-                                <option value="" disabled className="bg-dark text-gray-500">Select Instructor</option>
+                                <option value="" disabled className="bg-background text-foreground/40">Select Instructor</option>
                                 {instructors.map(ins => (
-                                    <option key={ins._id} value={ins._id} className="bg-dark">{ins.name}</option>
+                                    <option key={ins._id} value={ins._id} className="bg-background">{ins.name}</option>
                                 ))}
                             </select>
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Track</label>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Track</label>
                             <select
                                 required
                                 value={form.track}
                                 onChange={e => setForm(f => ({ ...f, track: e.target.value }))}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                             >
-                                <option value="" disabled className="bg-dark text-gray-500">Select Track</option>
+                                <option value="" disabled className="bg-background text-foreground/40">Select Track</option>
                                 {tracks.map(t => (
-                                    <option key={t._id} value={t._id} className="bg-dark">{t.title}</option>
+                                    <option key={t._id} value={t._id} className="bg-background">{t.title}</option>
                                 ))}
                             </select>
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Level</label>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Level</label>
                             <select
                                 value={form.level}
                                 onChange={e => setForm(f => ({ ...f, level: e.target.value }))}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                             >
                                 {['Beginner', 'Intermediate', 'Advanced'].map(l => (
-                                    <option key={l} value={l} className="bg-dark">{l}</option>
+                                    <option key={l} value={l} className="bg-background">{l}</option>
                                 ))}
                             </select>
                         </div>
                         <div>
-                            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Price (EGP)</label>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Price (EGP)</label>
                             <input
                                 type="number"
                                 min={0}
                                 value={form.price}
                                 onChange={e => setForm(f => ({ ...f, price: Number(e.target.value), isFree: Number(e.target.value) === 0 }))}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-white text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                             />
                         </div>
                     </div>
@@ -151,13 +151,13 @@ function EditModal({
                                 type="checkbox"
                                 checked={form.isActive}
                                 onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
-                                className="w-4 h-4 rounded border-white/10 bg-black/30 text-primary focus:ring-primary/50"
+                                className="w-4 h-4 rounded border-border bg-surface text-primary focus:ring-primary/50"
                             />
-                            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest group-hover:text-white transition-colors">Active & Visible to students</span>
+                            <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest group-hover:text-foreground transition-colors">Active & Visible to students</span>
                         </label>
                     </div>
                     <div className="flex gap-3 pt-2">
-                        <button type="button" onClick={onClose} className="flex-1 py-3 border border-white/10 rounded-xl text-gray-400 hover:text-white font-black text-xs uppercase tracking-widest transition-colors">
+                        <button type="button" onClick={onClose} className="flex-1 py-3 border border-border rounded-xl text-foreground/40 hover:text-foreground font-black text-xs uppercase tracking-widest transition-colors">
                             Cancel
                         </button>
                         <button
@@ -284,8 +284,8 @@ export default function CoursesControlPage() {
 
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-white uppercase tracking-tighter">Courses Control</h1>
-                    <p className="text-gray-400 font-medium text-sm mt-1">Manage all courses, set pricing, and control visibility.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Courses Control</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Manage all courses, set pricing, and control visibility.</p>
                 </div>
                 <button
                     onClick={() => setEditingCourse({})}
@@ -296,13 +296,13 @@ export default function CoursesControlPage() {
             </div>
 
             <div className="relative">
-                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                 <input
                     type="text"
                     placeholder="Search by course title or instructor..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                    className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-foreground/20 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                 />
             </div>
 
@@ -313,7 +313,7 @@ export default function CoursesControlPage() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
-                        className="glass rounded-2xl border border-white/5 p-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-white/20 transition-all"
+                        className="glass rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-primary/20 transition-all"
                     >
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 mb-1">

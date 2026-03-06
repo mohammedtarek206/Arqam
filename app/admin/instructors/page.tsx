@@ -101,8 +101,8 @@ export default function InstructorsManagementPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-black text-white uppercase tracking-tighter">Instructors Management</h1>
-                <p className="text-gray-400 font-medium text-sm mt-1">Review applications, manage revenue splits, and control instructor access.</p>
+                <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Instructors Management</h1>
+                <p className="text-foreground/40 font-medium text-sm mt-1">Review applications, manage revenue splits, and control instructor access.</p>
             </div>
 
             {/* Pending Alert */}
@@ -119,50 +119,50 @@ export default function InstructorsManagementPage() {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
-                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                     <input
                         type="text"
                         placeholder="Search by name or email..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                        className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-foreground/20 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                     />
                 </div>
                 <div className="flex items-center gap-2">
                     {['all', 'pending', 'approved', 'banned'].map(s => (
-                        <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}>{s}</button>
+                        <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-surface border-border text-foreground/40 hover:text-foreground'}`}>{s}</button>
                     ))}
                 </div>
             </div>
 
             {/* Table */}
-            <div className="glass rounded-2xl border border-white/5 overflow-hidden">
+            <div className="glass rounded-2xl border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-white/5">
+                            <tr className="border-b border-border">
                                 {['Instructor', 'Joined', 'Status', 'Actions'].map(h => (
-                                    <th key={h} className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest whitespace-nowrap">{h}</th>
+                                    <th key={h} className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest whitespace-nowrap">{h}</th>
                                 ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-border">
                             {filtered.length === 0 ? (
-                                <tr><td colSpan={4} className="p-8 text-center text-gray-500 font-bold">No instructors found.</td></tr>
+                                <tr><td colSpan={4} className="p-8 text-center text-foreground/40 font-bold">No instructors found.</td></tr>
                             ) : filtered.map((instructor, i) => (
-                                <motion.tr key={instructor._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="hover:bg-white/3 transition-colors">
+                                <motion.tr key={instructor._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }} className="hover:bg-foreground/5 transition-colors">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center font-black text-sm shrink-0">
+                                            <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black text-sm shrink-0">
                                                 {instructor.name?.charAt(0) || 'I'}
                                             </div>
                                             <div>
-                                                <p className="text-white font-bold text-sm">{instructor.name}</p>
-                                                <p className="text-gray-500 text-xs">{instructor.email}</p>
+                                                <p className="text-foreground font-bold text-sm">{instructor.name}</p>
+                                                <p className="text-foreground/40 text-xs">{instructor.email}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-gray-400 text-sm font-medium whitespace-nowrap">
+                                    <td className="p-4 text-foreground/60 text-sm font-medium whitespace-nowrap">
                                         {instructor.createdAt ? new Date(instructor.createdAt).toLocaleDateString() : 'N/A'}
                                     </td>
                                     <td className="p-4">
@@ -190,7 +190,7 @@ export default function InstructorsManagementPage() {
                                                     <button onClick={() => ban(instructor._id, instructor.status)} className={`p-1.5 rounded-lg transition-colors ${instructor.status === 'banned' ? 'text-green-400 hover:bg-green-400/10' : 'text-red-400 hover:bg-red-400/10'}`} title={instructor.status === 'banned' ? 'Unban' : 'Ban'}>
                                                         {instructor.status === 'banned' ? <FiUserCheck /> : <FiUserX />}
                                                     </button>
-                                                    <button onClick={() => reject(instructor._id)} className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-400/10 transition-colors" title="Delete Account">
+                                                    <button onClick={() => reject(instructor._id)} className="p-1.5 rounded-lg text-foreground/20 hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Delete Account">
                                                         <FiTrash2 className="text-sm" />
                                                     </button>
                                                 </>
@@ -219,7 +219,7 @@ export default function InstructorsManagementPage() {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="bg-dark border border-white/10 rounded-[2.5rem] w-full max-w-2xl relative z-10 overflow-hidden shadow-2xl"
+                            className="bg-background border border-border rounded-[2.5rem] w-full max-w-2xl relative z-10 overflow-hidden shadow-2xl"
                         >
                             <div className="p-8 md:p-12">
                                 <div className="flex justify-between items-start mb-8">
@@ -228,11 +228,11 @@ export default function InstructorsManagementPage() {
                                             {selectedInstructor.name?.charAt(0) || 'I'}
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-black text-white uppercase tracking-tight">{selectedInstructor.name}</h2>
+                                            <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">{selectedInstructor.name}</h2>
                                             <p className="text-primary font-bold text-sm tracking-widest uppercase">{selectedInstructor.email}</p>
                                         </div>
                                     </div>
-                                    <button onClick={() => setSelectedInstructor(null)} className="p-2 text-gray-500 hover:text-white transition-colors">
+                                    <button onClick={() => setSelectedInstructor(null)} className="p-2 text-foreground/20 hover:text-foreground transition-colors">
                                         <FiXCircle size={24} />
                                     </button>
                                 </div>
@@ -240,21 +240,21 @@ export default function InstructorsManagementPage() {
                                 <div className="grid md:grid-cols-2 gap-8 mb-8">
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Category / Specialty</label>
-                                            <p className="text-white font-bold">{selectedInstructor.details?.category || 'Not specified'}</p>
+                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-1">Category / Specialty</label>
+                                            <p className="text-foreground font-bold">{selectedInstructor.details?.category || 'Not specified'}</p>
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Phone Number</label>
-                                            <p className="text-white font-bold">{selectedInstructor.phone || 'N/A'}</p>
+                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-1">Phone Number</label>
+                                            <p className="text-foreground font-bold">{selectedInstructor.phone || 'N/A'}</p>
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Joining Date</label>
-                                            <p className="text-white font-bold">{new Date(selectedInstructor.createdAt).toLocaleDateString()}</p>
+                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-1">Joining Date</label>
+                                            <p className="text-foreground font-bold">{new Date(selectedInstructor.createdAt).toLocaleDateString()}</p>
                                         </div>
                                     </div>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">CV / Portfolio</label>
+                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-1">CV / Portfolio</label>
                                             {selectedInstructor.details?.cvUrl ? (
                                                 <a
                                                     href={selectedInstructor.details.cvUrl}
@@ -265,11 +265,11 @@ export default function InstructorsManagementPage() {
                                                     <FiFileText /> VIEW RESUME / CV
                                                 </a>
                                             ) : (
-                                                <p className="text-gray-500 font-bold italic text-sm">No CV uploaded</p>
+                                                <p className="text-foreground/40 font-bold italic text-sm">No CV uploaded</p>
                                             )}
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block mb-1">Current Status</label>
+                                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-1">Current Status</label>
                                             <span className={`text-[10px] font-black uppercase border px-2 py-1 rounded-lg ${getStatusStyle(selectedInstructor.status)}`}>
                                                 {selectedInstructor.status}
                                             </span>
@@ -277,9 +277,9 @@ export default function InstructorsManagementPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2 mb-8 p-6 bg-white/5 rounded-3xl border border-white/10">
-                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest block">Biography</label>
-                                    <p className="text-gray-300 text-sm leading-relaxed overflow-y-auto max-h-40 pr-2">
+                                <div className="space-y-2 mb-8 p-6 bg-foreground/5 rounded-3xl border border-border">
+                                    <label className="text-[10px] font-black text-foreground/20 uppercase tracking-widest block">Biography</label>
+                                    <p className="text-foreground/60 text-sm leading-relaxed overflow-y-auto max-h-40 pr-2">
                                         {selectedInstructor.details?.bio || 'No biography provided.'}
                                     </p>
                                 </div>
@@ -287,7 +287,7 @@ export default function InstructorsManagementPage() {
                                 <div className="flex gap-4">
                                     <button
                                         onClick={() => setSelectedInstructor(null)}
-                                        className="flex-1 py-4 bg-white/5 border border-white/10 text-white font-black rounded-2xl hover:bg-white/10 transition-all uppercase tracking-widest text-xs"
+                                        className="flex-1 py-4 bg-foreground/5 border border-border text-foreground font-black rounded-2xl hover:bg-foreground/10 transition-all uppercase tracking-widest text-xs"
                                     >
                                         Close
                                     </button>

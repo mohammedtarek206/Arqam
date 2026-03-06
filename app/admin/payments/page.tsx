@@ -96,10 +96,10 @@ export default function PaymentsPage() {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-white uppercase tracking-tighter">Payments System</h1>
-                    <p className="text-gray-400 font-medium text-sm mt-1">Track all financial transactions and manage refunds.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Payments System</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Track all financial transactions and manage refunds.</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-black text-gray-400 hover:text-white transition-colors uppercase tracking-widest self-start">
+                <button className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-foreground transition-colors uppercase tracking-widest self-start">
                     <FiDownload /> Export Excel
                 </button>
             </div>
@@ -107,13 +107,13 @@ export default function PaymentsPage() {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
-                    { label: 'Total Revenue', value: `$${totalRevenue}`, color: 'text-green-400', bg: 'bg-green-400/10' },
-                    { label: 'Pending', value: `$${pending}`, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
-                    { label: 'Refunded', value: `$${refunded}`, color: 'text-red-400', bg: 'bg-red-400/10' },
+                    { label: 'Total Revenue', value: `$${totalRevenue}`, color: 'text-green-600', bg: 'bg-green-500/10' },
+                    { label: 'Pending', value: `$${pending}`, color: 'text-yellow-600', bg: 'bg-yellow-500/10' },
+                    { label: 'Refunded', value: `$${refunded}`, color: 'text-red-600', bg: 'bg-red-500/10' },
                 ].map(card => (
-                    <div key={card.label} className={`glass rounded-2xl p-6 border border-white/5 ${card.bg}`}>
+                    <div key={card.label} className={`glass rounded-2xl p-6 border border-border ${card.bg}`}>
                         <p className={`text-xs font-black uppercase tracking-widest mb-2 ${card.color}`}>{card.label}</p>
-                        <span className="text-3xl font-black text-white">{card.value}</span>
+                        <span className="text-3xl font-black text-foreground">{card.value}</span>
                     </div>
                 ))}
             </div>
@@ -121,13 +121,13 @@ export default function PaymentsPage() {
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
-                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
                     <input
                         type="text"
                         placeholder="Search by student name or transaction ID..."
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-600 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                        className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-foreground/20 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                     />
                 </div>
                 <div className="flex items-center gap-2">
@@ -135,7 +135,7 @@ export default function PaymentsPage() {
                         <button
                             key={s}
                             onClick={() => setStatusFilter(s)}
-                            className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}
+                            className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-surface border-border text-foreground/40 hover:text-foreground'}`}
                         >
                             {s}
                         </button>
@@ -144,38 +144,38 @@ export default function PaymentsPage() {
             </div>
 
             {/* Table */}
-            <div className="glass rounded-2xl border border-white/5 overflow-hidden">
+            <div className="glass rounded-2xl border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-white/5">
+                            <tr className="border-b border-border">
                                 {['Transaction ID', 'Student', 'Course', 'Amount', 'Method', 'Date', 'Status', 'Actions'].map(h => (
-                                    <th key={h} className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest whitespace-nowrap">{h}</th>
+                                    <th key={h} className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest whitespace-nowrap">{h}</th>
                                 ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-border">
                             {filtered.map((p, i) => (
                                 <motion.tr
                                     key={p._id}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: i * 0.04 }}
-                                    className="hover:bg-white/3 transition-colors"
+                                    className="hover:bg-foreground/5 transition-colors"
                                 >
                                     <td className="p-4 text-xs font-mono text-primary">{p._id.substring(0, 8)}...</td>
-                                    <td className="p-4 text-white font-bold text-sm whitespace-nowrap">
+                                    <td className="p-4 text-foreground font-bold text-sm whitespace-nowrap">
                                         <div className="flex flex-col">
                                             <span>{p.user?.name || 'Unknown User'}</span>
-                                            <span className="text-[10px] text-gray-500 font-medium lowercase">{p.user?.email}</span>
+                                            <span className="text-[10px] text-foreground/40 font-medium lowercase">{p.user?.email}</span>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-gray-400 text-sm whitespace-nowrap">
+                                    <td className="p-4 text-foreground/60 text-sm whitespace-nowrap">
                                         {p.course?.title || p.track?.title || 'Unknown Product'}
                                     </td>
-                                    <td className="p-4 text-white font-black">{p.amount} EGP</td>
-                                    <td className="p-4 text-gray-500 font-bold text-xs uppercase">{p.method}</td>
-                                    <td className="p-4 text-gray-500 font-bold text-xs whitespace-nowrap">
+                                    <td className="p-4 text-foreground font-black">{p.amount} EGP</td>
+                                    <td className="p-4 text-foreground/40 font-bold text-xs uppercase">{p.method}</td>
+                                    <td className="p-4 text-foreground/40 font-bold text-xs whitespace-nowrap">
                                         {new Date(p.createdAt).toLocaleDateString()}
                                     </td>
                                     <td className="p-4">

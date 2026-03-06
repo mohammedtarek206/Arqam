@@ -41,8 +41,8 @@ export default function StudentSidebar() {
                         />
                     </div>
                     <div>
-                        <span className="text-lg font-black text-white block leading-tight">{t('hero_title')}</span>
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('role_student')}</span>
+                        <span className="text-lg font-black text-foreground block leading-tight">{t('hero_title')}</span>
+                        <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">{t('role_student')}</span>
                     </div>
                 </Link>
             </div>
@@ -67,8 +67,8 @@ export default function StudentSidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-black transition-all relative ${isActive
-                                ? 'text-white'
-                                : 'text-gray-500 hover:text-white hover:bg-white/5'
+                                ? 'text-primary'
+                                : 'text-foreground/40 hover:text-primary hover:bg-foreground/5'
                                 }`}
                         >
                             {isActive && (
@@ -89,8 +89,8 @@ export default function StudentSidebar() {
             </nav>
 
             <div className="p-4 mt-auto w-full">
-                <div className="glass p-4 rounded-2xl border border-white/5 space-y-2">
-                    <Link href="/dashboard/settings" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-gray-400 hover:text-white hover:bg-white/5 transition-all uppercase tracking-widest">
+                <div className="glass p-4 rounded-2xl border border-border space-y-2">
+                    <Link href="/dashboard/settings" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black text-foreground/40 hover:text-primary hover:bg-foreground/5 transition-all uppercase tracking-widest">
                         <FiSettings className="text-lg" /> Settings
                     </Link>
                     <button

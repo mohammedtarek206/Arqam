@@ -97,9 +97,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     ];
 
     const Sidebar = ({ mobile = false }) => (
-        <aside className={`${mobile ? 'flex' : 'hidden lg:flex'} flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'w-72' : 'w-20'} bg-black/60 backdrop-blur-2xl border-r border-white/5 relative z-40`}>
+        <aside className={`${mobile ? 'flex' : 'hidden lg:flex'} flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'w-72' : 'w-20'} bg-surface backdrop-blur-2xl border-r border-border relative z-40`}>
             {/* Logo */}
-            <div className="p-6 flex items-center justify-between border-b border-white/5 shrink-0">
+            <div className="p-6 flex items-center justify-between border-b border-border shrink-0">
                 <div className={`flex items-center gap-3 overflow-hidden transition-all duration-300 ${!sidebarOpen && 'w-0 opacity-0'}`}>
                     <div className="relative w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shrink-0">
                         <Image
@@ -110,7 +110,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         />
                     </div>
                     <div className={`overflow-hidden whitespace-nowrap`}>
-                        <span className="text-sm font-black text-white uppercase tracking-widest block leading-none">Arqam</span>
+                        <span className="text-sm font-black text-foreground uppercase tracking-widest block leading-none">Arqam</span>
                         <span className="text-[10px] font-black text-primary uppercase tracking-widest">Admin Panel</span>
                     </div>
                 </div>
@@ -126,7 +126,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 )}
                 <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className={`p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors shrink-0 ${!sidebarOpen && 'hidden'}`}
+                    className={`p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 hover:text-foreground transition-colors shrink-0 ${!sidebarOpen && 'hidden'}`}
                 >
                     <FiX className="text-sm" />
                 </button>
@@ -134,13 +134,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* Admin info */}
             {sidebarOpen && (
-                <div className="px-4 py-4 border-b border-white/5 shrink-0">
-                    <div className="flex items-center gap-3 bg-white/5 rounded-2xl p-3">
+                <div className="px-4 py-4 border-b border-border shrink-0">
+                    <div className="flex items-center gap-3 bg-foreground/5 rounded-2xl p-3">
                         <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-black text-sm uppercase shrink-0">
                             {adminName.charAt(0)}
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-sm font-black text-white truncate">{adminName}</p>
+                            <p className="text-sm font-black text-foreground truncate">{adminName}</p>
                             <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Super Admin</p>
                         </div>
                     </div>
@@ -152,7 +152,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {menuGroups.map((group) => (
                     <div key={group.label}>
                         {sidebarOpen && (
-                            <p className="text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] px-3 mb-2">{group.label}</p>
+                            <p className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.2em] px-3 mb-2">{group.label}</p>
                         )}
                         <div className="space-y-1">
                             {group.items.map((item) => {
@@ -162,7 +162,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                         key={item.href}
                                         href={item.href}
                                         onClick={() => setMobileSidebarOpen(false)}
-                                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all relative ${isActive ? 'text-white' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all relative ${isActive ? 'text-foreground' : 'text-foreground/40 hover:text-foreground hover:bg-foreground/5'}`}
                                     >
                                         {isActive && (
                                             <motion.div
@@ -185,7 +185,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </nav>
 
             {/* Footer */}
-            <div className="p-3 border-t border-white/5 space-y-1 shrink-0">
+            <div className="p-3 border-t border-border space-y-1 shrink-0">
                 <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black text-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest"
@@ -198,7 +198,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
 
     return (
-        <div className="min-h-screen bg-dark flex overflow-hidden">
+        <div className="min-h-screen bg-background flex overflow-hidden">
             {/* Desktop Sidebar */}
             <Sidebar />
 
@@ -229,25 +229,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
                 {/* Top Bar */}
-                <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-black/20 backdrop-blur-xl shrink-0">
+                <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-surface backdrop-blur-xl shrink-0">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => { setSidebarOpen(!sidebarOpen); setMobileSidebarOpen(!mobileSidebarOpen); }}
-                            className="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors"
+                            className="p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 hover:text-foreground transition-colors"
                         >
                             <FiMenu className="text-lg" />
                         </button>
-                        <div className="flex items-center gap-2 text-xs text-gray-500 font-bold uppercase tracking-widest">
-                            <Link href="/admin/dashboard" className="hover:text-white transition-colors">Admin</Link>
+                        <div className="flex items-center gap-2 text-xs text-foreground/40 font-bold uppercase tracking-widest">
+                            <Link href="/admin/dashboard" className="hover:text-foreground transition-colors">Admin</Link>
                             <FiChevronRight />
-                            <span className="text-white">{pathname.split('/').pop()?.replace(/-/g, ' ') || 'Dashboard'}</span>
+                            <span className="text-foreground">{pathname.split('/').pop()?.replace(/-/g, ' ') || 'Dashboard'}</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Link href="/" className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition-colors">
+                        <Link href="/" className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground border border-border px-3 py-1.5 rounded-lg transition-colors">
                             View Site
                         </Link>
-                        <button className="relative p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors">
+                        <button className="relative p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 hover:text-foreground transition-colors">
                             <FiBell className="text-lg" />
                             <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
                         </button>

@@ -42,11 +42,11 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="relative min-h-screen bg-[#050505] flex items-center justify-center p-4 overflow-hidden">
+        <div className="relative min-h-screen bg-background flex items-center justify-center p-4 overflow-hidden">
             {/* Background Animations */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/[0.03] rounded-full blur-[120px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/[0.03] rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
             </div>
 
             <motion.div
@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
                     <motion.div
                         initial={{ y: -20 }}
                         animate={{ y: 0 }}
-                        className="relative inline-flex items-center justify-center w-32 h-32 mb-6"
+                        className="relative inline-flex items-center justify-center w-24 h-24 mb-6"
                     >
                         <Image
                             src="/logo.png"
@@ -69,19 +69,19 @@ export default function AdminLoginPage() {
                             priority
                         />
                     </motion.div>
-                    <h1 className="text-4xl font-black text-white tracking-tighter mb-2">ADMIN PORTAL</h1>
-                    <p className="text-gray-500 font-medium">Enter your credentials to manage Arqam Academy</p>
+                    <h1 className="text-4xl font-black text-foreground tracking-tighter mb-2 uppercase">Admin Portal</h1>
+                    <p className="text-foreground/40 font-medium text-sm">Enter your credentials to manage Arqam Academy</p>
                 </div>
 
-                <div className="glass p-10 rounded-[2.5rem] border border-white/10 shadow-2xl relative">
+                <div className="glass p-10 rounded-[3rem] border border-border bg-surface/[0.5] shadow-2xl relative backdrop-blur-xl">
                     {/* Decorative line */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full shadow-[0_0_15px_rgba(var(--primary),0.3)]"></div>
 
                     {error && (
                         <motion.div
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-2xl flex items-center mb-6 text-sm font-medium"
+                            className="bg-red-500/5 border border-red-500/10 text-red-500 p-4 rounded-2xl flex items-center mb-6 text-sm font-black uppercase tracking-widest"
                         >
                             <FiAlertCircle className="mr-3 text-lg flex-shrink-0" />
                             {error}
@@ -90,16 +90,16 @@ export default function AdminLoginPage() {
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
+                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] ml-2">Email Address</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <FiMail className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                                    <FiMail className="text-foreground/20 group-focus-within:text-primary transition-colors" />
                                 </div>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
+                                    className="block w-full bg-surface border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder-foreground/20 focus:outline-none focus:border-primary font-bold transition-all outline-none"
                                     placeholder="admin@arqam-academy.com"
                                     required
                                 />
@@ -107,16 +107,16 @@ export default function AdminLoginPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Secure Password</label>
+                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em] ml-2">Secure Password</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <FiLock className="text-gray-500 group-focus-within:text-primary transition-colors" />
+                                    <FiLock className="text-foreground/20 group-focus-within:text-primary transition-colors" />
                                 </div>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="block w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all outline-none"
+                                    className="block w-full bg-surface border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder-foreground/20 focus:outline-none focus:border-primary font-bold transition-all outline-none"
                                     placeholder="••••••••••••"
                                     required
                                 />
@@ -126,10 +126,10 @@ export default function AdminLoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="group relative w-full bg-white text-black py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center hover:bg-primary hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-xl"
+                            className="group relative w-full bg-primary text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center hover:shadow-2xl hover:shadow-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-xl active:scale-[0.98]"
                         >
                             {loading ? (
-                                <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                             ) : (
                                 <>
                                     <span>Sign In To Dashboard</span>
@@ -140,8 +140,8 @@ export default function AdminLoginPage() {
                     </form>
                 </div>
 
-                <p className="text-center mt-8 text-sm text-gray-600">
-                    Arqam Academy Platform Administration v1.0
+                <p className="text-center mt-8 text-[10px] font-black text-foreground/20 uppercase tracking-[0.3em]">
+                    Arqam Academy Platform Administration v2.0
                 </p>
             </motion.div>
         </div>

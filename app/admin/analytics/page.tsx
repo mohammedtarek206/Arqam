@@ -15,14 +15,14 @@ const BarChart = ({ data, max, color }: { data: number[], max: number, color: st
     <div className="flex items-end gap-2 h-40">
         {data.map((val, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
-                <span className="text-[9px] text-white font-black opacity-0 group-hover:opacity-100 transition-opacity">{val}</span>
+                <span className="text-[9px] text-foreground font-black opacity-0 group-hover:opacity-100 transition-opacity">{val}</span>
                 <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${(val / max) * 100}%` }}
                     transition={{ delay: i * 0.05, duration: 0.5 }}
-                    className={`w-full rounded-t-md ${color} opacity-80 hover:opacity-100 transition-opacity cursor-pointer`}
+                    className={`w-full rounded-t-lg ${color} opacity-80 hover:opacity-100 transition-opacity cursor-pointer shadow-lg`}
                 />
-                <span className="text-[9px] text-gray-600 font-bold">{monthLabels[i]}</span>
+                <span className="text-[9px] text-foreground/40 font-bold">{monthLabels[i]}</span>
             </div>
         ))}
     </div>
@@ -46,13 +46,13 @@ export default function AdminAnalyticsPage() {
 
             <div className="grid lg:grid-cols-2 gap-8">
                 {/* Revenue Chart */}
-                <div className="glass rounded-2xl border border-white/5 p-8">
+                <div className="glass rounded-2xl border border-border p-8">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-lg font-black text-white uppercase tracking-tighter">Monthly Revenue</h3>
-                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">2026 Overview</p>
+                            <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Monthly Revenue</h3>
+                            <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mt-1">2026 Overview</p>
                         </div>
-                        <div className="flex items-center gap-2 text-green-400 text-sm font-black bg-green-400/10 px-3 py-2 rounded-xl">
+                        <div className="flex items-center gap-2 text-green-600 text-sm font-black bg-green-500/10 px-3 py-2 rounded-xl border border-green-500/20">
                             <FiTrendingUp /> +22%
                         </div>
                     </div>
@@ -60,61 +60,61 @@ export default function AdminAnalyticsPage() {
                 </div>
 
                 {/* Enrollment Chart */}
-                <div className="glass rounded-2xl border border-white/5 p-8">
+                <div className="glass rounded-2xl border border-border p-8">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-lg font-black text-white uppercase tracking-tighter">Monthly Enrollments</h3>
-                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">2026 Overview</p>
+                            <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Monthly Enrollments</h3>
+                            <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest mt-1">2026 Overview</p>
                         </div>
-                        <div className="flex items-center gap-2 text-blue-400 text-sm font-black bg-blue-400/10 px-3 py-2 rounded-xl">
+                        <div className="flex items-center gap-2 text-blue-600 text-sm font-black bg-blue-500/10 px-3 py-2 rounded-xl border border-blue-500/20">
                             <FiUsers /> +15%
                         </div>
                     </div>
-                    <BarChart data={enrollmentData} max={maxEnroll} color="bg-accent" />
+                    <BarChart data={enrollmentData} max={maxEnroll} color="bg-blue-500" />
                 </div>
             </div>
 
             {/* Summary Stats Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: 'Avg. Course Completion', value: '68%', icon: FiAward, color: 'text-yellow-400' },
-                    { label: 'Avg. Exam Pass Rate', value: '82%', icon: FiBarChart2, color: 'text-green-400' },
-                    { label: 'Best Revenue Month', value: 'Feb ($3,240)', icon: FiDollarSign, color: 'text-primary' },
-                    { label: 'Peak Enrollment Month', value: 'Feb (48)', icon: FiUsers, color: 'text-purple-400' },
+                    { label: 'Avg. Course Completion', value: '68%', icon: FiAward, color: 'text-yellow-600', bg: 'bg-yellow-500/10' },
+                    { label: 'Avg. Exam Pass Rate', value: '82%', icon: FiBarChart2, color: 'text-green-600', bg: 'bg-green-500/10' },
+                    { label: 'Best Revenue Month', value: 'Feb ($3,240)', icon: FiDollarSign, color: 'text-primary', bg: 'bg-primary/10' },
+                    { label: 'Peak Enrollment Month', value: 'Feb (48)', icon: FiUsers, color: 'text-purple-600', bg: 'bg-purple-500/10' },
                 ].map(stat => (
-                    <div key={stat.label} className="glass rounded-2xl p-6 border border-white/5">
+                    <div key={stat.label} className={`glass rounded-2xl p-6 border border-border ${stat.bg}`}>
                         <stat.icon className={`text-2xl mb-3 ${stat.color}`} />
-                        <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{stat.label}</p>
-                        <p className="text-xl font-black text-white mt-1">{stat.value}</p>
+                        <p className="text-[10px] text-foreground/40 font-black uppercase tracking-widest">{stat.label}</p>
+                        <p className="text-xl font-black text-foreground mt-1">{stat.value}</p>
                     </div>
                 ))}
             </div>
 
             {/* Top Students */}
-            <div className="glass rounded-2xl border border-white/5 overflow-hidden">
-                <div className="p-6 border-b border-white/5">
-                    <h3 className="text-lg font-black text-white uppercase tracking-tighter">Top Students by Points</h3>
+            <div className="glass rounded-2xl border border-border overflow-hidden">
+                <div className="p-6 border-b border-border">
+                    <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Top Students by Points</h3>
                 </div>
                 <table className="w-full">
                     <thead>
-                        <tr className="border-b border-white/5">
-                            <th className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Rank</th>
-                            <th className="p-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Student</th>
-                            <th className="p-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest">Courses</th>
-                            <th className="p-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest">Points</th>
+                        <tr className="border-b border-border">
+                            <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Rank</th>
+                            <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Student</th>
+                            <th className="p-4 text-right text-[10px] font-black text-foreground/40 uppercase tracking-widest">Courses</th>
+                            <th className="p-4 text-right text-[10px] font-black text-foreground/40 uppercase tracking-widest">Points</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border">
                         {topStudents.map((s, i) => (
-                            <tr key={i} className="hover:bg-white/3 transition-colors">
+                            <tr key={i} className="hover:bg-foreground/5 transition-colors">
                                 <td className="p-4">
-                                    <span className={`font-black text-sm ${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-gray-300' : i === 2 ? 'text-amber-600' : 'text-gray-600'}`}>
+                                    <span className={`font-black text-sm ${i === 0 ? 'text-yellow-600' : i === 1 ? 'text-foreground/40' : i === 2 ? 'text-amber-700' : 'text-foreground/20'}`}>
                                         #{i + 1}
                                     </span>
                                 </td>
-                                <td className="p-4 text-white font-bold text-sm">{s.name}</td>
-                                <td className="p-4 text-right text-gray-400 font-bold text-sm">{s.courses} courses</td>
-                                <td className="p-4 text-right font-black text-white">{s.points} pts</td>
+                                <td className="p-4 text-foreground font-bold text-sm">{s.name}</td>
+                                <td className="p-4 text-right text-foreground/40 font-bold text-sm">{s.courses} courses</td>
+                                <td className="p-4 text-right font-black text-foreground">{s.points} pts</td>
                             </tr>
                         ))}
                     </tbody>

@@ -108,12 +108,12 @@ export default function AdminPartners() {
         <div className="space-y-8">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Our Partners</h1>
-                    <p className="text-gray-400">Manage companies and organizations logos that we collaborate with.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-2">Our Partners</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Manage companies and organizations logos that we collaborate with.</p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-accent hover:bg-accent/80 text-dark font-black px-6 py-3 rounded-xl flex items-center transition-all shadow-lg"
+                    className="bg-primary hover:bg-primary/80 text-white font-black px-6 py-3 rounded-xl flex items-center transition-all shadow-lg shadow-primary/20 uppercase tracking-widest text-xs"
                 >
                     <FiPlus className="mr-2" /> Add Partner
                 </button>
@@ -121,7 +121,7 @@ export default function AdminPartners() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {partners.map((partner) => (
-                    <div key={partner._id} className="glass p-6 rounded-2xl border border-white/5 relative group hover:border-accent/50 transition-all flex flex-col items-center">
+                    <div key={partner._id} className="glass p-6 rounded-2xl border border-border relative group hover:border-primary/50 transition-all flex flex-col items-center">
                         <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                             <button
                                 onClick={() => openEditModal(partner)}
@@ -136,15 +136,15 @@ export default function AdminPartners() {
                                 <FiTrash2 size={12} />
                             </button>
                         </div>
-                        <div className="aspect-square w-full bg-white/5 rounded-xl flex items-center justify-center p-4 mb-3">
+                        <div className="aspect-square w-full bg-foreground/5 rounded-xl flex items-center justify-center p-4 mb-3 border border-border">
                             <img src={partner.logoUrl} alt={partner.name} className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all" />
                         </div>
-                        <p className="text-xs font-bold text-gray-400 text-center truncate w-full">{partner.name}</p>
+                        <p className="text-xs font-black text-foreground/40 text-center truncate w-full uppercase tracking-tighter">{partner.name}</p>
                     </div>
                 ))}
                 {partners.length === 0 && (
-                    <div className="col-span-full py-12 text-center glass rounded-2xl border border-dashed border-white/10">
-                        <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">No partners added yet</p>
+                    <div className="col-span-full py-12 text-center glass rounded-2xl border border-dashed border-border/50 bg-foreground/[0.02]">
+                        <p className="text-foreground/20 text-[10px] font-black uppercase tracking-[0.2em]">No partners added yet</p>
                     </div>
                 )}
             </div>
@@ -152,37 +152,37 @@ export default function AdminPartners() {
             {/* Add/Edit Modal */}
             <AnimatePresence>
                 {showModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-dark-light w-full max-w-md rounded-3xl p-8 border border-white/10"
+                            className="bg-background w-full max-w-md rounded-3xl p-8 border border-border shadow-2xl"
                         >
-                            <div className="flex justify-between items-center mb-8">
-                                <h2 className="text-2xl font-black text-white tracking-tight">
+                            <div className="flex justify-between items-center mb-8 sticky top-0 bg-background z-10 py-2">
+                                <h2 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-0">
                                     {editingPartner ? 'Edit Partner' : 'Add Partner'}
                                 </h2>
-                                <button onClick={closeModal} className="text-gray-400 hover:text-white p-2 bg-white/5 rounded-full transition-colors">
+                                <button onClick={closeModal} className="p-2 rounded-full text-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-colors">
                                     <FiX size={20} />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] ml-1">Partner Logo</label>
+                                    <label className="text-foreground/40 text-[10px] font-black uppercase tracking-[0.2em] ml-1">Partner Logo</label>
                                     <div className="flex gap-4 items-center">
-                                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center p-2 shrink-0">
+                                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center p-2 shrink-0">
                                             {previewImage ? (
                                                 <img src={previewImage} className="max-w-full max-h-full object-contain" alt="Preview" />
                                             ) : (
-                                                <FiImage className="text-2xl text-gray-700" />
+                                                <FiImage className="text-2xl text-foreground/10" />
                                             )}
                                         </div>
                                         <label className="flex-1 cursor-pointer">
-                                            <div className="w-full py-4 border border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center hover:bg-white/5 transition-all group">
-                                                <FiUpload className="text-gray-500 group-hover:text-accent transition-colors mb-1" />
-                                                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Upload Logo</span>
+                                            <div className="w-full py-4 border border-dashed border-border rounded-xl flex flex-col items-center justify-center hover:bg-foreground/5 transition-all group bg-background">
+                                                <FiUpload className="text-foreground/20 group-hover:text-primary transition-colors mb-1" />
+                                                <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest group-hover:text-foreground/40 transition-colors">Upload Logo</span>
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                                         </label>
@@ -190,10 +190,10 @@ export default function AdminPartners() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] ml-1">Company Name</label>
+                                    <label className="text-foreground/40 text-[10px] font-black uppercase tracking-[0.2em] ml-1">Company Name</label>
                                     <input
                                         type="text"
-                                        className="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white focus:border-accent outline-none"
+                                        className="w-full bg-surface border border-border rounded-xl p-4 text-foreground font-bold focus:border-primary outline-none"
                                         placeholder="e.g. Google"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
@@ -204,9 +204,9 @@ export default function AdminPartners() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-accent hover:shadow-xl hover:shadow-accent/20 text-dark font-black py-4 rounded-xl text-lg transition-all"
+                                    className="w-full bg-primary hover:shadow-xl hover:shadow-primary/20 text-white font-black py-4 rounded-xl text-lg transition-all uppercase tracking-widest"
                                 >
-                                    {loading ? 'Adding...' : (editingPartner ? 'UPDATE PARTNER' : 'ADD PARTNER')}
+                                    {loading ? 'Processing...' : (editingPartner ? 'UPDATE PARTNER' : 'ADD PARTNER')}
                                 </button>
                             </form>
                         </motion.div>

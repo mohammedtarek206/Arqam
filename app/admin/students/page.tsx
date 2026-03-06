@@ -128,7 +128,7 @@ export default function StudentsManagementPage() {
             {loading ? (
                 <div className="flex justify-center py-24"><div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>
             ) : (
-                <div className="glass rounded-2xl border border-white/5 overflow-hidden">
+                <div className="glass rounded-2xl border border-border overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
@@ -141,16 +141,16 @@ export default function StudentsManagementPage() {
                                     <th className="p-4 text-center text-[10px] font-black text-foreground/40 uppercase tracking-widest">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5">
+                            <tbody className="divide-y divide-border">
                                 {filtered.length === 0 ? (
-                                    <tr><td colSpan={6} className="p-12 text-center text-gray-500 font-bold">No students found.</td></tr>
+                                    <tr><td colSpan={6} className="p-12 text-center text-foreground/40 font-bold">No students found.</td></tr>
                                 ) : filtered.map((student, i) => (
                                     <motion.tr
                                         key={student._id}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ delay: i * 0.03 }}
-                                        className="hover:bg-white/3 transition-colors"
+                                        className="hover:bg-foreground/5 transition-colors"
                                     >
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
