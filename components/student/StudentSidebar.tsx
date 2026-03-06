@@ -28,10 +28,10 @@ export default function StudentSidebar() {
     ];
 
     return (
-        <aside className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} w-72 bg-background/40 backdrop-blur-xl border-${lang === 'ar' ? 'l' : 'r'} border-border z-40 flex flex-col hidden lg:flex`}>
-            <div className="p-8">
-                <Link href="/" className="flex items-center gap-3">
-                    <div className="relative w-20 h-20 flex items-center justify-center">
+        <aside className={`fixed inset-y-0 ${lang === 'ar' ? 'right-0' : 'left-0'} w-72 bg-surface border-${lang === 'ar' ? 'l' : 'r'} border-border z-[60] flex flex-col hidden lg:flex shadow-2xl`}>
+            <div className="p-8 pb-4">
+                <Link href="/" className="flex flex-col items-center gap-4 group">
+                    <div className="relative w-24 h-24 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                         <Image
                             src="/logo.png"
                             alt="Arqam Academy Logo"
@@ -40,9 +40,12 @@ export default function StudentSidebar() {
                             priority
                         />
                     </div>
-                    <div>
-                        <span className="text-lg font-black text-foreground block leading-tight">{t('hero_title')}</span>
-                        <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">{t('role_student')}</span>
+                    <div className="text-center">
+                        <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>
+                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] block">Academy</span>
+                        <span className="inline-block mt-3 px-3 py-1 bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest rounded-full border border-primary/20 shadow-sm">
+                            {t('role_student')}
+                        </span>
                     </div>
                 </Link>
             </div>
@@ -67,22 +70,22 @@ export default function StudentSidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-black transition-all relative ${isActive
-                                ? 'text-primary'
+                                ? 'text-primary bg-primary/10 border-primary/20 shadow-inner'
                                 : 'text-foreground/40 hover:text-primary hover:bg-foreground/5'
                                 }`}
                         >
                             {isActive && (
                                 <motion.div
                                     layoutId="activeTabStudent"
-                                    className="absolute inset-0 bg-primary/10 border border-primary/20 rounded-2xl -z-10"
+                                    className="absolute inset-0 border border-primary/20 rounded-2xl -z-10"
                                     initial={false}
                                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                 />
                             )}
-                            <span className={`text-xl ${isActive ? 'text-primary' : ''}`}>
+                            <span className={`text-xl ${isActive ? 'text-primary' : 'text-foreground/20'}`}>
                                 {item.icon}
                             </span>
-                            <span className="uppercase tracking-widest text-xs relative top-0.5">{item.name}</span>
+                            <span className="uppercase tracking-[0.15em] text-[11px] font-black relative top-0.5">{item.name}</span>
                         </Link>
                     );
                 })}

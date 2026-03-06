@@ -25,7 +25,29 @@ export default function InstructorSidebar() {
     ];
 
     return (
-        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-64 bg-background/50 backdrop-blur-xl border-r border-border z-30 transition-all hidden md:flex flex-col pt-20`}>
+        <div className={`fixed top-0 ${lang === 'ar' ? 'right-0' : 'left-0'} h-full w-72 bg-background/50 backdrop-blur-xl border-r border-border z-30 transition-all hidden md:flex flex-col`}>
+            {/* Logo */}
+            <div className="p-8 border-b border-border">
+                <Link href="/" className="flex items-center gap-3 group">
+                    <div className="relative w-16 h-16 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Image
+                            src="/logo.png"
+                            alt="Arqam Academy Logo"
+                            width={64}
+                            height={64}
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                    <div>
+                        <span className="text-lg font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>
+                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] block">Academy</span>
+                        <span className="inline-block mt-2 px-2 py-0.5 bg-primary/10 text-primary text-[8px] font-black uppercase tracking-widest rounded-full border border-primary/20">
+                            Instructor
+                        </span>
+                    </div>
+                </Link>
+            </div>
             {/* User info */}
             <div className="px-4 py-4 border-b border-border shrink-0">
                 <div className="flex items-center gap-3 bg-foreground/5 rounded-2xl p-3">
@@ -51,10 +73,10 @@ export default function InstructorSidebar() {
                                     : 'text-foreground/60 hover:bg-foreground/5 hover:text-foreground'
                                     }`}
                             >
-                                <span className={`text-xl ${isActive ? 'text-primary' : ''}`}>{item.icon}</span>
-                                <span className="text-xs uppercase tracking-widest">{item.label}</span>
+                                <span className={`text-xl ${isActive ? 'text-primary' : 'text-foreground/20'}`}>{item.icon}</span>
+                                <span className="text-[11px] font-black uppercase tracking-[0.15em]">{item.label}</span>
                                 {isActive && (
-                                    <div className={`absolute ${lang === 'ar' ? 'right-0' : 'left-0'} top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full`} />
+                                    <div className={`absolute ${lang === 'ar' ? 'right-0' : 'left-0'} top-1/2 -translate-y-1/2 w-1.5 h-6 bg-primary rounded-full shadow-[0_0_10px_rgba(var(--primary),0.5)]`} />
                                 )}
                             </motion.div>
                         </Link>

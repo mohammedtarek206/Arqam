@@ -56,10 +56,11 @@ export default function StudentDashboardOverview() {
     return (
         <div className="space-y-12 max-w-7xl mx-auto">
             <header>
-                <h1 className="text-4xl font-black text-foreground uppercase tracking-tighter">
-                    {t('welcome_back') || 'WELCOME BACK'}, <span className="text-primary">{user?.name?.split(' ')[0].toUpperCase() || 'STUDENT'}</span>
+                <h1 className="text-4xl md:text-5xl font-black text-foreground uppercase tracking-tighter leading-none">
+                    {t('welcome_back') || 'WELCOME BACK'}, <br className="md:hidden" />
+                    <span className="text-primary">{user?.name?.split(' ')[0].toUpperCase() || 'STUDENT'}</span>
                 </h1>
-                <p className="text-foreground/60 font-bold mt-1">Ready to continue your journey?</p>
+                <p className="text-foreground/40 font-black text-[11px] uppercase tracking-[0.3em] mt-3 ml-1">Ready to continue your journey?</p>
             </header>
 
             {/* Metrics Row */}
@@ -70,14 +71,14 @@ export default function StudentDashboardOverview() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="glass p-8 rounded-[2.5rem] border border-white/5 flex items-center gap-6 group hover:border-white/10 transition-all"
+                        className="glass p-8 rounded-[3rem] border border-border flex items-center gap-6 group hover:border-primary/20 transition-all bg-surface/50 shadow-sm hover:shadow-xl hover:shadow-primary/5"
                     >
                         <div className={`w-16 h-16 rounded-2xl bg-foreground/5 flex items-center justify-center text-3xl shrink-0 ${m.color} group-hover:scale-110 transition-transform`}>
                             {m.icon}
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-1">{m.title}</p>
-                            <h3 className="text-3xl font-black text-foreground">{m.value}</h3>
+                            <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] mb-1">{m.title}</p>
+                            <h3 className="text-4xl font-black text-foreground tracking-tighter">{m.value}</h3>
                         </div>
                     </motion.div>
                 ))}

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
 import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
@@ -26,6 +27,12 @@ export default function Navbar() {
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
   const [tracks, setTracks] = useState<{ href: string; label: string }[]>([]);
+
+  // Do not show navbar on dashboard or admin pages to avoid overlap
+  const isDashboardPage = pathname?.startsWith('/dashboard') ||
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/instructor') ||
+    pathname?.startsWith('/learn');
 
   useEffect(() => {
     setMounted(true);
@@ -111,7 +118,7 @@ export default function Navbar() {
     }
   };
 
-  if (!mounted) return null;
+  if (!mounted || isDashboardPage) return null;
 
   return (
     <nav ref={navRef} className="fixed top-0 w-full bg-background/80 backdrop-blur-xl z-50 border-b border-border transition-all duration-300">
@@ -119,8 +126,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20 gap-4">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse shrink-0">
-            <div className="relative w-20 h-20 md:w-24 md:h-24 flex items-center justify-center group hover:scale-110 transition-transform">
+          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+            <div className="relative w-24 h-24 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
               <Image
                 src="/logo.png"
                 alt="Arqam Academy Logo"
@@ -130,8 +137,8 @@ export default function Navbar() {
               />
             </div>
             <div className="hidden lg:block">
-              <span className="text-xl font-black text-white uppercase tracking-tighter block leading-none">Arqam</span>
-              <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] block">Academy</span>
+              <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] block">Academy</span>
             </div>
           </Link>
 
@@ -190,16 +197,16 @@ export default function Navbar() {
             <div className="hidden md:flex items-center relative group">
               <motion.div
                 animate={{ width: searchOpen ? '240px' : '40px' }}
-                className="relative h-10 bg-white/5 border border-white/10 rounded-full overflow-hidden flex items-center transition-all group-hover:border-primary/50"
+                className="relative h-10 bg-foreground/5 border border-border rounded-full overflow-hidden flex items-center transition-all group-hover:border-primary/50"
               >
                 <FiSearch
-                  className="absolute left-3 rtl:right-3 text-gray-400 cursor-pointer"
+                  className="absolute left-3 rtl:right-3 text-foreground/40 cursor-pointer"
                   onClick={() => setSearchOpen(!searchOpen)}
                 />
                 <input
                   type="text"
                   placeholder={t('search')}
-                  className="w-full bg-transparent border-none outline-none text-white text-sm px-10 placeholder:text-gray-500"
+                  className="w-full bg-transparent border-none outline-none text-foreground font-bold text-sm px-10 placeholder:text-foreground/20"
                 />
               </motion.div>
             </div>
@@ -290,9 +297,9 @@ export default function Navbar() {
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     className="absolute top-full mt-2 w-64 glass border border-white/10 rounded-2xl shadow-2xl p-3 right-0 rtl:right-auto rtl:left-0 overflow-hidden"
                   >
-                    <div className="p-3 mb-2 border-b border-white/5">
-                      <p className="text-white font-bold">{user.name}</p>
-                      <p className="text-gray-500 text-[10px] uppercase font-bold tracking-widest mt-1">{user.role}</p>
+                    <div className="p-4 mb-2 border-b border-border bg-foreground/[0.02]">
+                      <p className="text-foreground font-black uppercase tracking-tight">{user.name}</p>
+                      <p className="text-primary text-[10px] uppercase font-black tracking-widest mt-1 shadow-sm">{user.role}</p>
                     </div>
                     <div className="space-y-1">
                       {getRoleMenu()?.map((item) => (

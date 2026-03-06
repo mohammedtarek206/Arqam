@@ -58,57 +58,61 @@ function CoursePreviewModal({ course, onClose }: { course: Course; onClose: () =
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="glass rounded-2xl border border-white/10 w-full max-w-2xl shadow-2xl overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="glass rounded-[3rem] border border-border w-full max-w-2xl shadow-2xl overflow-hidden bg-surface"
             >
                 {/* Thumbnail */}
-                <div className="relative h-52 overflow-hidden">
+                <div className="relative h-64 overflow-hidden">
                     <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/80 rounded-xl text-white transition-colors"
+                        className="absolute top-6 right-6 p-3 bg-background/50 backdrop-blur-md hover:bg-background rounded-2xl text-foreground transition-all border border-border shadow-lg"
                     >
-                        <FiX />
+                        <FiX className="text-xl" />
                     </button>
-                    <div className="absolute bottom-4 left-6">
-                        <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${course.status === 'active' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-dark'}`}>
-                            {course.status}
-                        </span>
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-2">{course.track}</p>
-                        <h2 className="text-xl font-black text-white mt-1 leading-tight">{course.title}</h2>
+                    <div className="absolute bottom-6 left-8 right-8">
+                        <div className="flex items-center gap-3 mb-3">
+                            <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${course.status === 'active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'}`}>
+                                {course.status}
+                            </span>
+                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] bg-primary/10 px-3 py-1 rounded-full border border-primary/20">{course.track}</span>
+                        </div>
+                        <h2 className="text-2xl font-black text-foreground leading-tight tracking-tighter uppercase">{course.title}</h2>
                     </div>
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center gap-6 px-6 py-4 border-b border-white/5">
-                    <div className="flex items-center gap-2 text-sm font-bold">
-                        <FiUsers className="text-primary" />
-                        <span className="text-white">{course.students}</span>
-                        <span className="text-gray-500">students</span>
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 px-8 py-6 border-b border-border bg-foreground/[0.02]">
+                    <div className="flex flex-col items-center gap-1">
+                        <FiUsers className="text-primary text-xl" />
+                        <span className="text-lg font-black text-foreground">{course.students}</span>
+                        <span className="text-[8px] font-black uppercase text-foreground/30 tracking-widest">Students</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm font-bold">
-                        <FiLayers className="text-primary" />
-                        <span className="text-white">{course.modules}</span>
-                        <span className="text-gray-500">modules</span>
+                    <div className="flex flex-col items-center gap-1">
+                        <FiLayers className="text-primary text-xl" />
+                        <span className="text-lg font-black text-foreground">{course.modules}</span>
+                        <span className="text-[8px] font-black uppercase text-foreground/30 tracking-widest">Modules</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm font-bold">
-                        <FiVideo className="text-primary" />
-                        <span className="text-white">{course.lessons}</span>
-                        <span className="text-gray-500">lessons</span>
+                    <div className="flex flex-col items-center gap-1">
+                        <FiVideo className="text-primary text-xl" />
+                        <span className="text-lg font-black text-foreground">{course.lessons}</span>
+                        <span className="text-[8px] font-black uppercase text-foreground/30 tracking-widest">Lessons</span>
                     </div>
                     {course.rating && (
-                        <div className="flex items-center gap-2 text-sm font-bold">
-                            <FiStar className="text-yellow-400 fill-current" />
-                            <span className="text-white">{course.rating}</span>
+                        <div className="flex flex-col items-center gap-1">
+                            <FiStar className="text-yellow-400 fill-current text-xl" />
+                            <span className="text-lg font-black text-foreground">{course.rating}</span>
+                            <span className="text-[8px] font-black uppercase text-foreground/30 tracking-widest">Rating</span>
                         </div>
                     )}
                     {course.duration && (
-                        <div className="flex items-center gap-2 text-sm font-bold">
-                            <FiClock className="text-primary" />
-                            <span className="text-white">{course.duration}</span>
+                        <div className="hidden md:flex flex-col items-center gap-1">
+                            <FiClock className="text-primary text-xl" />
+                            <span className="text-lg font-black text-foreground whitespace-nowrap">{course.duration}</span>
+                            <span className="text-[8px] font-black uppercase text-foreground/30 tracking-widest">Duration</span>
                         </div>
                     )}
                 </div>
@@ -203,15 +207,15 @@ export default function ManageCourses() {
                 )}
             </AnimatePresence>
 
-            <header className="flex justify-between items-center">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl font-black text-white uppercase">{t('manage_courses')}</h1>
-                    <p className="text-gray-400 font-bold mt-1">Manage and update your educational content.</p>
+                    <h1 className="text-4xl md:text-5xl font-black text-foreground uppercase tracking-tighter leading-none">{t('manage_courses')}</h1>
+                    <p className="text-foreground/40 font-black text-[11px] uppercase tracking-[0.3em] mt-3">Manage and update your educational content.</p>
                 </div>
                 {!showBuilder && (
                     <button
                         onClick={handleCreateNew}
-                        className="px-8 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
+                        className="px-8 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-3 uppercase text-xs tracking-[0.15em]"
                     >
                         <FiPlus className="w-5 h-5" /> {t('create_course')}
                     </button>
@@ -244,22 +248,26 @@ export default function ManageCourses() {
                                     </div>
                                 </div>
 
-                                <div className="p-6 flex-1 flex flex-col justify-between">
+                                <div className="p-7 flex-1 flex flex-col justify-between">
                                     <div>
-                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">{course.track?.title || 'Professional'}</span>
-                                        <h3 className="text-base font-black text-white group-hover:text-primary transition-colors leading-tight mb-3 mt-1">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] bg-primary/5 px-2 py-0.5 rounded border border-primary/10">
+                                                {course.track?.title || 'Professional'}
+                                            </span>
+                                            <div className="flex items-center gap-1.5 text-[10px] font-black text-foreground/30 uppercase tracking-widest">
+                                                <FiUsers className="text-primary" /> {course.students || 0} enrolled
+                                            </div>
+                                        </div>
+                                        <h3 className="text-lg font-black text-foreground group-hover:text-primary transition-colors leading-tight mb-4 uppercase tracking-tight">
                                             {course.title}
                                         </h3>
-                                        <div className="flex items-center gap-4 text-xs font-bold text-gray-500">
-                                            <span className="flex items-center gap-1.5"><FiLayers className="text-primary" /> {course.modules?.length || 0} Units</span>
-                                            <span className="flex items-center gap-1.5"><FiVideo className="text-primary" /> {course.modules?.reduce((a: any, m: any) => a + (m.lessons?.length || 0), 0) || 0} Lessons</span>
+                                        <div className="flex items-center gap-4 text-[10px] font-black text-foreground/40 uppercase tracking-widest">
+                                            <span className="flex items-center gap-1.5 px-2 py-1 bg-foreground/5 rounded-lg border border-border"><FiLayers className="text-primary" /> {course.modules?.length || 0} Units</span>
+                                            <span className="flex items-center gap-1.5 px-2 py-1 bg-foreground/5 rounded-lg border border-border"><FiVideo className="text-primary" /> {course.modules?.reduce((a: any, m: any) => a + (m.lessons?.length || 0), 0) || 0} Lessons</span>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between mt-5">
-                                        <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
-                                            <FiUsers className="text-primary" /> {course.students || 0} students
-                                        </div>
+                                    <div className="flex items-center justify-end mt-6 pt-4 border-t border-border">
                                         <div className="flex gap-2">
                                             {/* View button */}
                                             <button
