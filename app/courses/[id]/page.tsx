@@ -126,7 +126,7 @@ export default function CourseDetailsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+            <div className="min-h-screen bg-background pt-32 pb-20 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
@@ -134,56 +134,56 @@ export default function CourseDetailsPage() {
 
     if (!course) {
         return (
-            <div className="min-h-screen bg-dark pt-32 pb-20 text-center">
-                <h1 className="text-white text-2xl">Course not found</h1>
+            <div className="min-h-screen bg-background pt-32 pb-20 text-center">
+                <h1 className="text-foreground text-2xl">Course not found</h1>
                 <Link href="/courses" className="text-primary mt-4 inline-block underline">Back to Courses</Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-dark pt-24 pb-20">
+        <div className="min-h-screen bg-background pt-24 pb-20">
             {/* Hero Section */}
-            <div className="relative border-b border-white/10 pb-12 overflow-hidden">
+            <div className="relative border-b border-border pb-12 overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/20 to-transparent blur-[120px] pointer-events-none -z-10" />
 
                 <div className="max-w-7xl mx-auto px-4 md:px-8 mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-6">
                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-dark px-3 py-1 rounded border border-primary/20">{course.level}</span>
+                            <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-surface px-3 py-1 rounded border border-border">{course.level}</span>
                             <span className="flex items-center gap-1 text-xs font-bold text-yellow-500">
                                 <FiStar className="fill-current" /> 4.9 (1.2k students)
                             </span>
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl font-black text-white leading-tight uppercase tracking-tighter">
+                        <h1 className="text-4xl md:text-5xl font-black text-foreground leading-tight uppercase tracking-tighter">
                             {course.title}
                         </h1>
 
-                        <p className="text-gray-400 font-medium text-lg max-w-xl leading-relaxed">
+                        <p className="text-foreground/60 font-medium text-lg max-w-xl leading-relaxed">
                             {course.description}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-white/10">
+                        <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-border">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                                    <span className="text-white font-black text-xs uppercase tracking-widest">
+                                <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center border border-border">
+                                    <span className="text-foreground font-black text-xs uppercase tracking-widest">
                                         {course.instructor?.name?.charAt(0) || 'A'}
                                     </span>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">Created By</p>
-                                    <p className="text-sm font-bold text-white">{course.instructor?.name || 'Instructor'}</p>
+                                    <p className="text-[10px] font-black text-foreground/40 uppercase tracking-widest leading-none mb-1">Created By</p>
+                                    <p className="text-sm font-bold text-foreground">{course.instructor?.name || 'Instructor'}</p>
                                 </div>
                             </div>
-                            <div className="h-8 w-px bg-white/10" />
-                            <div className="flex items-center gap-2 text-gray-400 text-sm font-bold">
+                            <div className="h-8 w-px bg-border" />
+                            <div className="flex items-center gap-2 text-foreground/40 text-sm font-bold">
                                 <FiClock /> 40 Hours
                             </div>
-                            <div className="flex items-center gap-2 text-gray-400 text-sm font-bold">
+                            <div className="flex items-center gap-2 text-foreground/40 text-sm font-bold">
                                 <FiBook /> {course.level}
                             </div>
-                            <div className="flex items-center gap-2 text-gray-400 text-sm font-bold">
+                            <div className="flex items-center gap-2 text-foreground/40 text-sm font-bold">
                                 <FiAward /> Certificate Included
                             </div>
                         </div>
@@ -195,7 +195,7 @@ export default function CourseDetailsPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="relative hidden lg:block"
                     >
-                        <div className="glass rounded-[2rem] p-4 border border-white/10 shadow-2xl relative z-10 w-full max-w-md mx-auto">
+                        <div className="glass rounded-[2rem] p-4 border border-border shadow-2xl relative z-10 w-full max-w-md mx-auto">
                             <div className="aspect-video w-full relative rounded-xl overflow-hidden mb-6 group cursor-pointer">
                                 <img src={course.thumbnail || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800'} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-colors group-hover:bg-black/30">
@@ -207,7 +207,7 @@ export default function CourseDetailsPage() {
 
                             <div className="px-4 pb-4">
                                 <div className="flex items-baseline gap-2 mb-6">
-                                    <span className="text-4xl font-black text-white">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
+                                    <span className="text-4xl font-black text-foreground">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
                                 </div>
 
                                 {enrollmentStatus === 'enrolled' ? (
@@ -233,7 +233,7 @@ export default function CourseDetailsPage() {
                                     </button>
                                 )}
 
-                                <p className="text-center text-[10px] font-bold text-gray-500 mt-4 uppercase tracking-widest flex items-center justify-center gap-1">
+                                <p className="text-center text-[10px] font-bold text-foreground/40 mt-4 uppercase tracking-widest flex items-center justify-center gap-1">
                                     <FiShield /> 30-Day Money-Back Guarantee
                                 </p>
                             </div>
@@ -243,10 +243,10 @@ export default function CourseDetailsPage() {
             </div>
 
             {/* Mobile Enrollment Card Banner (Sticky Bottom) - Only visible on small screens */}
-            <div className="lg:hidden fixed bottom-0 inset-x-0 bg-dark/90 backdrop-blur-xl border-t border-white/10 p-4 z-50 flex items-center justify-between">
+            <div className="lg:hidden fixed bottom-0 inset-x-0 bg-background/90 backdrop-blur-xl border-t border-border p-4 z-50 flex items-center justify-between">
                 <div>
-                    <span className="block text-[10px] font-black uppercase text-gray-500 mb-1">Course Price</span>
-                    <span className="text-2xl font-black text-white">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
+                    <span className="block text-[10px] font-black uppercase text-foreground/40 mb-1">Course Price</span>
+                    <span className="text-2xl font-black text-foreground">{course.isFree ? 'Free' : `${course.price} EGP`}</span>
                 </div>
                 {enrollmentStatus === 'enrolled' ? (
                     <button
@@ -275,8 +275,8 @@ export default function CourseDetailsPage() {
             {/* Content Section */}
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 lg:grid-cols-3 gap-16">
                 <div className="lg:col-span-2 space-y-16">
-                    <div className="bg-white/5 border border-white/5 rounded-[2rem] p-8 md:p-12">
-                        <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-8 border-b border-white/10 pb-4">
+                    <div className="bg-surface border border-border rounded-[2rem] p-8 md:p-12">
+                        <h2 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-8 border-b border-border pb-4">
                             What you'll learn
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -290,7 +290,7 @@ export default function CourseDetailsPage() {
                                     <div className="mt-1 shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                                         <FiCheck className="text-primary text-sm" />
                                     </div>
-                                    <p className="text-gray-300 font-medium text-sm leading-relaxed">{item}</p>
+                                    <p className="text-foreground/60 font-medium text-sm leading-relaxed">{item}</p>
                                 </div>
                             ))}
                         </div>
@@ -298,16 +298,16 @@ export default function CourseDetailsPage() {
                 </div>
 
                 <div className="hidden lg:block space-y-8">
-                    <div className="bg-white/5 border border-white/5 rounded-[2rem] p-8">
-                        <h3 className="text-xl font-black text-white uppercase tracking-tighter mb-6">Course Includes</h3>
+                    <div className="bg-surface border border-border rounded-[2rem] p-8">
+                        <h3 className="text-xl font-black text-foreground uppercase tracking-tighter mb-6">Course Includes</h3>
                         <ul className="space-y-4">
-                            <li className="flex items-center gap-3 text-gray-400 font-medium text-sm">
+                            <li className="flex items-center gap-3 text-foreground/40 font-medium text-sm">
                                 <FiPlayCircle className="text-lg text-primary" /> 40 hours video
                             </li>
-                            <li className="flex items-center gap-3 text-gray-400 font-medium text-sm">
+                            <li className="flex items-center gap-3 text-foreground/40 font-medium text-sm">
                                 <FiArrowRight className="text-lg text-primary" /> Lifetime access
                             </li>
-                            <li className="flex items-center gap-3 text-gray-400 font-medium text-sm">
+                            <li className="flex items-center gap-3 text-foreground/40 font-medium text-sm">
                                 <FiAward className="text-lg text-primary" /> Certification
                             </li>
                         </ul>
@@ -330,20 +330,20 @@ export default function CourseDetailsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-xl glass border border-white/10 rounded-[2.5rem] shadow-2xl p-8 overflow-hidden rtl:text-right"
+                            className="relative w-full max-w-xl glass border border-border rounded-[2.5rem] shadow-2xl p-8 overflow-hidden rtl:text-right"
                         >
                             <button
                                 onClick={() => setShowPaymentModal(false)}
-                                className="absolute top-6 right-6 p-2 text-gray-500 hover:text-white transition-colors"
+                                className="absolute top-6 right-6 p-2 text-foreground/40 hover:text-foreground transition-colors"
                             >
                                 <FiX size={24} />
                             </button>
 
                             <div className="mb-8">
-                                <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-2">
+                                <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-2">
                                     {lang === 'ar' ? 'إتمام التسجيل' : 'Enrollment Checkout'}
                                 </h3>
-                                <p className="text-gray-400 font-medium">
+                                <p className="text-foreground/60 font-medium">
                                     {lang === 'ar'
                                         ? `أنت الآن تشترك في: ${course.title}`
                                         : `You are enrolling in: ${course.title}`}
@@ -378,31 +378,31 @@ export default function CourseDetailsPage() {
                                 </>
                             ) : (
                                 <div className="space-y-6">
-                                    <div className="p-6 bg-primary/10 border border-primary/30 rounded-2xl space-y-4">
-                                        <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-2">
+                                    <div className="p-6 bg-primary/10 border border-primary/20 rounded-2xl space-y-4">
+                                        <h4 className="text-foreground font-black uppercase tracking-widest text-xs flex items-center gap-2">
                                             <FiInfo className="text-primary" /> Instructions / تعليمات الدفع
                                         </h4>
                                         <div className="space-y-4">
                                             {selectedMethod === 'Vodafone Cash' && (
-                                                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
-                                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">تحويل فودافون كاش إلى الرقم التالي:</p>
+                                                <div className="text-center py-4 bg-dark rounded-xl border border-border">
+                                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">تحويل فودافون كاش إلى الرقم التالي:</p>
                                                     <p className="text-3xl font-black text-primary tracking-tighter select-all cursor-pointer">01006093939</p>
                                                 </div>
                                             )}
                                             {selectedMethod === 'InstaPay' && (
-                                                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
-                                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">تحويل انستا باي إلى الحساب التالي:</p>
+                                                <div className="text-center py-4 bg-dark rounded-xl border border-border">
+                                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">تحويل انستا باي إلى الحساب التالي:</p>
                                                     <p className="text-xl font-black text-primary tracking-tight select-all cursor-pointer">mo.tarek@instapay</p>
                                                 </div>
                                             )}
-                                            <p className="text-gray-400 text-[10px] font-bold text-center uppercase tracking-widest">
+                                            <p className="text-foreground/60 text-[10px] font-bold text-center uppercase tracking-widest">
                                                 {lang === 'ar' ? 'بعد التحويل، يرجى رفع صورة الإيصال أو لقطة الشاشة أدناه' : 'After transfer, please upload the receipt screenshot below'}
                                             </p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="block text-gray-400 text-xs font-bold uppercase tracking-widest">Screenshot / Receipt</label>
+                                        <label className="block text-foreground/60 text-xs font-bold uppercase tracking-widest">Screenshot / Receipt</label>
                                         <div className="relative group">
                                             <input
                                                 type="file"
@@ -413,14 +413,14 @@ export default function CourseDetailsPage() {
                                             />
                                             <label
                                                 htmlFor="proof-upload"
-                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/10 rounded-2xl hover:border-primary/50 hover:bg-white/5 transition-all cursor-pointer overflow-hidden"
+                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border rounded-2xl hover:border-primary/50 hover:bg-surface transition-all cursor-pointer overflow-hidden"
                                             >
                                                 {proofImage ? (
                                                     <img src={proofImage} alt="Proof" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <>
-                                                        <FiUpload className="text-3xl text-gray-500 mb-2 group-hover:text-primary transition-colors" />
-                                                        <span className="text-xs text-gray-500 font-bold group-hover:text-gray-300 transition-colors">Click to upload screenshot</span>
+                                                        <FiUpload className="text-3xl text-foreground/40 mb-2 group-hover:text-primary transition-colors" />
+                                                        <span className="text-xs text-foreground/40 font-bold group-hover:text-foreground/60 transition-colors">Click to upload screenshot</span>
                                                     </>
                                                 )}
                                             </label>
@@ -430,7 +430,7 @@ export default function CourseDetailsPage() {
                                     <div className="flex gap-3">
                                         <button
                                             onClick={() => setPaymentStep('select')}
-                                            className="flex-1 py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all uppercase text-xs"
+                                            className="flex-1 py-4 bg-surface text-foreground font-bold rounded-xl border border-border hover:bg-foreground/5 transition-all uppercase text-xs"
                                         >
                                             {lang === 'ar' ? 'رجوع' : 'Back'}
                                         </button>
@@ -446,7 +446,7 @@ export default function CourseDetailsPage() {
                             )}
 
                             <div className="mt-8 text-center">
-                                <p className="text-xs text-gray-500">Secure payments powered by Arqam Academy</p>
+                                <p className="text-xs text-foreground/20">Secure payments powered by Arqam Academy</p>
                             </div>
                         </motion.div>
                     </div>

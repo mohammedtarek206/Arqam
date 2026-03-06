@@ -202,7 +202,7 @@ export default function TrackDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark pt-32 pb-20 flex items-center justify-center">
+            <div className="min-h-screen bg-background pt-32 pb-20 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
@@ -211,7 +211,7 @@ export default function TrackDetailPage() {
     if (!track) return null;
 
     return (
-        <div className="min-h-screen bg-dark pt-32 pb-20 relative overflow-hidden">
+        <div className="min-h-screen bg-background pt-32 pb-20 relative overflow-hidden">
             <div className={`absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl ${track.color} opacity-10 rounded-full blur-[120px] pointer-events-none`} />
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -228,36 +228,36 @@ export default function TrackDetailPage() {
 
                         <div>
                             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{track.name} Track</span>
-                            <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.1] mt-4 uppercase tracking-tighter">
+                            <h1 className="text-4xl md:text-6xl font-black text-foreground leading-[1.1] mt-4 uppercase tracking-tighter">
                                 {track.title}
                             </h1>
                         </div>
 
-                        <p className="text-lg text-gray-400 font-medium leading-relaxed max-w-lg">
+                        <p className="text-lg text-foreground/60 font-medium leading-relaxed max-w-lg">
                             {track.desc}
                         </p>
 
-                        <div className="flex flex-wrap gap-4 pt-4 border-t border-white/5">
-                            <div className="glass px-6 py-4 rounded-2xl border border-white/5 flex items-center gap-4">
+                        <div className="flex flex-wrap gap-4 pt-4 border-t border-border">
+                            <div className="glass px-6 py-4 rounded-2xl border border-border flex items-center gap-4">
                                 <FiBook className="text-2xl text-primary" />
                                 <div>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Included</p>
-                                    <p className="text-lg font-black text-white">{track.courses} Courses</p>
+                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Included</p>
+                                    <p className="text-lg font-black text-foreground">{track.courses} Courses</p>
                                 </div>
                             </div>
-                            <div className="glass px-6 py-4 rounded-2xl border border-white/5 flex items-center gap-4">
+                            <div className="glass px-6 py-4 rounded-2xl border border-border flex items-center gap-4">
                                 <FiClock className="text-2xl text-accent" />
                                 <div>
-                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Estimated</p>
-                                    <p className="text-lg font-black text-white">{track.duration}</p>
+                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Estimated</p>
+                                    <p className="text-lg font-black text-foreground">{track.duration}</p>
                                 </div>
                             </div>
                             {track.price > 0 && (
-                                <div className="glass px-6 py-4 rounded-2xl border border-white/5 flex items-center gap-4">
+                                <div className="glass px-6 py-4 rounded-2xl border border-border flex items-center gap-4">
                                     <FiCreditCard className="text-2xl text-green-400" />
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Price</p>
-                                        <p className="text-lg font-black text-white">{track.price} EGP</p>
+                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Price</p>
+                                        <p className="text-lg font-black text-foreground">{track.price} EGP</p>
                                     </div>
                                 </div>
                             )}
@@ -288,20 +288,20 @@ export default function TrackDetailPage() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="glass p-8 md:p-12 rounded-[3.5rem] border border-white/10 relative"
+                        className="glass p-8 md:p-12 rounded-[3.5rem] border border-border relative"
                     >
-                        <h3 className="text-2xl font-black text-white mb-8 uppercase tracking-tight">Track Syllabus</h3>
+                        <h3 className="text-2xl font-black text-foreground mb-8 uppercase tracking-tight">Track Syllabus</h3>
 
-                        <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-4 rtl:before:right-4 before:w-0.5 before:bg-white/5">
+                        <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-4 rtl:before:right-4 before:w-0.5 before:bg-border">
                             {track.lessons && track.lessons.length > 0 ? (
                                 track.lessons.map((item: any, i: number) => (
                                     <div key={i} className="relative z-10 flex gap-6 group">
-                                        <div className="w-8 h-8 rounded-full bg-dark border-2 border-white/10 flex items-center justify-center shrink-0 group-hover:border-primary group-hover:bg-primary/20 transition-all">
-                                            <span className="text-xs font-black text-white">{i + 1}</span>
+                                        <div className="w-8 h-8 rounded-full bg-surface border-2 border-border flex items-center justify-center shrink-0 group-hover:border-primary group-hover:bg-primary/20 transition-all">
+                                            <span className="text-xs font-black text-foreground">{i + 1}</span>
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-black text-white leading-none mb-2">{item.title}</h4>
-                                            <p className="text-xs font-bold text-gray-400 leading-relaxed line-clamp-2">{item.description || 'Learn key concepts and practical applications in this lesson.'}</p>
+                                            <h4 className="text-lg font-black text-foreground leading-none mb-2">{item.title}</h4>
+                                            <p className="text-xs font-bold text-foreground/40 leading-relaxed line-clamp-2">{item.description || 'Learn key concepts and practical applications in this lesson.'}</p>
                                         </div>
                                     </div>
                                 ))
@@ -310,11 +310,11 @@ export default function TrackDetailPage() {
                             )}
                         </div>
 
-                        <div className="mt-10 p-6 bg-white/5 rounded-2xl border border-white/10 flex items-start gap-4">
+                        <div className="mt-10 p-6 bg-surface rounded-2xl border border-border flex items-start gap-4">
                             <FiAward className="text-3xl text-yellow-500 shrink-0 mt-1" />
                             <div>
-                                <h4 className="text-sm font-black text-white mb-1">Official Certification</h4>
-                                <p className="text-xs text-gray-400 font-bold">Complete all courses and the capstone project to earn your verified industry-recognized certificate.</p>
+                                <h4 className="text-sm font-black text-foreground mb-1">Official Certification</h4>
+                                <p className="text-xs text-foreground/40 font-bold">Complete all courses and the capstone project to earn your verified industry-recognized certificate.</p>
                             </div>
                         </div>
                     </motion.div>
@@ -329,26 +329,26 @@ export default function TrackDetailPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-dark-light w-full max-w-lg rounded-3xl p-8 border border-white/10 relative overflow-hidden"
+                            className="bg-background w-full max-w-lg rounded-3xl p-8 border border-border relative overflow-hidden"
                         >
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent" />
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-bold text-white flex items-center">
+                                <h2 className="text-xl font-bold text-foreground flex items-center">
                                     {paymentStep === 'select' ? (
                                         <><FiCreditCard className="mr-2 text-primary" /> Select Payment Method</>
                                     ) : (
                                         <><FiUpload className="mr-2 text-primary" /> Upload Payment Proof</>
                                     )}
                                 </h2>
-                                <button onClick={() => setShowPaymentModal(false)} className="text-gray-400 hover:text-white transition-colors">
+                                <button onClick={() => setShowPaymentModal(false)} className="text-foreground/40 hover:text-foreground transition-colors">
                                     <FiX size={24} />
                                 </button>
                             </div>
 
                             {paymentStep === 'select' ? (
                                 <>
-                                    <p className="text-gray-400 text-sm mb-6">
-                                        To enroll in <span className="font-bold text-white">{track.title}</span>, please select your preferred payment method for the amount of <span className="font-bold text-white">{track.price} EGP</span>.
+                                    <p className="text-foreground/60 text-sm mb-6">
+                                        To enroll in <span className="font-bold text-foreground">{track.title}</span>, please select your preferred payment method for the amount of <span className="font-bold text-foreground">{track.price} EGP</span>.
                                     </p>
 
                                     <div className="space-y-4">
@@ -389,38 +389,38 @@ export default function TrackDetailPage() {
                             ) : paymentStep === 'visa' ? (
                                 <div className="space-y-6">
                                     <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
-                                        <h4 className="text-white font-bold mb-2 text-sm">بيانات البطاقة البنكية:</h4>
-                                        <p className="text-gray-400 text-xs">برجاء إدخال بيانات الفيزا لإتمام عملية الدفع.</p>
+                                        <h4 className="text-foreground font-bold mb-2 text-sm">بيانات البطاقة البنكية:</h4>
+                                        <p className="text-foreground/60 text-xs">برجاء إدخال بيانات الفيزا لإتمام عملية الدفع.</p>
                                     </div>
 
                                     <div className="space-y-4">
                                         <div className="space-y-1">
-                                            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right">رقم البطاقة</label>
+                                            <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest text-right">رقم البطاقة</label>
                                             <input
                                                 type="text"
                                                 placeholder="0000 0000 0000 0000"
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-primary transition-all font-mono text-center"
+                                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground outline-none focus:border-primary transition-all font-mono text-center"
                                                 value={visaData.number}
                                                 onChange={e => setVisaData({ ...visaData, number: e.target.value })}
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-1">
-                                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right">تاريخ الانتهاء</label>
+                                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest text-right">تاريخ الانتهاء</label>
                                                 <input
                                                     type="text"
                                                     placeholder="MM/YY"
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-primary transition-all font-mono text-center"
+                                                    className="w-full bg-surface border border-border rounded-xl p-3 text-foreground outline-none focus:border-primary transition-all font-mono text-center"
                                                     value={visaData.expiry}
                                                     onChange={e => setVisaData({ ...visaData, expiry: e.target.value })}
                                                 />
                                             </div>
                                             <div className="space-y-1">
-                                                <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right">CVV</label>
+                                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest text-right">CVV</label>
                                                 <input
                                                     type="text"
                                                     placeholder="123"
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-primary transition-all font-mono text-center"
+                                                    className="w-full bg-surface border border-border rounded-xl p-3 text-foreground outline-none focus:border-primary transition-all font-mono text-center"
                                                     value={visaData.cvv}
                                                     onChange={e => setVisaData({ ...visaData, cvv: e.target.value })}
                                                 />
@@ -431,7 +431,7 @@ export default function TrackDetailPage() {
                                     <div className="flex gap-3 mt-8">
                                         <button
                                             onClick={() => setPaymentStep('select')}
-                                            className="flex-1 py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all uppercase text-xs"
+                                            className="flex-1 py-4 bg-surface text-foreground font-bold rounded-xl border border-border hover:bg-foreground/5 transition-all uppercase text-xs"
                                         >
                                             رجوع
                                         </button>
@@ -451,31 +451,31 @@ export default function TrackDetailPage() {
                                 </div>
                             ) : (
                                 <div className="space-y-6">
-                                    <div className="p-6 bg-primary/10 border border-primary/30 rounded-2xl space-y-4">
-                                        <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-2">
+                                    <div className="p-6 bg-primary/10 border border-primary/20 rounded-2xl space-y-4">
+                                        <h4 className="text-foreground font-black uppercase tracking-widest text-xs flex items-center gap-2">
                                             <FiInfo className="text-primary" /> Instructions / تعليمات الدفع
                                         </h4>
                                         <div className="space-y-4">
                                             {selectedMethod === 'Vodafone Cash' && (
-                                                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
-                                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">تحويل فودافون كاش إلى الرقم التالي:</p>
+                                                <div className="text-center py-4 bg-dark rounded-xl border border-border">
+                                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">تحويل فودافون كاش إلى الرقم التالي:</p>
                                                     <p className="text-3xl font-black text-primary tracking-tighter select-all cursor-pointer">01006093939</p>
                                                 </div>
                                             )}
                                             {selectedMethod === 'InstaPay' && (
-                                                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
-                                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">تحويل انستا باي إلى الحساب التالي:</p>
+                                                <div className="text-center py-4 bg-dark rounded-xl border border-border">
+                                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">تحويل انستا باي إلى الحساب التالي:</p>
                                                     <p className="text-xl font-black text-primary tracking-tight select-all cursor-pointer">mo.tarek@instapay</p>
                                                 </div>
                                             )}
-                                            <p className="text-gray-400 text-[10px] font-bold text-center uppercase tracking-widest">
+                                            <p className="text-foreground/60 text-[10px] font-bold text-center uppercase tracking-widest">
                                                 بعد التحويل، يرجى رفع صورة الإيصال أو لقطة الشاشة أدناه
                                             </p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="block text-gray-400 text-xs font-bold uppercase tracking-widest">Screenshot / Receipt</label>
+                                        <label className="block text-foreground/60 text-xs font-bold uppercase tracking-widest">Screenshot / Receipt</label>
                                         <div className="relative group">
                                             <input
                                                 type="file"
@@ -486,14 +486,14 @@ export default function TrackDetailPage() {
                                             />
                                             <label
                                                 htmlFor="proof-upload"
-                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/10 rounded-2xl hover:border-primary/50 hover:bg-white/5 transition-all cursor-pointer overflow-hidden"
+                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border rounded-2xl hover:border-primary/50 hover:bg-surface transition-all cursor-pointer overflow-hidden"
                                             >
                                                 {proofImage ? (
                                                     <img src={proofImage} alt="Proof" className="w-full h-full object-cover" />
                                                 ) : (
                                                     <>
-                                                        <FiUpload className="text-3xl text-gray-500 mb-2 group-hover:text-primary transition-colors" />
-                                                        <span className="text-xs text-gray-500 font-bold group-hover:text-gray-300 transition-colors">Click to upload screenshot</span>
+                                                        <FiUpload className="text-3xl text-foreground/40 mb-2 group-hover:text-primary transition-colors" />
+                                                        <span className="text-xs text-foreground/40 font-bold group-hover:text-foreground/60 transition-colors">Click to upload screenshot</span>
                                                     </>
                                                 )}
                                             </label>
@@ -503,7 +503,7 @@ export default function TrackDetailPage() {
                                     <div className="flex gap-3">
                                         <button
                                             onClick={() => setPaymentStep('select')}
-                                            className="flex-1 py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all uppercase text-xs"
+                                            className="flex-1 py-4 bg-surface text-foreground font-bold rounded-xl border border-border hover:bg-foreground/5 transition-all uppercase text-xs"
                                         >
                                             رجوع
                                         </button>
@@ -519,7 +519,7 @@ export default function TrackDetailPage() {
                             )}
 
                             <div className="mt-8 text-center">
-                                <p className="text-xs text-gray-500">Secure payments powered by Arqam Academy</p>
+                                <p className="text-xs text-foreground/20">Secure payments powered by Arqam Academy</p>
                             </div>
                         </motion.div>
                     </div>
