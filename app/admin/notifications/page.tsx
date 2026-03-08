@@ -14,7 +14,7 @@ const mockNotifications = [
 
 export default function AdminNotificationsPage() {
     const [notifications, setNotifications] = useState(mockNotifications);
-    const [form, setForm] = useState({ title: '', body: '', audience: 'all' });
+    const [form, setForm] = useState({ title: '', message: '', audience: 'all' });
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
     const { token } = useAuth();
@@ -33,7 +33,7 @@ export default function AdminNotificationsPage() {
             });
             if (res.ok) {
                 setSent(true);
-                setForm({ title: '', body: '', audience: 'all' });
+                setForm({ title: '', message: '', audience: 'all' });
                 setTimeout(() => setSent(false), 3000);
             } else {
                 alert('Failed to send announcement');
@@ -107,8 +107,8 @@ export default function AdminNotificationsPage() {
                             <textarea
                                 required
                                 placeholder="Write your announcement here..."
-                                value={form.body}
-                                onChange={e => setForm(f => ({ ...f, body: e.target.value }))}
+                                value={form.message}
+                                onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                                 rows={4}
                                 className="w-full bg-surface border border-border rounded-xl p-4 text-foreground font-medium focus:outline-none focus:border-primary/50 transition-colors placeholder:text-foreground/20 text-sm resize-none"
                             />
