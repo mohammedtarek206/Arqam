@@ -42,10 +42,6 @@ export default function Hero() {
     }
   };
 
-  const getEmbedUrl = (url: string) => {
-    return url.replace('watch?v=', 'embed/').split('&')[0];
-  };
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-32 lg:pt-20">
       {/* Animated Background */}
@@ -114,16 +110,16 @@ export default function Hero() {
           >
             <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group">
               <AnimatePresence mode="wait">
-                {gallery.length > 0 ? (
+                {gallery && gallery.length > 0 ? (
                   <motion.div
                     key={activeIndex}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.7 }}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
                     className="absolute inset-0"
                   >
-                    {gallery[activeIndex].type === 'video' ? (
+                    {gallery[activeIndex]?.type === 'video' ? (
                       <video
                         className="absolute inset-0 w-full h-full object-cover"
                         src={gallery[activeIndex].url}
@@ -131,19 +127,21 @@ export default function Hero() {
                         autoPlay
                         playsInline
                         onEnded={handleVideoEnd}
+                        onError={() => handleVideoEnd()}
                       />
                     ) : (
                       <img
                         className="absolute inset-0 w-full h-full object-cover"
-                        src={gallery[activeIndex].url}
+                        src={gallery[activeIndex]?.url}
                         alt="Hero Asset"
+                        onError={() => handleVideoEnd()}
                       />
                     )}
                   </motion.div>
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                      <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
+                  <div className="absolute inset-0 bg-surface flex items-center justify-center">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/10 backdrop-blur-md flex items-center justify-center border border-primary/20">
+                      <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-primary fill-primary" />
                     </div>
                   </div>
                 )}

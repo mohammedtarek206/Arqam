@@ -8,7 +8,7 @@ export default function SiteSettingsPage() {
     const [settings, setSettings] = useState<any>({});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState({ type: '', text: '' });
+    const [message, setMessage] = useState({ type: '', text: '', key: '' });
 
     useEffect(() => {
         fetchSettings();
@@ -18,7 +18,6 @@ export default function SiteSettingsPage() {
         try {
             const res = await fetch('/api/settings');
             const data = await res.json();
-            // Ensure hero_gallery is an array
             if (!data.hero_gallery) data.hero_gallery = [];
             setSettings(data);
         } catch (err) {
@@ -33,6 +32,7 @@ export default function SiteSettingsPage() {
         if (!files || files.length === 0) return;
 
         setSaving(true);
+        setMessage({ type: '', text: '', key: '' });
         const newAssets = [];
         const token = localStorage.getItem('token');
 
@@ -56,27 +56,30 @@ export default function SiteSettingsPage() {
             if (newAssets.length > 0) {
                 const currentGallery = settings.hero_gallery || [];
                 const updatedGallery = [...currentGallery, ...newAssets];
-                setSettings({ ...settings, hero_gallery: updatedGallery });
-                await handleSave('hero_gallery', updatedGallery);
+                setSettings((prev: any) => ({ ...prev, hero_gallery: updatedGallery }));
+                await handleSave('hero_gallery', updatedGallery, true);
+                setMessage({ type: 'success', text: `Successfully uploaded ${newAssets.length} assets!`, key: 'hero_gallery' });
             }
         } catch (err) {
             console.error(err);
-            alert('An error occurred during upload');
+            setMessage({ type: 'error', text: 'An error occurred during upload', key: 'hero_gallery' });
         } finally {
             setSaving(false);
-            if (e.target) e.target.value = ''; // Reset input
+            if (e.target) e.target.value = '';
         }
     };
 
     const deleteAsset = async (index: number) => {
         const newGallery = settings.hero_gallery.filter((_: any, i: number) => i !== index);
-        setSettings({ ...settings, hero_gallery: newGallery });
-        await handleSave('hero_gallery', newGallery);
+        setSettings((prev: any) => ({ ...prev, hero_gallery: newGallery }));
+        await handleSave('hero_gallery', newGallery, true);
     };
 
-    const handleSave = async (key: string, value: any) => {
-        setSaving(true);
-        setMessage({ type: '', text: '' });
+    const handleSave = async (key: string, value: any, silent = false) => {
+        if (!silent) {
+            setSaving(true);
+            setMessage({ type: '', text: '', key: '' });
+        }
         try {
             const token = localStorage.getItem('token');
             const res = await fetch('/api/admin/settings', {
@@ -89,16 +92,16 @@ export default function SiteSettingsPage() {
             });
 
             if (res.ok) {
-                setMessage({ type: 'success', text: 'Setting updated successfully!' });
-                setSettings({ ...settings, [key]: value });
+                if (!silent) setMessage({ type: 'success', text: 'Update saved!', key });
+                setSettings((prev: any) => ({ ...prev, [key]: value }));
             } else {
-                setMessage({ type: 'error', text: 'Failed to update setting' });
+                if (!silent) setMessage({ type: 'error', text: 'Save failed', key });
             }
         } catch (err) {
             console.error(err);
-            setMessage({ type: 'error', text: 'An error occurred' });
+            if (!silent) setMessage({ type: 'error', text: 'An error occurred', key });
         } finally {
-            setSaving(false);
+            if (!silent) setSaving(false);
         }
     };
 
@@ -146,6 +149,18 @@ export default function SiteSettingsPage() {
                             />
                         </div>
 
+                        {message.text && message.key === 'introVideoUrl' && (
+                            <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
+                                    }`}
+                            >
+                                {message.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
+                                {message.text}
+                            </motion.div>
+                        )}
+
                         <button
                             onClick={() => handleSave('introVideoUrl', settings.introVideoUrl)}
                             disabled={saving}
@@ -174,7 +189,7 @@ export default function SiteSettingsPage() {
                             </p>
                         </div>
                         <label className="cursor-pointer bg-primary text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-2">
-                            <FiPlusCircle /> {saving ? 'Uploading...' : 'Upload Assets'}
+                            <FiPlusCircle /> {saving ? 'Processing...' : 'Upload Assets'}
                             <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={saving} multiple />
                         </label>
                     </div>
@@ -189,7 +204,7 @@ export default function SiteSettingsPage() {
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                 {settings.hero_gallery.map((asset: any, index: number) => (
-                                    <div key={index} className="relative group aspect-square rounded-2xl overflow-hidden border border-border bg-surface">
+                                    <div key={index} className="relative group aspect-square rounded-2xl overflow-hidden border border-border bg-black/5 flex items-center justify-center">
                                         {asset.type === 'video' ? (
                                             <video src={asset.url} className="w-full h-full object-cover" muted />
                                         ) : (
@@ -209,7 +224,7 @@ export default function SiteSettingsPage() {
                             </div>
                         )}
 
-                        {message.text && (
+                        {message.text && message.key === 'hero_gallery' && (
                             <motion.div
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -227,3 +242,4 @@ export default function SiteSettingsPage() {
         </div>
     );
 }
+
