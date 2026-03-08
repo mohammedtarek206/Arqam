@@ -7,8 +7,8 @@ import { FiSave, FiYoutube, FiSettings, FiCheckCircle, FiInfo, FiPlay, FiImage, 
 export default function SiteSettingsPage() {
     const [settings, setSettings] = useState<any>({});
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState({ type: '', text: '', key: '' });
+    const [savingKey, setSavingKey] = useState<string | null>(null);
+    const [messages, setMessages] = useState<{ [key: string]: { type: string, text: string } }>({});
 
     useEffect(() => {
         fetchSettings();
@@ -31,8 +31,9 @@ export default function SiteSettingsPage() {
         const files = e.target.files;
         if (!files || files.length === 0) return;
 
-        setSaving(true);
-        setMessage({ type: '', text: '', key: '' });
+        setSavingKey('hero_gallery');
+        setMessages(prev => ({ ...prev, hero_gallery: { type: '', text: '' } }));
+
         const newAssets = [];
         const token = localStorage.getItem('token');
 
@@ -58,13 +59,19 @@ export default function SiteSettingsPage() {
                 const updatedGallery = [...currentGallery, ...newAssets];
                 setSettings((prev: any) => ({ ...prev, hero_gallery: updatedGallery }));
                 await handleSave('hero_gallery', updatedGallery, true);
-                setMessage({ type: 'success', text: `Successfully uploaded ${newAssets.length} assets!`, key: 'hero_gallery' });
+                setMessages(prev => ({
+                    ...prev,
+                    hero_gallery: { type: 'success', text: `Successfully uploaded ${newAssets.length} assets!` }
+                }));
             }
         } catch (err) {
             console.error(err);
-            setMessage({ type: 'error', text: 'An error occurred during upload', key: 'hero_gallery' });
+            setMessages(prev => ({
+                ...prev,
+                hero_gallery: { type: 'error', text: 'An error occurred during upload' }
+            }));
         } finally {
-            setSaving(false);
+            setSavingKey(null);
             if (e.target) e.target.value = '';
         }
     };
@@ -77,9 +84,10 @@ export default function SiteSettingsPage() {
 
     const handleSave = async (key: string, value: any, silent = false) => {
         if (!silent) {
-            setSaving(true);
-            setMessage({ type: '', text: '', key: '' });
+            setSavingKey(key);
+            setMessages(prev => ({ ...prev, [key]: { type: '', text: '' } }));
         }
+
         try {
             const token = localStorage.getItem('token');
             const res = await fetch('/api/admin/settings', {
@@ -92,16 +100,31 @@ export default function SiteSettingsPage() {
             });
 
             if (res.ok) {
-                if (!silent) setMessage({ type: 'success', text: 'Update saved!', key });
+                if (!silent) {
+                    setMessages(prev => ({
+                        ...prev,
+                        [key]: { type: 'success', text: 'Update saved successfully!' }
+                    }));
+                }
                 setSettings((prev: any) => ({ ...prev, [key]: value }));
             } else {
-                if (!silent) setMessage({ type: 'error', text: 'Save failed', key });
+                if (!silent) {
+                    setMessages(prev => ({
+                        ...prev,
+                        [key]: { type: 'error', text: 'Failed to save update.' }
+                    }));
+                }
             }
         } catch (err) {
             console.error(err);
-            if (!silent) setMessage({ type: 'error', text: 'An error occurred', key });
+            if (!silent) {
+                setMessages(prev => ({
+                    ...prev,
+                    [key]: { type: 'error', text: 'An error occurred.' }
+                }));
+            }
         } finally {
-            if (!silent) setSaving(false);
+            if (!silent) setSavingKey(null);
         }
     };
 
@@ -144,29 +167,29 @@ export default function SiteSettingsPage() {
                                 type="text"
                                 placeholder="https://www.youtube.com/watch?v=..."
                                 value={settings.introVideoUrl || ''}
-                                onChange={(e) => setSettings({ ...settings, introVideoUrl: e.target.value })}
+                                onChange={(e) => setSettings((prev: any) => ({ ...prev, introVideoUrl: e.target.value }))}
                                 className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 transition-all"
                             />
                         </div>
 
-                        {message.text && message.key === 'introVideoUrl' && (
+                        {messages.introVideoUrl?.text && (
                             <motion.div
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
+                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${messages.introVideoUrl.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
                                     }`}
                             >
-                                {message.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
-                                {message.text}
+                                {messages.introVideoUrl.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
+                                {messages.introVideoUrl.text}
                             </motion.div>
                         )}
 
                         <button
                             onClick={() => handleSave('introVideoUrl', settings.introVideoUrl)}
-                            disabled={saving}
+                            disabled={savingKey === 'introVideoUrl'}
                             className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
                         >
-                            {saving ? 'Saving...' : <><FiSave /> Update Full Video URL</>}
+                            {savingKey === 'introVideoUrl' ? 'Saving...' : <><FiSave /> Update Full Video URL</>}
                         </button>
                     </div>
                 </motion.div>
@@ -188,9 +211,9 @@ export default function SiteSettingsPage() {
                                 Upload multiple images and videos for the attractive Hero Carousel.
                             </p>
                         </div>
-                        <label className="cursor-pointer bg-primary text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-2">
-                            <FiPlusCircle /> {saving ? 'Processing...' : 'Upload Assets'}
-                            <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={saving} multiple />
+                        <label className={`cursor-pointer bg-primary text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-2 ${savingKey === 'hero_gallery' ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <FiPlusCircle /> {savingKey === 'hero_gallery' ? 'Processing...' : 'Upload Assets'}
+                            <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={savingKey === 'hero_gallery'} multiple />
                         </label>
                     </div>
 
@@ -224,15 +247,15 @@ export default function SiteSettingsPage() {
                             </div>
                         )}
 
-                        {message.text && message.key === 'hero_gallery' && (
+                        {messages.hero_gallery?.text && (
                             <motion.div
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 mt-6 ${message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
+                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 mt-6 ${messages.hero_gallery.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
                                     }`}
                             >
-                                {message.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
-                                {message.text}
+                                {messages.hero_gallery.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
+                                {messages.hero_gallery.text}
                             </motion.div>
                         )}
                     </div>
@@ -242,4 +265,3 @@ export default function SiteSettingsPage() {
         </div>
     );
 }
-
