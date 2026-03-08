@@ -127,7 +127,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-24 h-24 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+            <div className="relative w-16 h-16 md:w-24 md:h-24 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
               <Image
                 src="/logo.png"
                 alt="Arqam Academy Logo"

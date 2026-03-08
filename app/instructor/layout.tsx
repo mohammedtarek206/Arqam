@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import InstructorSidebar from '@/components/instructor/InstructorSidebar';
 import { useAuth } from '@/lib/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useLanguage } from '@/lib/LanguageContext';
+import InstructorMobileHeader from '@/components/instructor/InstructorMobileHeader';
 
 export default function InstructorDashboardLayout({
     children,
@@ -13,7 +12,6 @@ export default function InstructorDashboardLayout({
 }) {
     const { user, isLoading } = useAuth();
     const router = useRouter();
-    const { lang } = useLanguage();
 
     if (isLoading) {
         return (
@@ -29,13 +27,8 @@ export default function InstructorDashboardLayout({
     }
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
-            <InstructorSidebar />
-            <div className={`${lang === 'ar' ? 'md:mr-64' : 'md:ml-64'} min-h-screen p-4 md:p-8 transition-all`}>
-                <div className="max-w-7xl mx-auto pt-4">
-                    {children}
-                </div>
-            </div>
-        </div>
+        <InstructorMobileHeader>
+            {children}
+        </InstructorMobileHeader>
     );
 }

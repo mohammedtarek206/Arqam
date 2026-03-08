@@ -1,4 +1,4 @@
-import StudentSidebar from '@/components/student/StudentSidebar';
+import DashboardMobileHeader from '@/components/student/DashboardMobileHeader';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,11 +13,8 @@ export default function StudentDashboardLayout({
 }) {
     // Note: Middleware already protects /dashboard, so we assume the user is authenticated and is a student.
     return (
-        <div className="min-h-screen bg-background">
-            <StudentSidebar />
-            <main className="lg:rtl:mr-72 lg:ltr:ml-72 min-h-screen pt-8 px-4 md:px-8 pb-12 transition-all">
-                {children}
-            </main>
-        </div>
+        <DashboardMobileHeader>
+            {children}
+        </DashboardMobileHeader>
     );
 }

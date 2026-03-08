@@ -22,7 +22,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-cyber bg-clip-text text-transparent"
+              className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary via-accent to-cyber bg-clip-text text-transparent"
             >
               {t('hero_title')}
             </motion.h1>
@@ -31,7 +31,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-foreground/80 mb-8"
+              className="text-lg sm:text-xl md:text-2xl text-foreground/80 mb-6 md:mb-8"
             >
               {t('hero_subtitle')}
             </motion.p>
@@ -40,7 +40,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-foreground/60 mb-12 max-w-2xl mx-auto lg:mx-0"
+              className="text-sm sm:text-base md:text-lg text-foreground/60 mb-8 md:mb-12 max-w-2xl mx-auto lg:mx-0"
             >
               {t('hero_desc')}
             </motion.p>
@@ -49,16 +49,16 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-4 mb-16"
+              className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 mb-12 md:mb-16"
             >
               <Link
                 href="/tracks"
-                className="px-8 py-4 bg-gradient-to-r from-primary to-accent rounded-full text-white font-semibold hover:scale-105 transition-transform shadow-lg shadow-primary/50"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-accent rounded-full text-white font-semibold hover:scale-105 transition-transform shadow-lg shadow-primary/50 text-center"
               >
                 {t('start_journey')}
               </Link>
               <button
-                className="px-8 py-4 border-2 border-primary rounded-full text-primary font-semibold hover:bg-primary/10 transition-colors flex items-center gap-2 group"
+                className="px-6 py-3 sm:px-8 sm:py-4 border-2 border-primary rounded-full text-primary font-semibold hover:bg-primary/10 transition-colors flex items-center justify-center gap-2 group"
                 onClick={() => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')}
               >
                 <FiPlay className="group-hover:scale-125 transition-transform" />
@@ -74,16 +74,16 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex-1 w-full max-w-2xl"
           >
-            <div className="relative aspect-video rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group">
+            <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform cursor-pointer">
-                  <FiPlay className="w-8 h-8 text-white fill-white" />
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform cursor-pointer">
+                  <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
                 </div>
               </div>
               {/* This would be an iframe in production */}
-              <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/10">
-                <p className="text-white font-bold text-sm">Welcome to Arqam Academy</p>
-                <p className="text-gray-400 text-xs mt-1">Discover your potential with us</p>
+              <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 p-3 md:p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/10">
+                <p className="text-white font-bold text-xs md:text-sm">Welcome to Arqam Academy</p>
+                <p className="text-gray-400 text-[10px] md:text-xs mt-1">Discover your potential with us</p>
               </div>
             </div>
           </motion.div>
@@ -94,7 +94,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="grid md:grid-cols-3 gap-8 mt-24"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-16 md:mt-24"
         >
           {[
             { icon: FiCode, title: lang === 'en' ? 'Programming' : 'البرمجة', desc: lang === 'en' ? 'Master modern languages' : 'أتقن اللغات الحديثة' },
@@ -103,11 +103,11 @@ export default function Hero() {
           ].map((item, index) => (
             <div
               key={index}
-              className="glass rounded-2xl p-6 hover:scale-105 transition-transform border border-border/10"
+              className="glass rounded-2xl p-5 md:p-6 hover:scale-105 transition-transform border border-border/10 flex flex-col items-center text-center"
             >
-              <item.icon className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2 text-center text-foreground">{item.title}</h3>
-              <p className="text-foreground/60 text-center">{item.desc}</p>
+              <item.icon className="w-10 h-10 md:w-12 md:h-12 text-primary mb-4" />
+              <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">{item.title}</h3>
+              <p className="text-sm md:text-base text-foreground/60">{item.desc}</p>
             </div>
           ))}
         </motion.div>
