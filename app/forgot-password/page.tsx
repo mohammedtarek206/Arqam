@@ -13,6 +13,8 @@ export default function ForgotPasswordPage() {
     const [newPassword, setNewPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    
+
     const { t } = useLanguage();
 
     const handleSendOTP = async (e: React.FormEvent) => {

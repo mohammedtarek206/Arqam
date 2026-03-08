@@ -18,7 +18,7 @@ import {
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -27,6 +27,8 @@ export default function Navbar() {
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
   const [tracks, setTracks] = useState<{ href: string; label: string }[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const hasUnread = notifications.some(n => !n.read);
 
   // Do not show navbar on dashboard or admin pages to avoid overlap
   const isDashboardPage = pathname?.startsWith('/dashboard') ||
@@ -54,6 +56,24 @@ export default function Navbar() {
     };
     fetchTracks();
 
+    const fetchNotifications = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch('/api/notifications', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setNotifications(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch notifications:', err);
+      }
+    };
+    if (user) {
+      fetchNotifications();
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
@@ -65,6 +85,20 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
+  };
+
+  const markAllAsRead = async () => {
+    if (!token) return;
+    try {
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const navLinks = [
@@ -137,8 +171,14 @@ export default function Navbar() {
               />
             </div>
             <div className="hidden lg:block">
-              <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>
-              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] block">Academy</span>
+              {lang === 'ar' ? (
+                <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none pt-1">أكاديمية أرقام</span>
+              ) : (
+                <>
+                  <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] block">Academy</span>
+                </>
+              )}
             </div>
           </Link>
 
@@ -218,7 +258,7 @@ export default function Navbar() {
                 className={`relative p-2 transition-colors ${activeDropdown === 'notifications' ? 'text-white bg-white/10 rounded-xl' : 'text-gray-400 hover:text-primary'}`}
               >
                 <FiBell className="w-5 h-5" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-dark" />
+                {hasUnread && <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-dark" />}
               </button>
 
               <AnimatePresence>
@@ -231,18 +271,29 @@ export default function Navbar() {
                   >
                     <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
                       <h3 className="text-white font-black uppercase text-sm">{t('notifications') || 'Notifications'}</h3>
-                      <button className="text-[10px] text-primary font-bold hover:underline">Mark all as read</button>
+                      {hasUnread && (
+                        <button onClick={markAllAsRead} className="text-[10px] text-primary font-bold hover:underline">Mark all as read</button>
+                      )}
                     </div>
 
                     <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
-                      {/* Empty State */}
-                      <div className="text-center py-6">
-                        <div className="w-12 h-12 rounded-full bg-white/5 mx-auto mb-3 flex items-center justify-center">
-                          <FiBell className="w-5 h-5 text-gray-500" />
+                      {notifications.length === 0 ? (
+                        <div className="text-center py-6">
+                          <div className="w-12 h-12 rounded-full bg-white/5 mx-auto mb-3 flex items-center justify-center">
+                            <FiBell className="w-5 h-5 text-gray-500" />
+                          </div>
+                          <p className="text-gray-400 text-sm font-bold">No new notifications</p>
+                          <p className="text-gray-500 text-[10px] mt-1">We'll let you know when something arrives</p>
                         </div>
-                        <p className="text-gray-400 text-sm font-bold">No new notifications</p>
-                        <p className="text-gray-500 text-[10px] mt-1">We'll let you know when something arrives</p>
-                      </div>
+                      ) : (
+                        notifications.map((notif: any) => (
+                          <div key={notif._id} className={`p-3 rounded-xl border ${notif.read ? 'bg-white/5 border-white/5 text-gray-400' : 'bg-primary/10 border-primary/20 text-white'}`}>
+                            <p className="text-xs font-bold mb-1">{notif.title}</p>
+                            <p className="text-[10px] opacity-80 leading-relaxed">{notif.message}</p>
+                            <p className="text-[8px] opacity-50 mt-2 font-bold uppercase tracking-widest">{new Date(notif.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -359,7 +410,9 @@ export default function Navbar() {
                     <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shrink-0">
                       <Image src="/logo.png" alt="Logo" width={24} height={24} className="object-contain" />
                     </div>
-                    <span className="font-black text-lg uppercase tracking-tighter text-foreground">Arqam</span>
+                    <span className="font-black text-lg uppercase tracking-tighter text-foreground">
+                      {lang === 'ar' ? 'أكاديمية أرقام' : 'Arqam'}
+                    </span>
                   </Link>
                   <button onClick={() => setMenuOpen(false)} className="p-2 text-foreground/40 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors">
                     <FiX size={24} />

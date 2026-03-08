@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Payment from '@/models/Payment';
 import User from '@/models/User';
+import Notification from '@/models/Notification';
 import { authenticateRequest } from '@/lib/auth';
 
 export async function PATCH(
@@ -43,6 +44,14 @@ export async function PATCH(
 
             if (Object.keys(update).length > 0) {
                 await User.findByIdAndUpdate(payment.user, update);
+
+                await Notification.create({
+                    recipient: payment.user,
+                    title: 'Course Enrollment Approved',
+                    message: 'Your payment was successful and you have been enrolled in the requested course/track.',
+                    type: 'success',
+                    read: false
+                });
             }
         }
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
+import Notification from '@/models/Notification';
 import { authenticateRequest } from '@/lib/auth';
 import InstructorDetail from '@/models/InstructorDetail';
 
@@ -26,6 +27,16 @@ export async function PATCH(
 
         if (!updatedUser) {
             return NextResponse.json({ error: 'Instructor not found' }, { status: 404 });
+        }
+
+        if (status === 'approved') {
+            await Notification.create({
+                recipient: updatedUser._id,
+                title: 'Instructor Account Approved',
+                message: 'Your instructor application has been approved. You can now log in and start creating courses!',
+                type: 'success',
+                read: false
+            });
         }
 
         return NextResponse.json(updatedUser, { status: 200 });

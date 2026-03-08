@@ -20,11 +20,25 @@ export default function AdminNotificationsPage() {
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
         setSending(true);
-        await new Promise(r => setTimeout(r, 1500));
-        setSending(false);
-        setSent(true);
-        setForm({ title: '', body: '', audience: 'all' });
-        setTimeout(() => setSent(false), 3000);
+        try {
+            const res = await fetch('/api/admin/notifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form)
+            });
+            if (res.ok) {
+                setSent(true);
+                setForm({ title: '', body: '', audience: 'all' });
+                setTimeout(() => setSent(false), 3000);
+            } else {
+                alert('Failed to send announcement');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Failed to send announcement');
+        } finally {
+            setSending(false);
+        }
     };
 
     const getTypeStyle = (type: string) => {
@@ -116,11 +130,11 @@ export default function AdminNotificationsPage() {
                         </button>
                     </div>
                     <div className="divide-y divide-border">
-                        {notifications.map((notif, i) => {
+                        {notifications.map((notif: any, i) => {
                             const Icon = getTypeIcon(notif.type);
                             return (
                                 <motion.div
-                                    key={notif.id}
+                                    key={notif._id || notif.id}
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: i * 0.08 }}
