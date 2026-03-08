@@ -58,12 +58,26 @@ export default function SiteSettingsPage() {
                 const currentGallery = settings.hero_gallery || [];
                 const updatedGallery = [...currentGallery, ...newAssets];
                 setSettings((prev: any) => ({ ...prev, hero_gallery: updatedGallery }));
-                await handleSave('hero_gallery', updatedGallery, true);
+                const saved = await handleSave('hero_gallery', updatedGallery, true);
+
+                if (saved) {
+                    setMessages(prev => ({
+                        ...prev,
+                        hero_gallery: { type: 'success', text: `Successfully uploaded ${newAssets.length} assets!` }
+                    }));
+                } else {
+                    setMessages(prev => ({
+                        ...prev,
+                        hero_gallery: { type: 'error', text: 'Upload successful but failed to update gallery settings.' }
+                    }));
+                }
+            } else {
                 setMessages(prev => ({
                     ...prev,
-                    hero_gallery: { type: 'success', text: `Successfully uploaded ${newAssets.length} assets!` }
+                    hero_gallery: { type: 'error', text: 'No files were successfully uploaded.' }
                 }));
             }
+
         } catch (err) {
             console.error(err);
             setMessages(prev => ({
@@ -107,6 +121,7 @@ export default function SiteSettingsPage() {
                     }));
                 }
                 setSettings((prev: any) => ({ ...prev, [key]: value }));
+                return true;
             } else {
                 if (!silent) {
                     setMessages(prev => ({
@@ -114,6 +129,7 @@ export default function SiteSettingsPage() {
                         [key]: { type: 'error', text: 'Failed to save update.' }
                     }));
                 }
+                return false;
             }
         } catch (err) {
             console.error(err);
@@ -123,10 +139,12 @@ export default function SiteSettingsPage() {
                     [key]: { type: 'error', text: 'An error occurred.' }
                 }));
             }
+            return false;
         } finally {
             if (!silent) setSavingKey(null);
         }
     };
+
 
     if (loading) {
         return (

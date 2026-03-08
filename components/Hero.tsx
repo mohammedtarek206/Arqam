@@ -108,20 +108,20 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex-1 w-full max-w-2xl"
           >
-            <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group">
+            <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group bg-black/20">
               <AnimatePresence mode="wait">
                 {gallery && gallery.length > 0 ? (
                   <motion.div
                     key={activeIndex}
-                    initial={{ opacity: 0, scale: 1.1 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute inset-0"
+                    transition={{ duration: 1.2, ease: "easeInOut" }}
+                    className="absolute inset-0 flex items-center justify-center"
                   >
                     {gallery[activeIndex]?.type === 'video' ? (
                       <video
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                         src={gallery[activeIndex].url}
                         muted
                         autoPlay
@@ -131,7 +131,7 @@ export default function Hero() {
                       />
                     ) : (
                       <img
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                         src={gallery[activeIndex]?.url}
                         alt="Hero Asset"
                         onError={() => handleVideoEnd()}
@@ -139,13 +139,14 @@ export default function Hero() {
                     )}
                   </motion.div>
                 ) : (
-                  <div className="absolute inset-0 bg-surface flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/10 backdrop-blur-md flex items-center justify-center border border-primary/20">
                       <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-primary fill-primary" />
                     </div>
                   </div>
                 )}
               </AnimatePresence>
+
 
               <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 p-3 md:p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 z-20 pointer-events-none">
                 <p className="text-white font-bold text-xs md:text-sm">{lang === 'ar' ? 'أهلاً بكم في أكاديمية أرقام' : 'Welcome to Arqam Academy'}</p>

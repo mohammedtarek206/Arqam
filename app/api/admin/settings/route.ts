@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
         const { key, value } = body;
+        console.log(`[Admin Settings] Saving key: ${key}, value:`, value);
 
         if (!key) {
             return NextResponse.json({ error: 'Key is required' }, { status: 400 });
@@ -21,13 +22,16 @@ export async function POST(request: NextRequest) {
 
         const setting = await Settings.findOneAndUpdate(
             { key },
-            { value, updatedBy: user._id },
+            { value, updatedBy: user.userId },
             { upsert: true, new: true }
         );
+        console.log(`[Admin Settings] Success:`, setting);
+
 
         return NextResponse.json(setting, { status: 200 });
     } catch (error: any) {
-        console.error('Update settings error:', error);
+        console.error('[Admin Settings] Error:', error);
         return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
     }
 }
+

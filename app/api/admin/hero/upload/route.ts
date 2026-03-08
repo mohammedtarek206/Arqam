@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
 
         const formData = await request.formData();
         const file = formData.get('file') as File;
+        console.log(`[Admin Hero Upload] Receiving file: ${file?.name}, type: ${file?.type}`);
 
         if (!file) {
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest) {
 
         // Define path
         const uploadDir = join(process.cwd(), 'public', 'uploads', 'hero');
+        console.log(`[Admin Hero Upload] Saving to: ${uploadDir}`);
 
         // Create directory if not exists
         await mkdir(uploadDir, { recursive: true });
@@ -34,6 +36,7 @@ export async function POST(request: NextRequest) {
         await writeFile(path, buffer);
 
         const publicUrl = `/uploads/hero/${filename}`;
+        console.log(`[Admin Hero Upload] Success: ${publicUrl}`);
 
         return NextResponse.json({
             url: publicUrl,
@@ -41,7 +44,8 @@ export async function POST(request: NextRequest) {
         }, { status: 200 });
 
     } catch (error: any) {
-        console.error('File upload error:', error);
+        console.error('[Admin Hero Upload] Error:', error);
         return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
     }
 }
+
