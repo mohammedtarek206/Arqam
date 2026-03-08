@@ -29,35 +29,42 @@ export default function SiteSettingsPage() {
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
 
         setSaving(true);
-        const formData = new FormData();
-        formData.append('file', file);
+        const newAssets = [];
+        const token = localStorage.getItem('token');
 
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/hero/upload', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: formData
-            });
+            for (let i = 0; i < files.length; i++) {
+                const formData = new FormData();
+                formData.append('file', files[i]);
 
-            if (res.ok) {
-                const asset = await res.json();
-                const newGallery = [...(settings.hero_gallery || []), asset];
-                setSettings({ ...settings, hero_gallery: newGallery });
-                // We'll save the whole gallery now
-                await handleSave('hero_gallery', newGallery);
-            } else {
-                alert('Upload failed');
+                const res = await fetch('/api/admin/hero/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const asset = await res.json();
+                    newAssets.push(asset);
+                }
+            }
+
+            if (newAssets.length > 0) {
+                const currentGallery = settings.hero_gallery || [];
+                const updatedGallery = [...currentGallery, ...newAssets];
+                setSettings({ ...settings, hero_gallery: updatedGallery });
+                await handleSave('hero_gallery', updatedGallery);
             }
         } catch (err) {
             console.error(err);
             alert('An error occurred during upload');
         } finally {
             setSaving(false);
+            if (e.target) e.target.value = ''; // Reset input
         }
     };
 
@@ -167,8 +174,8 @@ export default function SiteSettingsPage() {
                             </p>
                         </div>
                         <label className="cursor-pointer bg-primary text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-2">
-                            <FiPlusCircle /> Upload Asset
-                            <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={saving} />
+                            <FiPlusCircle /> {saving ? 'Uploading...' : 'Upload Assets'}
+                            <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={saving} multiple />
                         </label>
                     </div>
 
