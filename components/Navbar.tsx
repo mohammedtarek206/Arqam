@@ -56,11 +56,10 @@ export default function Navbar() {
     };
     fetchTracks();
 
-    const fetchNotifications = async () => {
-      if (!token) return;
+    const fetchNotifications = async (tkn: string) => {
       try {
         const res = await fetch('/api/notifications', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${tkn}` }
         });
         if (res.ok) {
           const data = await res.json();
@@ -70,8 +69,8 @@ export default function Navbar() {
         console.error('Failed to fetch notifications:', err);
       }
     };
-    if (user) {
-      fetchNotifications();
+    if (token) {
+      fetchNotifications(token);
     }
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -81,7 +80,7 @@ export default function Navbar() {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [token]);
 
   const handleLogout = () => {
     logout();
