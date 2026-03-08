@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import dbConnect from '@/lib/dbConnect';
+import connectDB from '@/lib/mongodb';
 import Course from '@/models/Course';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -25,14 +25,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Dynamic routes for courses
     let courseRoutes: any[] = [];
     try {
-        await dbConnect();
-        const courses = await Course.find({ isActive: true }).select('_id updatedAt');
-        courseRoutes = courses.map((course) => ({
-            url: `${baseUrl}/courses/${course._id}`,
-            lastModified: course.updatedAt || new Date(),
-            changeFrequency: 'weekly' as const,
-            priority: 0.7,
-        }));
+        if (!process.env.MONGODB_URI) {
+            console.warn('Sitemap generation: MONGODB_URI is missing, skipping dynamic courses.');
+        } else {
+            await connectDB();
+            const courses = await Course.find({ isActive: true }).select('_id updatedAt').lean();
+            courseRoutes = courses.map((course: any) => ({
+                url: `${baseUrl}/courses/${course._id}`,
+                lastModified: course.updatedAt || new Date(),
+                changeFrequency: 'weekly' as const,
+                priority: 0.7,
+            }));
+        }
     } catch (error) {
         console.error('Error fetching courses for sitemap:', error);
     }
