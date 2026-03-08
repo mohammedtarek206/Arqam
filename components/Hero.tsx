@@ -1,36 +1,45 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FiCode, FiShield, FiCpu, FiPlay } from 'react-icons/fi';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
-import { useState, useEffect } from 'react';
-
 export default function Hero() {
   const { t, lang } = useLanguage();
   const [videoLink, setVideoLink] = useState('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
-  const [teaserLink, setTeaserLink] = useState('');
+  const [gallery, setGallery] = useState<any[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => {
         if (data.introVideoUrl) setVideoLink(data.introVideoUrl);
-        if (data.heroTeaserUrl) setTeaserLink(data.heroTeaserUrl);
+        if (data.hero_gallery && Array.isArray(data.hero_gallery)) {
+          setGallery(data.hero_gallery);
+        }
       })
       .catch(err => console.error('Failed to fetch Hero settings:', err));
   }, []);
 
-  const transformDriveUrl = (url: string) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      return url
-        .replace('/view?usp=sharing', '')
-        .replace('/file/d/', '/uc?export=download&id=')
-        .replace('?usp=drive_link', '');
+  useEffect(() => {
+    if (gallery.length <= 1) return;
+
+    const currentAsset = gallery[activeIndex];
+    if (currentAsset?.type === 'image') {
+      const timer = setTimeout(() => {
+        setActiveIndex((prev) => (prev + 1) % gallery.length);
+      }, 5000); // 5 seconds for images
+      return () => clearTimeout(timer);
     }
-    return url;
+  }, [activeIndex, gallery]);
+
+  const handleVideoEnd = () => {
+    if (gallery.length > 1) {
+      setActiveIndex((prev) => (prev + 1) % gallery.length);
+    }
   };
 
   const getEmbedUrl = (url: string) => {
@@ -104,27 +113,58 @@ export default function Hero() {
             className="flex-1 w-full max-w-2xl"
           >
             <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group">
-              {teaserLink ? (
-                <video
-                  className="absolute inset-0 w-full h-full object-cover"
-                  src={transformDriveUrl(teaserLink)}
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform cursor-pointer">
-                    <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
+              <AnimatePresence mode="wait">
+                {gallery.length > 0 ? (
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.7 }}
+                    className="absolute inset-0"
+                  >
+                    {gallery[activeIndex].type === 'video' ? (
+                      <video
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src={gallery[activeIndex].url}
+                        muted
+                        autoPlay
+                        playsInline
+                        onEnded={handleVideoEnd}
+                      />
+                    ) : (
+                      <img
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src={gallery[activeIndex].url}
+                        alt="Hero Asset"
+                      />
+                    )}
+                  </motion.div>
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                      <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </AnimatePresence>
 
               <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 p-3 md:p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 z-20 pointer-events-none">
                 <p className="text-white font-bold text-xs md:text-sm">{lang === 'ar' ? 'أهلاً بكم في أكاديمية أرقام' : 'Welcome to Arqam Academy'}</p>
                 <p className="text-gray-400 text-[10px] md:text-xs mt-1">{lang === 'ar' ? 'اكتشف شغفك ومهاراتك معنا' : 'Discover your potential with us'}</p>
               </div>
+
+              {/* Progress Indicators */}
+              {gallery.length > 1 && (
+                <div className="absolute top-4 right-4 flex gap-1 z-30">
+                  {gallery.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-1 rounded-full transition-all duration-300 ${i === activeIndex ? 'w-6 bg-primary' : 'w-2 bg-white/30'}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         </div>

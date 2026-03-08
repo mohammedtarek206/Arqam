@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiSave, FiYoutube, FiSettings, FiCheckCircle, FiInfo, FiPlay } from 'react-icons/fi';
+import { FiSave, FiYoutube, FiSettings, FiCheckCircle, FiInfo, FiPlay, FiImage, FiPlusCircle, FiTrash2 } from 'react-icons/fi';
 
 export default function SiteSettingsPage() {
     const [settings, setSettings] = useState<any>({});
@@ -18,12 +18,53 @@ export default function SiteSettingsPage() {
         try {
             const res = await fetch('/api/settings');
             const data = await res.json();
+            // Ensure hero_gallery is an array
+            if (!data.hero_gallery) data.hero_gallery = [];
             setSettings(data);
         } catch (err) {
             console.error('Failed to fetch settings:', err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setSaving(true);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/admin/hero/upload', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+
+            if (res.ok) {
+                const asset = await res.json();
+                const newGallery = [...(settings.hero_gallery || []), asset];
+                setSettings({ ...settings, hero_gallery: newGallery });
+                // We'll save the whole gallery now
+                await handleSave('hero_gallery', newGallery);
+            } else {
+                alert('Upload failed');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred during upload');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const deleteAsset = async (index: number) => {
+        const newGallery = settings.hero_gallery.filter((_: any, i: number) => i !== index);
+        setSettings({ ...settings, hero_gallery: newGallery });
+        await handleSave('hero_gallery', newGallery);
     };
 
     const handleSave = async (key: string, value: any) => {
@@ -108,67 +149,73 @@ export default function SiteSettingsPage() {
                     </div>
                 </motion.div>
 
-                {/* Teaser Video Section */}
+                {/* Hero Gallery Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="glass rounded-[2rem] border border-border overflow-hidden"
+                    className="glass rounded-[2rem] border border-border overflow-hidden md:col-span-2"
                 >
-                    <div className="p-8 border-b border-border bg-foreground/[0.02]">
-                        <div className="flex items-center gap-3 mb-2">
-                            <FiPlay className="text-primary text-xl" />
-                            <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Hero Teaser Video</h2>
+                    <div className="p-8 border-b border-border bg-foreground/[0.02] flex justify-between items-center">
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <FiImage className="text-primary text-xl" />
+                                <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Hero Gallery Assets</h2>
+                            </div>
+                            <p className="text-foreground/40 text-xs font-bold leading-relaxed uppercase tracking-widest">
+                                Upload multiple images and videos for the attractive Hero Carousel.
+                            </p>
                         </div>
-                        <p className="text-foreground/40 text-xs font-bold leading-relaxed uppercase tracking-widest">
-                            Attractive looping video shown directly on the Home Page.
-                        </p>
+                        <label className="cursor-pointer bg-primary text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/80 transition-all flex items-center gap-2">
+                            <FiPlusCircle /> Upload Asset
+                            <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} disabled={saving} />
+                        </label>
                     </div>
 
-                    <div className="p-8 space-y-6">
-                        <div>
-                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-2">Teaser Video URL (Direct / Drive)</label>
-                            <input
-                                type="text"
-                                placeholder="Direct .mp4 link or Google Drive link"
-                                value={settings.heroTeaserUrl || ''}
-                                onChange={(e) => setSettings({ ...settings, heroTeaserUrl: e.target.value })}
-                                className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 transition-all"
-                            />
-                            <div className="mt-3 p-3 bg-primary/10 border border-primary/20 rounded-xl">
-                                <p className="text-[10px] font-bold text-primary flex items-center gap-2 mb-1">
-                                    <FiInfo /> TIP FOR GOOGLE DRIVE:
-                                </p>
-                                <p className="text-[9px] text-foreground/60 leading-tight">
-                                    Ensure the file is shared as "Anyone with link can view". Use the standard share link; the platform will automatically convert it to a streamable format.
-                                </p>
+                    <div className="p-8">
+                        {(!settings.hero_gallery || settings.hero_gallery.length === 0) ? (
+                            <div className="py-12 border-2 border-dashed border-border rounded-3xl flex flex-col items-center justify-center text-center">
+                                <FiImage className="text-4xl text-foreground/10 mb-4" />
+                                <p className="text-foreground/40 font-bold text-sm">Your gallery is empty.</p>
+                                <p className="text-[10px] text-foreground/20 uppercase font-black mt-1">Upload assets from your device to get started.</p>
                             </div>
-                        </div>
-
-                        {settings.heroTeaserUrl && (
-                            <div className="aspect-video rounded-xl overflow-hidden bg-black/40 border border-border">
-                                <video
-                                    className="w-full h-full object-cover"
-                                    src={settings.heroTeaserUrl.includes('drive.google.com')
-                                        ? settings.heroTeaserUrl.replace('/view?usp=sharing', '').replace('/file/d/', '/uc?export=download&id=').replace('?usp=drive_link', '')
-                                        : settings.heroTeaserUrl}
-                                    muted
-                                    autoPlay
-                                    loop
-                                    playsInline
-                                />
+                        ) : (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                {settings.hero_gallery.map((asset: any, index: number) => (
+                                    <div key={index} className="relative group aspect-square rounded-2xl overflow-hidden border border-border bg-surface">
+                                        {asset.type === 'video' ? (
+                                            <video src={asset.url} className="w-full h-full object-cover" muted />
+                                        ) : (
+                                            <img src={asset.url} alt="Gallery item" className="w-full h-full object-cover" />
+                                        )}
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                            <button
+                                                onClick={() => deleteAsset(index)}
+                                                className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                                title="Delete Asset"
+                                            >
+                                                <FiTrash2 />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         )}
 
-                        <button
-                            onClick={() => handleSave('heroTeaserUrl', settings.heroTeaserUrl)}
-                            disabled={saving}
-                            className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                        >
-                            {saving ? 'Saving...' : <><FiSave /> Update Teaser Video</>}
-                        </button>
+                        {message.text && (
+                            <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 mt-6 ${message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
+                                    }`}
+                            >
+                                {message.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
+                                {message.text}
+                            </motion.div>
+                        )}
                     </div>
                 </motion.div>
+
             </div>
         </div>
     );
