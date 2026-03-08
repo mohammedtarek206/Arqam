@@ -352,13 +352,16 @@ export default function Navbar() {
                 initial={{ x: lang === 'en' ? '100%' : '-100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: lang === 'en' ? '100%' : '-100%' }}
-                className="fixed top-0 bottom-0 right-0 rtl:right-auto rtl:left-0 w-80 bg-dark z-50 border-white/5 p-6 overflow-y-auto xl:hidden"
+                className="fixed top-0 bottom-0 right-0 rtl:right-auto rtl:left-0 w-80 bg-background z-[100] border-l rtl:border-l-0 rtl:border-r border-border p-6 overflow-y-auto xl:hidden shadow-2xl"
               >
                 <div className="flex items-center justify-between mb-10">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
-                    <span className="text-white font-black text-xl">AA</span>
-                  </div>
-                  <button onClick={() => setMenuOpen(false)} className="p-2 text-gray-400 hover:text-white">
+                  <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shrink-0">
+                      <Image src="/logo.png" alt="Logo" width={24} height={24} className="object-contain" />
+                    </div>
+                    <span className="font-black text-lg uppercase tracking-tighter text-foreground">Arqam</span>
+                  </Link>
+                  <button onClick={() => setMenuOpen(false)} className="p-2 text-foreground/40 hover:text-foreground hover:bg-foreground/5 rounded-xl transition-colors">
                     <FiX size={24} />
                   </button>
                 </div>
@@ -368,25 +371,27 @@ export default function Navbar() {
                     <div key={link.label}>
                       {link.dropdown ? (
                         <div className="space-y-2">
-                          <p className="text-[10px] font-black text-primary uppercase tracking-widest px-4">{link.label}</p>
-                          {link.dropdown.map((item) => (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              onClick={() => setMenuOpen(false)}
-                              className="flex items-center gap-4 px-4 py-3 rounded-2xl text-gray-400 hover:bg-white/5 hover:text-white transition-all"
-                            >
-                              {item.label}
-                            </Link>
-                          ))}
+                          <p className="text-[10px] font-black text-primary uppercase tracking-widest px-4 mb-2">{link.label}</p>
+                          <div className="grid grid-cols-1 gap-1">
+                            {link.dropdown.map((item) => (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setMenuOpen(false)}
+                                className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       ) : (
                         <Link
                           href={link.href}
                           onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-4 px-4 py-4 rounded-2xl text-lg font-bold text-white hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+                          className="flex items-center gap-4 px-4 py-4 rounded-2xl text-lg font-bold text-foreground hover:bg-primary/10 hover:text-primary transition-all"
                         >
-                          {link.icon && <link.icon className="w-5 h-5 opacity-50" />}
+                          {link.icon && <link.icon className="w-5 h-5 text-primary/40" />}
                           {link.label}
                         </Link>
                       )}
@@ -396,18 +401,21 @@ export default function Navbar() {
                   <div className="pt-6 border-t border-white/5 space-y-4">
                     {user ? (
                       <div className="space-y-2">
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest px-4">{t('profile')}</p>
-                        {getRoleMenu()?.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setMenuOpen(false)}
-                            className="flex items-center gap-4 px-4 py-3 rounded-2xl text-gray-400 hover:bg-white/5 hover:text-white transition-all"
-                          >
-                            <item.icon className="w-5 h-5" />
-                            {item.label}
-                          </Link>
-                        ))}
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest px-4 mb-2">{t('profile')}</p>
+                        <div className="grid grid-cols-1 gap-1">
+                          {getRoleMenu()?.map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMenuOpen(false)}
+                              className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
+                            >
+                              <item.icon className="w-5 h-5" />
+                              {item.label}
+                            </Link>
+                          ))}
+                        </div>
+                        drum
                         <button
                           onClick={handleLogout}
                           className="flex w-full items-center gap-4 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-500/10 transition-all font-bold"
