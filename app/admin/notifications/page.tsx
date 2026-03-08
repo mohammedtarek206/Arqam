@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiSearch, FiBell, FiSend, FiUsers, FiUser, FiCheckCircle, FiAlertCircle, FiInfo } from 'react-icons/fi';
+import { useAuth } from '@/lib/AuthContext';
 
 const mockNotifications = [
     { id: 1, title: 'New student registration', body: 'Ahmed Mohamed just registered as a new student.', type: 'info', time: '5m ago', read: false },
@@ -16,6 +17,7 @@ export default function AdminNotificationsPage() {
     const [form, setForm] = useState({ title: '', body: '', audience: 'all' });
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
+    const { token } = useAuth();
 
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,7 +25,10 @@ export default function AdminNotificationsPage() {
         try {
             const res = await fetch('/api/admin/notifications', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(form)
             });
             if (res.ok) {
