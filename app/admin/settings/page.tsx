@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiSave, FiYoutube, FiSettings, FiCheckCircle, FiInfo } from 'react-icons/fi';
+import { FiSave, FiYoutube, FiSettings, FiCheckCircle, FiInfo, FiPlay } from 'react-icons/fi';
 
 export default function SiteSettingsPage() {
     const [settings, setSettings] = useState<any>({});
@@ -79,75 +79,95 @@ export default function SiteSettingsPage() {
                     <div className="p-8 border-b border-border bg-foreground/[0.02]">
                         <div className="flex items-center gap-3 mb-2">
                             <FiYoutube className="text-red-500 text-xl" />
-                            <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Introductory Video</h2>
+                            <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Full Intro Video</h2>
                         </div>
                         <p className="text-foreground/40 text-xs font-bold leading-relaxed uppercase tracking-widest">
-                            The video displayed in the platform's Hero section (Home Page).
+                            The full video opened when clicking the "Watch Video" button.
                         </p>
                     </div>
 
                     <div className="p-8 space-y-6">
                         <div>
-                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-2">YouTube URL</label>
-                            <div className="relative group">
-                                <input
-                                    type="text"
-                                    placeholder="https://www.youtube.com/watch?v=..."
-                                    value={settings.introVideoUrl || ''}
-                                    onChange={(e) => setSettings({ ...settings, introVideoUrl: e.target.value })}
-                                    className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 transition-all"
-                                />
-                            </div>
-                            <p className="mt-2 text-[10px] text-foreground/40 font-bold uppercase tracking-tight flex items-center gap-1">
-                                <FiInfo /> Please use the full watch URL (e.g. youtube.com/watch?v=...)
-                            </p>
+                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-2">Full Video URL (YouTube)</label>
+                            <input
+                                type="text"
+                                placeholder="https://www.youtube.com/watch?v=..."
+                                value={settings.introVideoUrl || ''}
+                                onChange={(e) => setSettings({ ...settings, introVideoUrl: e.target.value })}
+                                className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 transition-all"
+                            />
                         </div>
 
-                        {settings.introVideoUrl && (
-                            <div className="aspect-video rounded-xl overflow-hidden bg-black/40 border border-border relative">
-                                <iframe
-                                    className="w-full h-full"
-                                    src={settings.introVideoUrl.replace('watch?v=', 'embed/').split('&')[0]}
-                                    title="Preview"
-                                    allowFullScreen
+                        <button
+                            onClick={() => handleSave('introVideoUrl', settings.introVideoUrl)}
+                            disabled={saving}
+                            className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                        >
+                            {saving ? 'Saving...' : <><FiSave /> Update Full Video URL</>}
+                        </button>
+                    </div>
+                </motion.div>
+
+                {/* Teaser Video Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="glass rounded-[2rem] border border-border overflow-hidden"
+                >
+                    <div className="p-8 border-b border-border bg-foreground/[0.02]">
+                        <div className="flex items-center gap-3 mb-2">
+                            <FiPlay className="text-primary text-xl" />
+                            <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Hero Teaser Video</h2>
+                        </div>
+                        <p className="text-foreground/40 text-xs font-bold leading-relaxed uppercase tracking-widest">
+                            Attractive looping video shown directly on the Home Page.
+                        </p>
+                    </div>
+
+                    <div className="p-8 space-y-6">
+                        <div>
+                            <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block mb-2">Teaser Video URL (Direct / Drive)</label>
+                            <input
+                                type="text"
+                                placeholder="Direct .mp4 link or Google Drive link"
+                                value={settings.heroTeaserUrl || ''}
+                                onChange={(e) => setSettings({ ...settings, heroTeaserUrl: e.target.value })}
+                                className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 transition-all"
+                            />
+                            <div className="mt-3 p-3 bg-primary/10 border border-primary/20 rounded-xl">
+                                <p className="text-[10px] font-bold text-primary flex items-center gap-2 mb-1">
+                                    <FiInfo /> TIP FOR GOOGLE DRIVE:
+                                </p>
+                                <p className="text-[9px] text-foreground/60 leading-tight">
+                                    Ensure the file is shared as "Anyone with link can view". Use the standard share link; the platform will automatically convert it to a streamable format.
+                                </p>
+                            </div>
+                        </div>
+
+                        {settings.heroTeaserUrl && (
+                            <div className="aspect-video rounded-xl overflow-hidden bg-black/40 border border-border">
+                                <video
+                                    className="w-full h-full object-cover"
+                                    src={settings.heroTeaserUrl.includes('drive.google.com')
+                                        ? settings.heroTeaserUrl.replace('/view?usp=sharing', '').replace('/file/d/', '/uc?export=download&id=').replace('?usp=drive_link', '')
+                                        : settings.heroTeaserUrl}
+                                    muted
+                                    autoPlay
+                                    loop
+                                    playsInline
                                 />
                             </div>
                         )}
 
                         <button
-                            onClick={() => handleSave('introVideoUrl', settings.introVideoUrl)}
+                            onClick={() => handleSave('heroTeaserUrl', settings.heroTeaserUrl)}
                             disabled={saving}
                             className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary/80 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                         >
-                            {saving ? 'Saving...' : <><FiSave /> Update Video URL</>}
+                            {saving ? 'Saving...' : <><FiSave /> Update Teaser Video</>}
                         </button>
-
-                        {message.text && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className={`p-4 rounded-xl border text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
-                                    }`}
-                            >
-                                {message.type === 'success' ? <FiCheckCircle /> : <FiInfo />}
-                                {message.text}
-                            </motion.div>
-                        )}
                     </div>
-                </motion.div>
-
-                {/* More Settings Placeholder */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="glass rounded-[2rem] border border-border border-dashed p-8 flex flex-col items-center justify-center text-center opacity-40"
-                >
-                    <div className="w-16 h-16 rounded-3xl bg-foreground/5 flex items-center justify-center mb-4">
-                        <FiSettings className="text-2xl text-foreground/40" />
-                    </div>
-                    <h3 className="text-sm font-black text-foreground uppercase tracking-widest mb-1">More Settings</h3>
-                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-tight">Stay tuned for more site configuration options.</p>
                 </motion.div>
             </div>
         </div>
