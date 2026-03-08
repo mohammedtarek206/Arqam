@@ -45,7 +45,8 @@ export async function POST(request: NextRequest) {
 
     } catch (error: any) {
         console.error('[Admin Hero Upload] Error:', error);
-        return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'Upload failed' }, { status: 500 });
     }
 }
+
 
