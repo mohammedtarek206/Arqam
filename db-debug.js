@@ -13,11 +13,21 @@ async function debugSettings() {
 
         const Settings = mongoose.models.Settings || mongoose.model('Settings', new mongoose.Schema({
             key: String,
-            value: mongoose.Schema.Types.Mixed
+            value: mongoose.Schema.Types.Mixed,
+            updatedBy: mongoose.Schema.Types.ObjectId
         }));
+
+        const Users = mongoose.models.User || mongoose.model('User', new mongoose.Schema({
+            email: String,
+            role: String
+        }, { collection: 'users' }));
 
         const allSettings = await Settings.find({});
         console.log('All Settings:', JSON.stringify(allSettings, null, 2));
+
+        const allUsers = await Users.find({});
+        console.log('All Users:', JSON.stringify(allUsers, null, 2));
+
 
         process.exit(0);
     } catch (err) {

@@ -36,6 +36,7 @@ export default function SiteSettingsPage() {
 
         const newAssets = [];
         const token = localStorage.getItem('token');
+        let lastError = '';
 
         try {
             for (let i = 0; i < files.length; i++) {
@@ -51,6 +52,13 @@ export default function SiteSettingsPage() {
                 if (res.ok) {
                     const asset = await res.json();
                     newAssets.push(asset);
+                } else {
+                    try {
+                        const data = await res.json();
+                        lastError = data.error || `Upload failed with status ${res.status}`;
+                    } catch (e) {
+                        lastError = `Upload failed with status ${res.status}`;
+                    }
                 }
             }
 
@@ -68,15 +76,16 @@ export default function SiteSettingsPage() {
                 } else {
                     setMessages(prev => ({
                         ...prev,
-                        hero_gallery: { type: 'error', text: 'Upload successful but failed to update gallery settings.' }
+                        hero_gallery: { type: 'error', text: 'Upload successful but failed to update gallery settings in database. Check if database is running.' }
                     }));
                 }
             } else {
                 setMessages(prev => ({
                     ...prev,
-                    hero_gallery: { type: 'error', text: 'No files were successfully uploaded.' }
+                    hero_gallery: { type: 'error', text: lastError || 'No files were successfully uploaded.' }
                 }));
             }
+
 
         } catch (err) {
             console.error(err);
