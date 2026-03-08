@@ -92,6 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             label: 'Tools',
             items: [
                 { title: 'Notifications', icon: FiBell, href: '/admin/notifications' },
+                { title: 'Site Settings', icon: FiSettings, href: '/admin/settings' },
             ]
         },
     ];

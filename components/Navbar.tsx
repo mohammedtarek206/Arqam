@@ -158,9 +158,8 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 gap-4">
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative w-16 h-16 md:w-24 md:h-24 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+          <Link href="/" className="flex items-center gap-2 md:gap-3 shrink-0 group">
+            <div className="relative w-14 h-14 md:w-20 md:h-20 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
               <Image
                 src="/logo.png"
                 alt="Arqam Academy Logo"
@@ -169,9 +168,12 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <div className="hidden lg:block">
+            <div className="flex flex-col justify-center">
               {lang === 'ar' ? (
-                <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none pt-1">أكاديمية أرقام</span>
+                <div className="flex flex-col">
+                  <span className="text-xl md:text-2xl font-black bg-gradient-to-r from-primary via-accent to-cyber bg-clip-text text-transparent uppercase tracking-tight leading-none">أكاديمية أرقام</span>
+                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] block mt-1 leading-none">ARQAM ACADEMY</span>
+                </div>
               ) : (
                 <>
                   <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>

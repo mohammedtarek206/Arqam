@@ -5,8 +5,26 @@ import { FiCode, FiShield, FiCpu, FiPlay } from 'react-icons/fi';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
 
+import { useState, useEffect } from 'react';
+
 export default function Hero() {
   const { t, lang } = useLanguage();
+  const [videoUrl, setVideoUrl] = useState('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.introVideoUrl) {
+          setVideoUrl(data.introVideoUrl);
+        }
+      })
+      .catch(err => console.error('Failed to fetch Hero settings:', err));
+  }, []);
+
+  const getEmbedUrl = (url: string) => {
+    return url.replace('watch?v=', 'embed/').split('&')[0];
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-32 lg:pt-20">
@@ -59,7 +77,7 @@ export default function Hero() {
               </Link>
               <button
                 className="px-6 py-3 sm:px-8 sm:py-4 border-2 border-primary rounded-full text-primary font-semibold hover:bg-primary/10 transition-colors flex items-center justify-center gap-2 group"
-                onClick={() => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')}
+                onClick={() => window.open(videoUrl, '_blank')}
               >
                 <FiPlay className="group-hover:scale-125 transition-transform" />
                 {t('video_btn')}
@@ -75,15 +93,20 @@ export default function Hero() {
             className="flex-1 w-full max-w-2xl"
           >
             <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden glass border border-white/10 shadow-2xl group">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <iframe
+                className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
+                src={`${getEmbedUrl(videoUrl)}?autoplay=0&mute=1&controls=0&modestbranding=1`}
+                title="Intro Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center group-hover:opacity-0 transition-opacity">
                 <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform cursor-pointer">
                   <FiPlay className="w-6 h-6 md:w-8 md:h-8 text-white fill-white" />
                 </div>
               </div>
-              {/* This would be an iframe in production */}
-              <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 p-3 md:p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/10">
-                <p className="text-white font-bold text-xs md:text-sm">Welcome to Arqam Academy</p>
-                <p className="text-gray-400 text-[10px] md:text-xs mt-1">Discover your potential with us</p>
+              <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6 p-3 md:p-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 z-20 pointer-events-none">
+                <p className="text-white font-bold text-xs md:text-sm">{lang === 'ar' ? 'أهلاً بكم في أكاديمية أرقام' : 'Welcome to Arqam Academy'}</p>
+                <p className="text-gray-400 text-[10px] md:text-xs mt-1">{lang === 'ar' ? 'اكتشف شغفك ومهاراتك معنا' : 'Discover your potential with us'}</p>
               </div>
             </div>
           </motion.div>
