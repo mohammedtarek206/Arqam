@@ -211,7 +211,7 @@ export default function TrackDetailPage() {
                     >
                         {enrollmentStatus === 'enrolled' ? (
                             <Link
-                                href={`/learn`}
+                                href={`/dashboard`}
                                 className="px-8 py-4 bg-primary text-white font-black uppercase text-sm rounded-2xl shadow-xl flex items-center gap-2 hover:scale-105 transition-transform"
                             >
                                 <FiCheckCircle /> {isRtl ? 'ابدأ التعلم الآن' : 'Start Learning Now'}
@@ -238,7 +238,7 @@ export default function TrackDetailPage() {
                     {[
                         { icon: FaBookOpen, label: isRtl ? 'كورس محتوى' : 'Courses', value: courses.length },
                         { icon: FaVideo, label: isRtl ? 'درس مرئي' : 'Lessons', value: lessons.length },
-                        { icon: FaClock, label: isRtl ? 'المدة' : 'Duration', value: track.duration },
+                        { icon: FiClock, label: isRtl ? 'المدة' : 'Duration', value: track.duration },
                         { icon: FaUserGraduate, label: isRtl ? 'المستوى' : 'Level', value: track.level },
                     ].map((stat, i) => (
                         <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center text-center">
