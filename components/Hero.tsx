@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiCode, FiShield, FiCpu, FiPlay } from 'react-icons/fi';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/LanguageContext';
+import { getDriveDirectLink, getDriveEmbedLink, getDriveStreamLink } from '@/lib/media';
 
 export default function Hero() {
   const { t, lang } = useLanguage();
@@ -28,12 +29,17 @@ export default function Hero() {
     if (gallery.length <= 1) return;
 
     const currentAsset = gallery[activeIndex];
-    if (currentAsset?.type === 'image') {
-      const timer = setTimeout(() => {
-        setActiveIndex((prev) => (prev + 1) % gallery.length);
-      }, 5000); // 5 seconds for images
-      return () => clearTimeout(timer);
-    }
+
+    // Auto-advance logic
+    // Images: 7s
+    // Videos: 30s (Default for stealth iframes as we can't detect end event)
+    const transitionTime = currentAsset?.type === 'video' ? 30000 : 7000;
+
+    const timer = setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % gallery.length);
+    }, transitionTime);
+
+    return () => clearTimeout(timer);
   }, [activeIndex, gallery]);
 
   const handleVideoEnd = () => {
@@ -120,20 +126,38 @@ export default function Hero() {
                     className="absolute inset-0 flex items-center justify-center"
                   >
                     {gallery[activeIndex]?.type === 'video' ? (
-                      <video
-                        className="w-full h-full object-contain"
-                        src={gallery[activeIndex].url}
-                        muted
-                        autoPlay
-                        playsInline
-                        onEnded={handleVideoEnd}
-                        onError={() => handleVideoEnd()}
-                      />
+                      <div className="relative w-full h-full overflow-hidden flex items-center justify-center">
+                        {gallery[activeIndex].url.includes('drive.google.com') ? (
+                          <div className="absolute inset-0 w-full h-full scale-[1.25] origin-center -translate-y-[5%]">
+                            <iframe
+                              key={gallery[activeIndex].url}
+                              className="w-full h-full border-0"
+                              src={`${getDriveEmbedLink(gallery[activeIndex].url)}?autoplay=1&mute=1&controls=0&rm=minimal`}
+                              allow="autoplay"
+                              referrerPolicy="no-referrer"
+                            />
+                          </div>
+                        ) : (
+                          <video
+                            key={gallery[activeIndex].url}
+                            className="w-full h-full object-contain"
+                            src={getDriveDirectLink(gallery[activeIndex].url)}
+                            muted
+                            autoPlay
+                            playsInline
+                            onEnded={handleVideoEnd}
+                            onError={() => handleVideoEnd()}
+                          />
+                        )}
+                        {/* Transparent overlay to block interaction with iframe controls */}
+                        <div className="absolute inset-0 z-10 bg-transparent" />
+                      </div>
                     ) : (
                       <img
                         className="w-full h-full object-contain"
-                        src={gallery[activeIndex]?.url}
+                        src={getDriveDirectLink(gallery[activeIndex]?.url)}
                         alt="Hero Asset"
+                        referrerPolicy="no-referrer"
                         onError={() => handleVideoEnd()}
                       />
                     )}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus, FiTrash2, FiEdit, FiX, FiUser, FiLinkedin, FiTwitter, FiGithub, FiMail, FiImage, FiUpload } from 'react-icons/fi';
+import { getDriveDirectLink } from '@/lib/media';
 
 interface TeamMember {
     _id: string;
@@ -173,7 +174,7 @@ export default function AdminTeam() {
                         <div className="flex justify-between items-start mb-6">
                             <div className="relative">
                                 <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/20 bg-foreground/5">
-                                    <img src={member.imageUrl} className="w-full h-full object-cover" alt={member.name} />
+                                    <img src={getDriveDirectLink(member.imageUrl)} className="w-full h-full object-cover" alt={member.name} referrerPolicy="no-referrer" />
                                 </div>
                                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-background rounded-lg flex items-center justify-center border border-border text-primary shadow-sm">
                                     <FiUser />
@@ -252,22 +253,41 @@ export default function AdminTeam() {
                                     <div className="relative group cursor-pointer">
                                         <div className="w-32 h-32 rounded-3xl overflow-hidden border-2 border-border group-hover:border-primary transition-all bg-surface">
                                             {previewImage ? (
-                                                <img src={previewImage} className="w-full h-full object-cover" alt="Preview" />
+                                                <img src={getDriveDirectLink(previewImage)} className="w-full h-full object-cover" alt="Preview" referrerPolicy="no-referrer" />
                                             ) : (
                                                 <div className="w-full h-full bg-foreground/5 flex items-center justify-center">
                                                     <FiImage className="text-3xl text-foreground/10" />
                                                 </div>
                                             )}
                                         </div>
-                                        <label className="absolute inset-0 flex items-center justify-center bg-background/60 opacity-0 group-hover:opacity-100 transition-all rounded-3xl cursor-pointer">
-                                            <div className="text-center">
-                                                <FiUpload className="mx-auto text-foreground text-xl mb-1" />
-                                                <span className="text-[10px] text-foreground font-black uppercase tracking-widest">Upload Photo</span>
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 opacity-0 group-hover:opacity-100 transition-all rounded-3xl cursor-pointer gap-2 px-4 text-center">
+                                            <div className="flex gap-4">
+                                                <div className="flex flex-col items-center">
+                                                    <FiUpload className="text-foreground text-xl mb-1" />
+                                                    <span className="text-[8px] text-foreground font-black uppercase tracking-widest">Upload</span>
+                                                </div>
+                                                <div className="w-[1px] h-8 bg-foreground/10" />
+                                                <div className="flex flex-col items-center">
+                                                    <FiImage className="text-foreground text-xl mb-1" />
+                                                    <span className="text-[8px] text-foreground font-black uppercase tracking-widest">URL</span>
+                                                </div>
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                                        </label>
+                                        </div>
                                     </div>
-                                    <p className="mt-4 text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Profile Picture</p>
+                                    <div className="mt-4 w-full max-w-xs">
+                                        <input
+                                            type="text"
+                                            placeholder="Paste Google Drive link here..."
+                                            className="w-full bg-surface border border-border rounded-xl py-2 px-4 text-[10px] font-bold text-foreground focus:border-primary/50 outline-none text-center"
+                                            value={formData.imageUrl.startsWith('data:') ? '' : formData.imageUrl}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                setFormData({ ...formData, imageUrl: val });
+                                                setPreviewImage(val);
+                                            }}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="grid md:grid-cols-2 gap-6">

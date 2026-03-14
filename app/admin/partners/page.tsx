@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus, FiTrash2, FiImage, FiX, FiCheck, FiUpload, FiEdit } from 'react-icons/fi';
+import { getDriveDirectLink } from '@/lib/media';
 
 interface Partner {
     _id: string;
@@ -137,7 +138,7 @@ export default function AdminPartners() {
                             </button>
                         </div>
                         <div className="aspect-square w-full bg-foreground/5 rounded-xl flex items-center justify-center p-4 mb-3 border border-border">
-                            <img src={partner.logoUrl} alt={partner.name} className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all" />
+                            <img src={getDriveDirectLink(partner.logoUrl)} alt={partner.name} className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all" referrerPolicy="no-referrer" />
                         </div>
                         <p className="text-xs font-black text-foreground/40 text-center truncate w-full uppercase tracking-tighter">{partner.name}</p>
                     </div>
@@ -174,18 +175,33 @@ export default function AdminPartners() {
                                     <div className="flex gap-4 items-center">
                                         <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center p-2 shrink-0">
                                             {previewImage ? (
-                                                <img src={previewImage} className="max-w-full max-h-full object-contain" alt="Preview" />
+                                                <img src={getDriveDirectLink(previewImage)} className="max-w-full max-h-full object-contain" alt="Preview" referrerPolicy="no-referrer" />
                                             ) : (
                                                 <FiImage className="text-2xl text-foreground/10" />
                                             )}
                                         </div>
-                                        <label className="flex-1 cursor-pointer">
-                                            <div className="w-full py-4 border border-dashed border-border rounded-xl flex flex-col items-center justify-center hover:bg-foreground/5 transition-all group bg-background">
-                                                <FiUpload className="text-foreground/20 group-hover:text-primary transition-colors mb-1" />
-                                                <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest group-hover:text-foreground/40 transition-colors">Upload Logo</span>
+                                        <div className="flex-1 space-y-3">
+                                            <label className="cursor-pointer">
+                                                <div className="w-full py-3 border border-dashed border-border rounded-xl flex items-center justify-center gap-2 hover:bg-foreground/5 transition-all group bg-background">
+                                                    <FiUpload className="text-foreground/20 group-hover:text-primary transition-colors text-sm" />
+                                                    <span className="text-[9px] font-black text-foreground/20 uppercase tracking-widest group-hover:text-foreground/40 transition-colors">Upload</span>
+                                                </div>
+                                                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Or paste Drive link..."
+                                                    className="w-full bg-surface border border-border rounded-xl py-2 px-3 text-[10px] text-foreground font-bold focus:border-primary outline-none"
+                                                    value={logoUrl.startsWith('data:') ? '' : logoUrl}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setLogoUrl(val);
+                                                        setPreviewImage(val);
+                                                    }}
+                                                />
                                             </div>
-                                            <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                                        </label>
+                                        </div>
                                     </div>
                                 </div>
 

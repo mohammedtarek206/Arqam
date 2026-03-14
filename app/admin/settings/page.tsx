@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiSave, FiYoutube, FiSettings, FiCheckCircle, FiInfo, FiPlay, FiImage, FiPlusCircle, FiTrash2 } from 'react-icons/fi';
+import { getDriveDirectLink, getDriveEmbedLink } from '@/lib/media';
 
 export default function SiteSettingsPage() {
     const [settings, setSettings] = useState<any>({});
@@ -207,7 +208,7 @@ export default function SiteSettingsPage() {
                             <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Hero Gallery Assets</h2>
                         </div>
                         <p className="text-foreground/40 text-xs font-bold leading-relaxed uppercase tracking-widest">
-                            Add external links for images and videos for the attractive Hero Carousel.
+                            Add external links or Google Drive sharing links for images and videos in the Hero Carousel.
                         </p>
                     </div>
 
@@ -217,7 +218,7 @@ export default function SiteSettingsPage() {
                                 <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest block px-1">Media URL</label>
                                 <input
                                     type="text"
-                                    placeholder="https://example.com/image.jpg or video.mp4"
+                                    placeholder="Paste Google Drive link or direct media URL here..."
                                     value={newAssetUrl}
                                     onChange={(e) => setNewAssetUrl(e.target.value)}
                                     className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-primary/50 transition-all"
@@ -258,9 +259,22 @@ export default function SiteSettingsPage() {
                                     {settings.hero_gallery.map((asset: any, index: number) => (
                                         <div key={index} className="relative group aspect-square rounded-2xl overflow-hidden border border-border bg-black/5 flex items-center justify-center">
                                             {asset.type === 'video' ? (
-                                                <video src={asset.url} className="w-full h-full object-cover" muted />
+                                                asset.url.includes('drive.google.com') ? (
+                                                    <iframe
+                                                        src={getDriveEmbedLink(asset.url)}
+                                                        className="w-full h-full border-0"
+                                                        referrerPolicy="no-referrer"
+                                                    />
+                                                ) : (
+                                                    <video src={getDriveDirectLink(asset.url)} className="w-full h-full object-cover" muted />
+                                                )
                                             ) : (
-                                                <img src={asset.url} alt="Gallery item" className="w-full h-full object-cover" />
+                                                <img
+                                                    src={getDriveDirectLink(asset.url)}
+                                                    alt="Gallery item"
+                                                    className="w-full h-full object-cover"
+                                                    referrerPolicy="no-referrer"
+                                                />
                                             )}
                                             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                                 <button

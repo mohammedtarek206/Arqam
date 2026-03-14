@@ -5,6 +5,7 @@ import Module from '@/models/Module';
 import Lesson from '@/models/Lesson';
 import Track from '@/models/Track';
 import Progress from '@/models/Progress';
+import Exam from '@/models/Exam';
 import { authenticateRequest } from '@/lib/auth';
 
 export async function GET(
@@ -29,30 +30,47 @@ export async function GET(
         const progress = await Progress.findOne({ user: payload.userId, course: courseId });
         const completedLessonIds = progress ? progress.completedLessons.map((l: any) => l.toString()) : [];
 
-        // 1. Try to find modules for this course
+        // Fetch modules and exams for this course
         const modules = await Module.find({ course: courseId }).sort({ order: 1 });
+        const exams = await Exam.find({ courseId }).select('_id title description duration passScore');
 
-        if (modules.length > 0) {
-            const modulesWithLessons = await Promise.all(
-                modules.map(async (mod) => {
-                    const lessons = await Lesson.find({ module: mod._id }).sort({ order: 1 });
-                    return {
-                        id: mod._id,
-                        title: mod.title,
-                        lessons: lessons.map(l => ({
-                            id: l._id,
-                            title: l.title,
-                            type: l.type,
-                            duration: l.duration,
-                            contentUrl: l.contentUrl,
-                            description: l.description,
-                            completed: completedLessonIds.includes(l._id.toString())
-                        }))
-                    };
-                })
-            );
-            return NextResponse.json({ title: course.title, modules: modulesWithLessons }, { status: 200 });
+        const modulesWithLessons = await Promise.all(
+            modules.map(async (mod: any) => {
+                const lessons = await Lesson.find({ module: mod._id }).sort({ order: 1 });
+                return {
+                    id: mod._id,
+                    title: mod.title,
+                    lessons: lessons.map(l => ({
+                        id: l._id,
+                        title: l.title,
+                        type: l.type,
+                        duration: l.duration,
+                        contentUrl: l.contentUrl,
+                        description: l.description,
+                        completed: completedLessonIds.includes(l._id.toString())
+                    }))
+                };
+            })
+        );
+
+        // Add exams as a special module if any exist
+        if (exams.length > 0) {
+            modulesWithLessons.push({
+                id: 'exams-module',
+                title: 'Final Assessments',
+                lessons: exams.map(e => ({
+                    id: e._id,
+                    title: e.title,
+                    type: 'exam',
+                    duration: `${e.duration}m`,
+                    contentUrl: '', // Will be handled by ID
+                    description: e.description,
+                    completed: false // Progress for exams can be added later
+                }))
+            });
         }
+
+        return NextResponse.json({ title: course.title, modules: modulesWithLessons }, { status: 200 });
 
         // 2. If no modules, fallback to track lessons if available
         if (course.track && course.track.lessons && course.track.lessons.length > 0) {

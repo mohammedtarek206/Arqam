@@ -5,9 +5,10 @@ import { useLanguage } from '@/lib/LanguageContext';
 import {
     FiArrowLeft, FiPlus, FiTrash2, FiSave,
     FiCheckCircle, FiCircle, FiAlignLeft, FiMoreHorizontal,
-    FiClipboard
+    FiClipboard, FiSettings
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 
 interface Question {
     id: string;
@@ -20,13 +21,75 @@ interface Question {
 
 export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: () => void }) {
     const { t, lang } = useLanguage();
-    const [questions, setQuestions] = useState<Question[]>([]);
+    const [courses, setCourses] = useState<any[]>([]);
+    const [questions, setQuestions] = useState<Question[]>(exam?.questions || []);
     const [examInfo, setExamInfo] = useState({
         title: exam?.title || '',
-        description: '',
-        duration: 30,
-        passScore: 50,
+        description: exam?.description || '',
+        duration: exam?.duration || 30,
+        passScore: exam?.passScore || 50,
+        courseId: exam?.courseId?._id || exam?.courseId || '',
     });
+    const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        fetchCourses();
+    }, []);
+
+    const fetchCourses = async () => {
+        try {
+            const res = await fetch('/api/instructor/courses', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCourses(data);
+            }
+        } catch (err) {
+            console.error('Failed to fetch courses:', err);
+        }
+    };
+
+    const handlePublish = async () => {
+        if (!examInfo.title || !examInfo.courseId || questions.length === 0) {
+            alert('Please fill in all details and add at least one question.');
+            return;
+        }
+
+        setSaving(true);
+        try {
+            const method = exam?._id ? 'PUT' : 'POST';
+            const url = exam?._id ? `/api/instructor/exams/${exam._id}` : '/api/instructor/exams';
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    ...examInfo,
+                    questions: questions.map(({ id, ...q }: any) => {
+                        // If it's a new question from UI (has id), remove it
+                        // MongoDB objects might have _id
+                        return q;
+                    })
+                })
+            });
+
+            if (res.ok) {
+                onCancel();
+            } else {
+                const err = await res.json();
+                alert(err.error || 'Failed to save exam');
+            }
+        } catch (err) {
+            console.error('Save error:', err);
+            alert('An error occurred while saving.');
+        } finally {
+            setSaving(false);
+        }
+    };
 
     const addQuestion = (type: 'mcq' | 'tf' | 'essay') => {
         const newQuestion: Question = {
@@ -41,12 +104,12 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
     };
 
     const updateQuestionText = (id: string, text: string) => {
-        setQuestions(questions.map(q => q.id === id ? { ...q, text } : q));
+        setQuestions(questions.map(q => (q.id === id || (q as any)._id === id) ? { ...q, text } : q));
     };
 
     const updateOption = (qId: string, optIdx: number, val: string) => {
         setQuestions(questions.map(q => {
-            if (q.id === qId && q.options) {
+            if ((q.id === qId || (q as any)._id === qId) && q.options) {
                 const newOpts = [...q.options];
                 newOpts[optIdx] = val;
                 return { ...q, options: newOpts };
@@ -56,21 +119,29 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
     };
 
     const removeQuestion = (id: string) => {
-        setQuestions(questions.filter(q => q.id !== id));
+        setQuestions(questions.filter(q => q.id !== id && (q as any)._id !== id));
     };
 
     return (
         <div className="space-y-8 pb-20">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <button onClick={onCancel} className="flex items-center gap-2 text-gray-500 hover:text-white font-bold transition-colors">
-                    <FiArrowLeft /> {t('manage_exams')}
+                    <FiArrowLeft /> {t('back_to_exams') || 'Back to Exams'}
                 </button>
-                <div className="flex gap-4">
-                    <button className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-bold">
-                        Save Draft
+                <div className="flex gap-4 w-full md:w-auto">
+                    <button
+                        onClick={onCancel}
+                        disabled={saving}
+                        className="flex-1 md:flex-none px-6 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-bold text-xs uppercase"
+                    >
+                        Cancel
                     </button>
-                    <button className="px-8 py-3 bg-accent text-white font-black rounded-xl hover:bg-accent/80 transition-all shadow-lg shadow-accent/20 flex items-center gap-2">
-                        <FiSave /> Publish Exam
+                    <button
+                        onClick={handlePublish}
+                        disabled={saving}
+                        className="flex-1 md:flex-none px-8 py-3 bg-accent text-white font-black rounded-xl hover:bg-accent/80 transition-all shadow-lg shadow-accent/20 flex items-center justify-center gap-2 uppercase text-xs tracking-widest"
+                    >
+                        {saving ? 'Saving...' : <><FiSave /> {exam?._id ? 'Update Exam' : 'Publish Exam'}</>}
                     </button>
                 </div>
             </div>
@@ -80,15 +151,39 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                 <div className="space-y-6">
                     <div className="glass p-8 rounded-[2.5rem] border border-white/5 h-fit">
                         <h3 className="text-xl font-black text-white uppercase mb-8 tracking-tighter shrink-0 flex items-center gap-2">
-                            <FiSettingsMini className="text-accent" /> Exam Details
+                            <FiSettings className="text-accent" /> Exam Details
                         </h3>
                         <div className="space-y-6">
                             <div className="space-y-2">
+                                <label className="text-[10px] font-black text-accent uppercase tracking-widest">Target Course</label>
+                                <select
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 appearance-none text-white cursor-pointer"
+                                    value={examInfo.courseId}
+                                    onChange={(e) => setExamInfo({ ...examInfo, courseId: e.target.value })}
+                                >
+                                    <option value="" className="bg-surface">Select a course</option>
+                                    {courses.map(c => (
+                                        <option key={c._id} value={c._id} className="bg-surface">{c.title}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
                                 <label className="text-[10px] font-black text-accent uppercase tracking-widest">Exam Title</label>
                                 <input
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 text-white"
+                                    placeholder="e.g., Midterm Assessment"
                                     value={examInfo.title}
                                     onChange={(e) => setExamInfo({ ...examInfo, title: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-accent uppercase tracking-widest">Description</label>
+                                <textarea
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 text-white resize-none"
+                                    placeholder="Optional instructions..."
+                                    rows={3}
+                                    value={examInfo.description}
+                                    onChange={(e) => setExamInfo({ ...examInfo, description: e.target.value })}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -96,7 +191,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                     <label className="text-[10px] font-black text-accent uppercase tracking-widest">Duration (m)</label>
                                     <input
                                         type="number"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 text-center"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 text-center text-white"
                                         value={examInfo.duration}
                                         onChange={(e) => setExamInfo({ ...examInfo, duration: parseInt(e.target.value) })}
                                     />
@@ -105,7 +200,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                     <label className="text-[10px] font-black text-accent uppercase tracking-widest">Pass Score %</label>
                                     <input
                                         type="number"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 text-center"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm font-bold focus:outline-none focus:border-accent/50 text-center text-white"
                                         value={examInfo.passScore}
                                         onChange={(e) => setExamInfo({ ...examInfo, passScore: parseInt(e.target.value) })}
                                     />
@@ -123,7 +218,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-400">Total Points</span>
-                                <span className="text-white">{questions.reduce((acc, q) => acc + q.points, 0)}</span>
+                                <span className="text-white">{questions.reduce((acc, q) => acc + (Number(q.points) || 0), 0)}</span>
                             </div>
                         </div>
                     </div>
@@ -134,19 +229,19 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                     <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
                         <button
                             onClick={() => addQuestion('mcq')}
-                            className="px-6 py-3 bg-white/3 border border-dashed border-white/10 rounded-2xl flex items-center gap-2 hover:bg-white/5 hover:border-accent/30 transition-all text-xs font-black uppercase shrink-0"
+                            className="px-6 py-3 bg-white/3 border border-dashed border-white/10 rounded-2xl flex items-center gap-2 hover:bg-white/5 hover:border-accent/30 transition-all text-xs font-black uppercase shrink-0 text-white"
                         >
                             <FiCheckCircle className="text-accent" /> + MCQ
                         </button>
                         <button
                             onClick={() => addQuestion('tf')}
-                            className="px-6 py-3 bg-white/3 border border-dashed border-white/10 rounded-2xl flex items-center gap-2 hover:bg-white/5 hover:border-accent/30 transition-all text-xs font-black uppercase shrink-0"
+                            className="px-6 py-3 bg-white/3 border border-dashed border-white/10 rounded-2xl flex items-center gap-2 hover:bg-white/5 hover:border-accent/30 transition-all text-xs font-black uppercase shrink-0 text-white"
                         >
                             <FiCircle className="text-accent" /> + True/False
                         </button>
                         <button
                             onClick={() => addQuestion('essay')}
-                            className="px-6 py-3 bg-white/3 border border-dashed border-white/10 rounded-2xl flex items-center gap-2 hover:bg-white/5 hover:border-accent/30 transition-all text-xs font-black uppercase shrink-0"
+                            className="px-6 py-3 bg-white/3 border border-dashed border-white/10 rounded-2xl flex items-center gap-2 hover:bg-white/5 hover:border-accent/30 transition-all text-xs font-black uppercase shrink-0 text-white"
                         >
                             <FiAlignLeft className="text-accent" /> + Essay
                         </button>
@@ -156,7 +251,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                         <AnimatePresence>
                             {questions.map((q, idx) => (
                                 <motion.div
-                                    key={q.id}
+                                    key={q.id || (q as any)._id || idx}
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
@@ -174,10 +269,10 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                                     type="number"
                                                     className="w-8 bg-transparent border-none text-white text-xs font-black focus:outline-none text-center"
                                                     value={q.points}
-                                                    onChange={(e) => setQuestions(questions.map(qu => qu.id === q.id ? { ...qu, points: parseInt(e.target.value) } : qu))}
+                                                    onChange={(e) => setQuestions(questions.map((qu, i) => (qu.id === q.id || (qu as any)._id === (q as any)._id || i === idx) ? { ...qu, points: parseInt(e.target.value) || 0 } : qu))}
                                                 />
                                             </div>
-                                            <button onClick={() => removeQuestion(q.id)} className="text-gray-500 hover:text-red-500 transition-colors">
+                                            <button onClick={() => removeQuestion(q.id || (q as any)._id || '')} className="text-gray-500 hover:text-red-500 transition-colors">
                                                 <FiTrash2 />
                                             </button>
                                         </div>
@@ -188,7 +283,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                         placeholder="Type your question here..."
                                         rows={2}
                                         value={q.text}
-                                        onChange={(e) => updateQuestionText(q.id, e.target.value)}
+                                        onChange={(e) => updateQuestionText(q.id || (q as any)._id || '', e.target.value)}
                                     />
 
                                     {q.type === 'mcq' && q.options && (
@@ -196,14 +291,14 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                             {q.options.map((opt, oIdx) => (
                                                 <div key={oIdx} className="relative group/opt">
                                                     <div className={`absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer ${q.correctAnswer === oIdx ? 'bg-accent border-accent text-white' : 'border-white/10 group-hover/opt:border-white/30'
-                                                        }`} onClick={() => setQuestions(questions.map(qu => qu.id === q.id ? { ...qu, correctAnswer: oIdx } : qu))}>
+                                                        }`} onClick={() => setQuestions(questions.map((qu, i) => (qu.id === q.id || (qu as any)._id === (q as any)._id || i === idx) ? { ...qu, correctAnswer: oIdx } : qu))}>
                                                         {q.correctAnswer === oIdx && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                                                     </div>
                                                     <input
-                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-4 text-sm font-bold focus:outline-none focus:border-accent/30"
+                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-4 text-sm font-bold focus:outline-none focus:border-accent/30 text-white"
                                                         placeholder={`Option ${oIdx + 1}`}
                                                         value={opt}
-                                                        onChange={(e) => updateOption(q.id, oIdx, e.target.value)}
+                                                        onChange={(e) => updateOption(q.id || (q as any)._id || '', oIdx, e.target.value)}
                                                     />
                                                 </div>
                                             ))}
@@ -215,7 +310,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
                                             {['True', 'False'].map((opt) => (
                                                 <button
                                                     key={opt}
-                                                    onClick={() => setQuestions(questions.map(qu => qu.id === q.id ? { ...qu, correctAnswer: opt.toLowerCase() } : qu))}
+                                                    onClick={() => setQuestions(questions.map((qu, i) => (qu.id === q.id || (qu as any)._id === (q as any)._id || i === idx) ? { ...qu, correctAnswer: opt.toLowerCase() } : qu))}
                                                     className={`flex-1 py-4 rounded-2xl font-black text-sm transition-all border ${q.correctAnswer === opt.toLowerCase()
                                                         ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20'
                                                         : 'bg-white/5 border-white/10 text-gray-500'
@@ -252,6 +347,7 @@ export default function ExamBuilder({ exam, onCancel }: { exam?: any, onCancel: 
         </div>
     );
 }
+
 
 function FiSettingsMini({ className }: { className?: string }) {
     return (

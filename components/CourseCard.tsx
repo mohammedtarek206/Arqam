@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FaUser, FaLayerGroup, FaMoneyBillWave, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import { useLanguage } from '@/lib/LanguageContext';
+import { getDriveDirectLink } from '@/lib/media';
 
 interface CourseCardProps {
     course: {
@@ -38,11 +39,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             {/* Thumbnail */}
             <div className="relative h-48 w-full overflow-hidden">
                 <Image
-                    src={course.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop'}
+                    src={getDriveDirectLink(course.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop')}
                     alt={course.title}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    unoptimized={!course.thumbnail}
+                    unoptimized={course.thumbnail?.includes('drive.google.com') || !course.thumbnail}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                     <div className="bg-primary hover:bg-primary-dark text-white p-4 rounded-full transform scale-0 group-hover:scale-100 transition-transform duration-500 delay-100">
@@ -61,10 +62,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                 <div className="flex items-center gap-2 mb-3">
                     <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-primary/20">
                         <Image
-                            src={(course.instructor as any).image || 'https://ui-avatars.com/api/?name=' + (course.instructor as any).name}
+                            src={getDriveDirectLink((course.instructor as any).image || 'https://ui-avatars.com/api/?name=' + (course.instructor as any).name)}
                             alt={(course.instructor as any).name}
                             fill
                             className="object-cover"
+                            unoptimized={(course.instructor as any).image?.includes('drive.google.com')}
                         />
                     </div>
                     <span className="text-sm font-medium text-slate-600 dark:text-slate-400">

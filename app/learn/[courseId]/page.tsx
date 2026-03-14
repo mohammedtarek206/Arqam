@@ -156,9 +156,16 @@ export default function LearnCoursePage() {
                         ) : (
                             <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 gap-4">
                                 <FiAward className="text-6xl text-primary" />
-                                <button className="px-8 py-4 bg-primary text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:bg-primary/80 transition-all">
-                                    Start Exam
-                                </button>
+                                <div className="text-center mb-4">
+                                    <h3 className="text-xl font-black text-white">{currentLessonData.title}</h3>
+                                    <p className="text-gray-400 text-sm mt-1">{currentLessonData.description}</p>
+                                </div>
+                                <Link
+                                    href={`/exams/${currentLessonData.id}`}
+                                    className="px-8 py-4 bg-primary text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:bg-primary/80 transition-all"
+                                >
+                                    Start Final Assessment
+                                </Link>
                             </div>
                         )}
                     </div>

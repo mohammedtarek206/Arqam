@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FaPlay, FaClock, FaCalendarAlt, FaTv } from 'react-icons/fa';
 import { useLanguage } from '@/lib/LanguageContext';
+import { getDriveDirectLink } from '@/lib/media';
 
 interface VideoCardProps {
     video: {
@@ -24,10 +25,13 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
     const isRtl = lang === 'ar';
 
     const formatDate = (dateString: string) => {
+        if (!dateString) return isRtl ? 'اليوم' : 'Today';
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return isRtl ? 'اليوم' : 'Today';
+
         return date.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric',
         });
     };
@@ -43,11 +47,11 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
             {/* Video Thumbnail with Play Button */}
             <div className="relative aspect-video w-full overflow-hidden bg-slate-200 dark:bg-slate-800">
                 <Image
-                    src={video.trackImage || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop'}
+                    src={getDriveDirectLink(video.trackImage || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop')}
                     alt={video.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    unoptimized={!video.trackImage}
+                    unoptimized={video.trackImage?.includes('drive.google.com') || !video.trackImage}
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
                     <div className="bg-primary text-white p-4 rounded-full shadow-lg transform group-hover:scale-110 transition-transform">

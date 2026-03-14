@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus, FiTrash2, FiImage, FiX, FiUser, FiUpload, FiEdit, FiCheck } from 'react-icons/fi';
+import { getDriveDirectLink } from '@/lib/media';
 
 interface Project {
     _id: string;
@@ -135,7 +136,7 @@ export default function AdminProjects() {
                 {projects.map((project) => (
                     <div key={project._id} className="glass rounded-[2.5rem] border border-border overflow-hidden group hover:border-primary/50 transition-all flex flex-col bg-surface shadow-sm hover:shadow-xl hover:shadow-primary/5">
                         <div className="relative aspect-video">
-                            <img src={project.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={project.title} />
+                            <img src={getDriveDirectLink(project.imageUrl)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={project.title} referrerPolicy="no-referrer" />
                             <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent"></div>
                             <div className="absolute top-4 right-4 flex gap-2">
                                 <button
@@ -195,20 +196,38 @@ export default function AdminProjects() {
                                     <div className="flex flex-col md:flex-row gap-6 items-center">
                                         <div className="w-full md:w-60 h-40 rounded-3xl overflow-hidden bg-surface border border-border shrink-0">
                                             {previewImage ? (
-                                                <img src={previewImage} className="w-full h-full object-cover" alt="Preview" />
+                                                <img src={getDriveDirectLink(previewImage)} className="w-full h-full object-cover" alt="Preview" referrerPolicy="no-referrer" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-foreground/5">
                                                     <FiImage className="text-3xl text-foreground/10" />
                                                 </div>
                                             )}
                                         </div>
-                                        <label className="flex-1 w-full cursor-pointer">
-                                            <div className="w-full h-40 border-2 border-dashed border-border rounded-3xl flex flex-col items-center justify-center hover:bg-foreground/5 transition-all group bg-background">
-                                                <FiUpload className="text-foreground/20 group-hover:text-primary transition-colors text-2xl mb-2" />
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/20 group-hover:text-foreground/40 transition-colors text-center px-4">Drag and drop or click to upload</span>
+                                        <div className="flex-1 space-y-4">
+                                            <label className="flex-1 w-full cursor-pointer">
+                                                <div className="w-full h-20 border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center hover:bg-foreground/5 transition-all group bg-background">
+                                                    <FiUpload className="text-foreground/20 group-hover:text-primary transition-colors text-xl mb-1" />
+                                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/20 group-hover:text-foreground/40 transition-colors text-center px-4">Upload File</span>
+                                                </div>
+                                                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                            </label>
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                                    <FiImage className="text-foreground/20" />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Or paste Google Drive link here..."
+                                                    className="w-full bg-surface border border-border rounded-xl py-3 pl-10 pr-4 text-xs font-bold text-foreground focus:border-primary/50 outline-none"
+                                                    value={formData.imageUrl.startsWith('data:') ? '' : formData.imageUrl}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setFormData({ ...formData, imageUrl: val });
+                                                        setPreviewImage(val);
+                                                    }}
+                                                />
                                             </div>
-                                            <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                                        </label>
+                                        </div>
                                     </div>
                                 </div>
 

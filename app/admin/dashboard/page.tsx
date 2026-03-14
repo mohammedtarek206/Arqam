@@ -74,6 +74,7 @@ export default function AdminDashboard() {
         { label: 'Add New Course', href: '/admin/courses-control', icon: FiBook, color: 'text-primary border-primary/20 bg-primary/5 hover:bg-primary/10' },
         { label: 'Manage Students', href: '/admin/students', icon: FiUsers, color: 'text-green-400 border-green-400/20 bg-green-400/5 hover:bg-green-400/10' },
         { label: 'View Payments', href: '/admin/payments', icon: FiCreditCard, color: 'text-yellow-400 border-yellow-400/20 bg-yellow-400/5 hover:bg-yellow-400/10' },
+        { label: 'Exam Results', href: '/admin/results', icon: FiAward, color: 'text-orange-400 border-orange-400/20 bg-orange-400/5 hover:bg-orange-400/10' },
         { label: 'Analytics', href: '/admin/analytics', icon: FiBarChart2, color: 'text-purple-400 border-purple-400/20 bg-purple-400/5 hover:bg-purple-400/10' },
     ];
 
