@@ -22,9 +22,8 @@ export const getDriveDirectLink = (url: string) => {
         }
 
         if (fileId) {
-            // This format is extremely robust for <img> tags and doesn't require complex sz params for basic display
-            // but thumbnail?id=...&sz=s0 is also good. lh3 format is very common for direct display.
-            return `https://drive.google.com/thumbnail?id=${fileId}&sz=s0`;
+            // Using lh3 format as it's often more reliable for plain <img> tags in production
+            return `https://lh3.googleusercontent.com/d/${fileId}=s0`;
         }
     }
 

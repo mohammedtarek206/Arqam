@@ -154,11 +154,15 @@ export default function Hero() {
                       </div>
                     ) : (
                       <img
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain bg-black/40"
                         src={getDriveDirectLink(gallery[activeIndex]?.url)}
                         alt="Hero Asset"
                         referrerPolicy="no-referrer"
-                        onError={() => handleVideoEnd()}
+                        onError={(e) => {
+                          // Remove onError to prevent infinite cycling if all images fail
+                          (e.target as any).onerror = null;
+                          // Optionally show a placeholder or just let handleVideoEnd move to next after timeout
+                        }}
                       />
                     )}
                   </motion.div>
