@@ -5,18 +5,22 @@ import { useLanguage } from '@/lib/LanguageContext';
 import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
-    FiMonitor, FiSmartphone, FiShield, FiCpu, FiBriefcase,
-    FiArrowRight, FiAward, FiClock, FiBook, FiX, FiCreditCard, FiUpload, FiCheckCircle, FiInfo
+    FiArrowRight, FiClock, FiBook, FiX, FiCreditCard, FiUpload, FiCheckCircle, FiInfo
 } from 'react-icons/fi';
+import { FaVideo, FaBookOpen, FaUserGraduate } from 'react-icons/fa';
 import Link from 'next/link';
+import CourseCard from '@/components/CourseCard';
+import VideoCard from '@/components/VideoCard';
 
 export default function TrackDetailPage() {
-    const { lang } = useLanguage();
+    const { lang, t } = useLanguage();
     const { user } = useAuth();
     const params = useParams();
     const router = useRouter();
     const trackId = params.id as string;
+    const isRtl = lang === 'ar';
 
     const [track, setTrack] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -28,62 +32,13 @@ export default function TrackDetailPage() {
     const [uploading, setUploading] = useState(false);
     const [enrollmentStatus, setEnrollmentStatus] = useState<'none' | 'pending' | 'enrolled'>('none');
 
-    // Render a specific mock track based on the ID param linked from Navbar
-    const getTrackInfo = (id: string) => {
-        switch (id) {
-            case 'web':
-                return {
-                    name: 'Web Development', title: 'Master Full Stack Web Development',
-                    desc: 'Learn to build modern, scalable web applications from scratch using React, Next.js, Node.js, and MongoDB. Become a certified full-stack engineer ready for the tech industry.',
-                    color: 'from-blue-600 to-cyan-400', icon: <FiMonitor />, courses: 8, duration: '6 Months', price: 0
-                };
-            case 'mobile':
-                return {
-                    name: 'Mobile Development', title: 'Cross-Platform App Development',
-                    desc: 'Master Flutter and Dart to build visually stunning, performant mobile applications for both iOS and Android from a single codebase.',
-                    color: 'from-emerald-500 to-teal-400', icon: <FiSmartphone />, courses: 6, duration: '4 Months', price: 0
-                };
-            case 'cyber':
-                return {
-                    name: 'Cyber Security', title: 'Advanced Network & Cyber Security',
-                    desc: 'Equip yourself with the skills to defend networks, master ethical hacking, and conduct advanced risk assessments to protect digital assets.',
-                    color: 'from-accent to-pink-500', icon: <FiShield />, courses: 10, duration: '8 Months', price: 0
-                };
-            case 'ai':
-                return {
-                    name: 'Artificial Intelligence', title: 'AI & Machine Learning Engineering',
-                    desc: 'Dive into the world of AI. Learn Python, build machine learning models, and understand deep learning concepts for the future of tech.',
-                    color: 'from-purple-600 to-indigo-500', icon: <FiCpu />, courses: 7, duration: '5 Months', price: 0
-                };
-            case 'soft-skills':
-                return {
-                    name: 'Freelancing & Soft Skills', title: 'Start Your Independent Career',
-                    desc: 'Learn how to market your technical skills, acquire clients globally, and maintain standard communication and pricing strategies.',
-                    color: 'from-orange-500 to-yellow-400', icon: <FiBriefcase />, courses: 3, duration: '2 Months', price: 0
-                };
-            default:
-                return {
-                    name: 'Learning Track', title: 'Accelerate Your Tech Career',
-                    desc: 'Join this comprehensive track to build real-world projects and acquire in-demand skills.',
-                    color: 'from-primary to-accent', icon: <FiAward />, courses: 5, duration: '3 Months', price: 0
-                };
-        }
-    };
-
     useEffect(() => {
-        const fetchTrack = async () => {
+        const fetchTrackDetails = async () => {
             try {
                 const res = await fetch(`/api/tracks/${trackId}`);
                 if (res.ok) {
                     const data = await res.json();
-                    setTrack({
-                        ...data,
-                        name: data.title,
-                        desc: data.description,
-                        courses: data.lessons?.length || 0,
-                        color: 'from-primary to-accent',
-                        icon: <FiAward />
-                    });
+                    setTrack(data);
 
                     // Check enrollment if user is logged in
                     if (user) {
@@ -92,26 +47,23 @@ export default function TrackDetailPage() {
                         });
                         if (paymentsRes.ok) {
                             const payments = await paymentsRes.json();
-                            const trackPayment = payments.find((p: any) => p.track._id === trackId);
+                            const trackPayment = payments.find((p: any) => p.track._id === data._id || p.track.slug === data.slug);
                             if (trackPayment) {
                                 if (trackPayment.status === 'approved') setEnrollmentStatus('enrolled');
                                 else if (trackPayment.status === 'pending') setEnrollmentStatus('pending');
                             }
                         }
                     }
-                } else {
-                    setTrack(getTrackInfo(trackId));
                 }
             } catch (err) {
                 console.error(err);
-                setTrack(getTrackInfo(trackId));
             } finally {
                 setLoading(false);
             }
         };
 
         if (trackId) {
-            fetchTrack();
+            fetchTrackDetails();
         }
     }, [trackId, user]);
 
@@ -137,7 +89,7 @@ export default function TrackDetailPage() {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    trackId,
+                    trackId: track._id,
                     amount: track.price,
                     method: selectedMethod,
                     proofImage
@@ -148,18 +100,14 @@ export default function TrackDetailPage() {
                 setEnrollmentStatus('pending');
                 setShowPaymentModal(false);
                 setPaymentStep('select');
-                setProofImage('');
-                setVisaData({ number: '', expiry: '', cvv: '' });
-                alert('تم إرسال طلب الدفع بنجاح. بانتظار موافقة الإدارة.');
-                const langUrl = lang === 'ar' ? '/ar' : '';
-                router.push(`${langUrl}/dashboard`);
+                alert(isRtl ? 'تم إرسال طلب الدفع بنجاح. بانتظار موافقة الإدارة.' : 'Payment proof uploaded erfolgreich. Waiting for approval.');
             } else {
                 const error = await res.json();
-                alert(error.error || 'فشل إرسال طلب الدفع');
+                alert(error.error || 'Payment failed');
             }
         } catch (err) {
             console.error(err);
-            alert('حدث خطأ أثناء إرسال الطلب');
+            alert('An error occurred');
         } finally {
             setUploading(false);
         }
@@ -182,7 +130,7 @@ export default function TrackDetailPage() {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
-                    body: JSON.stringify({ trackId })
+                    body: JSON.stringify({ trackId: track._id })
                 });
                 if (res.ok) {
                     setEnrollmentStatus('enrolled');
@@ -193,7 +141,6 @@ export default function TrackDetailPage() {
                 }
             } catch (err) {
                 console.error(err);
-                alert('An error occurred during enrollment');
             } finally {
                 setLoading(false);
             }
@@ -202,126 +149,160 @@ export default function TrackDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-background pt-32 pb-20 flex items-center justify-center">
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
 
-    if (!track) return null;
+    if (!track) {
+        return (
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center text-slate-500">
+                Track not found.
+            </div>
+        );
+    }
+
+    const lessons = track.lessons || [];
+    const courses = track.associatedCourses || track.courses || [];
 
     return (
-        <div className="min-h-screen bg-background pt-32 pb-20 relative overflow-hidden">
-            <div className={`absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl ${track.color} opacity-10 rounded-full blur-[120px] pointer-events-none`} />
-
-            <div className="max-w-7xl mx-auto px-4 md:px-8">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-                    {/* Left Content */}
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">
+            {/* Hero Section */}
+            <section className="relative h-[450px] overflow-hidden flex items-center justify-center text-center px-4">
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src={track.imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop'}
+                        alt={track.title}
+                        fill
+                        className="object-cover brightness-[0.25]"
+                    />
+                </div>
+                <div className="relative z-10 max-w-4xl">
                     <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="space-y-8"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 text-xs font-black uppercase tracking-widest mb-6"
                     >
-                        <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${track.color} flex items-center justify-center text-4xl text-white shadow-2xl shadow-primary/20`}>
-                            {track.icon}
-                        </div>
-
-                        <div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{track.name} Track</span>
-                            <h1 className="text-4xl md:text-6xl font-black text-foreground leading-[1.1] mt-4 uppercase tracking-tighter">
-                                {track.title}
-                            </h1>
-                        </div>
-
-                        <p className="text-lg text-foreground/60 font-medium leading-relaxed max-w-lg">
-                            {track.desc}
-                        </p>
-
-                        <div className="flex flex-wrap gap-4 pt-4 border-t border-border">
-                            <div className="glass px-6 py-4 rounded-2xl border border-border flex items-center gap-4">
-                                <FiBook className="text-2xl text-primary" />
-                                <div>
-                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Included</p>
-                                    <p className="text-lg font-black text-foreground">{track.courses} Courses</p>
-                                </div>
-                            </div>
-                            <div className="glass px-6 py-4 rounded-2xl border border-border flex items-center gap-4">
-                                <FiClock className="text-2xl text-accent" />
-                                <div>
-                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Estimated</p>
-                                    <p className="text-lg font-black text-foreground">{track.duration}</p>
-                                </div>
-                            </div>
-                            {track.price > 0 && (
-                                <div className="glass px-6 py-4 rounded-2xl border border-border flex items-center gap-4">
-                                    <FiCreditCard className="text-2xl text-green-400" />
-                                    <div>
-                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Price</p>
-                                        <p className="text-lg font-black text-foreground">{track.price} EGP</p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="flex gap-4 pt-4">
-                            {enrollmentStatus === 'enrolled' ? (
-                                <Link
-                                    href={`/tracks/${trackId}/lessons`}
-                                    className={`px-8 py-4 bg-gradient-to-r ${track.color} text-white font-black uppercase text-sm rounded-2xl shadow-xl flex items-center gap-2 hover:opacity-90 transition-opacity`}
-                                >
-                                    <FiCheckCircle /> {lang === 'ar' ? 'ابدأ التعلم الآن' : 'Start Learning Now'} <FiArrowRight className={lang === 'ar' ? 'rotate-180' : ''} />
-                                </Link>
-                            ) : enrollmentStatus === 'pending' ? (
-                                <button disabled className="px-8 py-4 bg-yellow-500/20 text-yellow-400 font-black uppercase text-sm rounded-2xl border border-yellow-500/30 flex items-center gap-2 cursor-default">
-                                    <FiInfo /> {lang === 'ar' ? 'بانتظار موافقة الإدارة' : 'Pending Approval'}
-                                </button>
-                            ) : (
-                                <button onClick={handleEnroll} className={`px-8 py-4 bg-gradient-to-r ${track.color} text-white font-black uppercase text-sm rounded-2xl shadow-xl flex items-center gap-2 hover:opacity-90 transition-opacity`}>
-                                    {lang === 'ar' ? 'اشترك في التراك' : 'Enroll in Track'} <FiArrowRight className={lang === 'ar' ? 'rotate-180' : ''} />
-                                </button>
-                            )}
-                        </div>
+                        {track.level} Track
                     </motion.div>
-
-                    {/* Right: Curriculum Preview */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tighter"
+                    >
+                        {track.title}
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="glass p-8 md:p-12 rounded-[3.5rem] border border-border relative"
+                        className="text-lg text-slate-300 max-w-2xl mx-auto font-medium"
                     >
-                        <h3 className="text-2xl font-black text-foreground mb-8 uppercase tracking-tight">Track Syllabus</h3>
+                        {track.description}
+                    </motion.p>
 
-                        <div className="space-y-6 relative before:absolute before:inset-y-0 before:left-4 rtl:before:right-4 before:w-0.5 before:bg-border">
-                            {track.lessons && track.lessons.length > 0 ? (
-                                track.lessons.map((item: any, i: number) => (
-                                    <div key={i} className="relative z-10 flex gap-6 group">
-                                        <div className="w-8 h-8 rounded-full bg-surface border-2 border-border flex items-center justify-center shrink-0 group-hover:border-primary group-hover:bg-primary/20 transition-all">
-                                            <span className="text-xs font-black text-foreground">{i + 1}</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="text-lg font-black text-foreground leading-none mb-2">{item.title}</h4>
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <FiClock className="text-primary text-xs" />
-                                                <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest">{item.duration || '0:00'}</span>
-                                            </div>
-                                            <p className="text-xs font-bold text-foreground/40 leading-relaxed line-clamp-2">{item.description || 'Learn key concepts and practical applications in this lesson.'}</p>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-gray-500 font-bold">No syllabus available yet.</p>
-                            )}
-                        </div>
-
-                        <div className="mt-10 p-6 bg-surface rounded-2xl border border-border flex items-start gap-4">
-                            <FiAward className="text-3xl text-yellow-500 shrink-0 mt-1" />
-                            <div>
-                                <h4 className="text-sm font-black text-foreground mb-1">Official Certification</h4>
-                                <p className="text-xs text-foreground/40 font-bold">Complete all courses and the capstone project to earn your verified industry-recognized certificate.</p>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="mt-10 flex gap-4 justify-center"
+                    >
+                        {enrollmentStatus === 'enrolled' ? (
+                            <Link
+                                href={`/learn`}
+                                className="px-8 py-4 bg-primary text-white font-black uppercase text-sm rounded-2xl shadow-xl flex items-center gap-2 hover:scale-105 transition-transform"
+                            >
+                                <FiCheckCircle /> {isRtl ? 'ابدأ التعلم الآن' : 'Start Learning Now'}
+                            </Link>
+                        ) : enrollmentStatus === 'pending' ? (
+                            <div className="px-8 py-4 bg-yellow-500/20 text-yellow-500 font-black uppercase text-sm rounded-2xl border border-yellow-500/30 flex items-center gap-2">
+                                <FiInfo /> {isRtl ? 'بانتظار موافقة الإدارة' : 'Pending Approval'}
                             </div>
-                        </div>
+                        ) : (
+                            <button
+                                onClick={handleEnroll}
+                                className="px-10 py-4 bg-primary text-white font-black uppercase text-sm rounded-2xl shadow-xl shadow-primary/20 flex items-center gap-2 hover:scale-105 transition-transform"
+                            >
+                                {track.price > 0 ? `${track.price} EGP - ` : ''} {isRtl ? 'اشترك الآن' : 'Enroll Now'} <FiArrowRight className={isRtl ? 'rotate-180' : ''} />
+                            </button>
+                        )}
                     </motion.div>
+                </div>
+            </section>
+
+            <div className="container mx-auto px-4 -mt-16 relative z-20">
+                {/* Stats Bar */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                    {[
+                        { icon: FaBookOpen, label: isRtl ? 'كورس محتوى' : 'Courses', value: courses.length },
+                        { icon: FaVideo, label: isRtl ? 'درس مرئي' : 'Lessons', value: lessons.length },
+                        { icon: FaClock, label: isRtl ? 'المدة' : 'Duration', value: track.duration },
+                        { icon: FaUserGraduate, label: isRtl ? 'المستوى' : 'Level', value: track.level },
+                    ].map((stat, i) => (
+                        <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col items-center text-center">
+                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-3">
+                                <stat.icon size={20} />
+                            </div>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
+                            <p className="text-xl font-black text-slate-900 dark:text-white mt-1">{stat.value}</p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Courses Section */}
+                <div className="mb-20">
+                    <div className="flex items-center gap-3 mb-10">
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                            {isRtl ? 'الكورسات المشمولة' : 'Included Courses'}
+                        </h2>
+                    </div>
+                    {courses.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            {courses.map((course: any) => (
+                                <CourseCard key={course._id} course={course} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                            <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
+                                {isRtl ? 'لا يوجد كورسات مربوطة بهذا المسار حالياً' : 'No courses linked to this track yet.'}
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Lessons Section */}
+                <div>
+                    <div className="flex items-center gap-3 mb-10">
+                        <div className="w-1.5 h-8 bg-primary rounded-full"></div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                            {isRtl ? 'المحتوى التعليمي (فيديوهات)' : 'Track Lessons (Videos)'}
+                        </h2>
+                    </div>
+                    {lessons.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {lessons.map((lesson: any, index: number) => (
+                                <VideoCard
+                                    key={index}
+                                    video={{
+                                        ...lesson,
+                                        _id: `lesson-${index}`,
+                                        trackTitle: track.title,
+                                        createdAt: track.createdAt
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                            <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
+                                {isRtl ? 'لا يوجد فيديوهات في هذا المسار حالياً' : 'No lessons added to this track yet.'}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -333,198 +314,60 @@ export default function TrackDetailPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="bg-background w-full max-w-lg rounded-3xl p-8 border border-border relative overflow-hidden"
+                            className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl p-8 border border-slate-200 dark:border-slate-800 relative shadow-2xl"
                         >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent" />
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-bold text-foreground flex items-center">
-                                    {paymentStep === 'select' ? (
-                                        <><FiCreditCard className="mr-2 text-primary" /> Select Payment Method</>
-                                    ) : (
-                                        <><FiUpload className="mr-2 text-primary" /> Upload Payment Proof</>
-                                    )}
+                                <h2 className="text-xl font-bold flex items-center gap-2">
+                                    <FiCreditCard className="text-primary" /> {isRtl ? 'إتمام الاشتراك' : 'Complete Enrollment'}
                                 </h2>
-                                <button onClick={() => setShowPaymentModal(false)} className="text-foreground/40 hover:text-foreground transition-colors">
+                                <button onClick={() => setShowPaymentModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
                                     <FiX size={24} />
                                 </button>
                             </div>
 
                             {paymentStep === 'select' ? (
-                                <>
-                                    <p className="text-foreground/60 text-sm mb-6">
-                                        To enroll in <span className="font-bold text-foreground">{track.title}</span>, please select your preferred payment method for the amount of <span className="font-bold text-foreground">{track.price} EGP</span>.
+                                <div className="space-y-4">
+                                    <p className="text-slate-500 text-sm mb-6">
+                                        {isRtl ? `للاشتراك في ${track.title}، يرجى اختيار وسيلة الدفع المناسبة لتحويل ${track.price} ج.م` : `Choose a payment method to pay ${track.price} EGP.`}
                                     </p>
-
-                                    <div className="space-y-4">
-                                        <button
-                                            onClick={() => { setSelectedMethod('Vodafone Cash'); setPaymentStep('upload'); }}
-                                            className="w-full bg-[#E60000]/10 hover:bg-[#E60000]/20 border border-[#E60000]/30 hover:border-[#E60000] transition-all p-4 rounded-xl flex items-center justify-between group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-lg bg-[#E60000] flex items-center justify-center text-white font-black text-xs">VF</div>
-                                                <span className="text-white font-medium group-hover:text-[#E60000] transition-colors">Vodafone Cash</span>
-                                            </div>
-                                            <FiArrowRight className="text-gray-500 group-hover:text-[#E60000] transition-colors opacity-0 group-hover:opacity-100" />
-                                        </button>
-
-                                        <button
-                                            onClick={() => { setSelectedMethod('InstaPay'); setPaymentStep('upload'); }}
-                                            className="w-full bg-[#1A1A8C]/10 hover:bg-[#1A1A8C]/20 border border-[#1A1A8C]/30 hover:border-[#1A1A8C] transition-all p-4 rounded-xl flex items-center justify-between group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-lg bg-[#1A1A8C] flex items-center justify-center text-white font-black text-[10px]">InstaPay</div>
-                                                <span className="text-white font-medium group-hover:text-[#1A1A8C] transition-colors">InstaPay</span>
-                                            </div>
-                                            <FiArrowRight className="text-gray-500 group-hover:text-[#1A1A8C] transition-colors opacity-0 group-hover:opacity-100" />
-                                        </button>
-
-                                        <button
-                                            onClick={() => { setSelectedMethod('Visa'); setPaymentStep('visa'); }}
-                                            className="w-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 hover:border-blue-500 transition-all p-4 rounded-xl flex items-center justify-between group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black"><FiCreditCard /></div>
-                                                <span className="text-white font-medium group-hover:text-blue-400 transition-colors">Credit / Debit Card (Visa)</span>
-                                            </div>
-                                            <FiArrowRight className="text-gray-500 group-hover:text-blue-400 transition-colors opacity-0 group-hover:opacity-100" />
-                                        </button>
-                                    </div>
-                                </>
-                            ) : paymentStep === 'visa' ? (
-                                <div className="space-y-6">
-                                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
-                                        <h4 className="text-foreground font-bold mb-2 text-sm">بيانات البطاقة البنكية:</h4>
-                                        <p className="text-foreground/60 text-xs">برجاء إدخال بيانات الفيزا لإتمام عملية الدفع.</p>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="space-y-1">
-                                            <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest text-right">رقم البطاقة</label>
-                                            <input
-                                                type="text"
-                                                placeholder="0000 0000 0000 0000"
-                                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground outline-none focus:border-primary transition-all font-mono text-center"
-                                                value={visaData.number}
-                                                onChange={e => setVisaData({ ...visaData, number: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-1">
-                                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest text-right">تاريخ الانتهاء</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="MM/YY"
-                                                    className="w-full bg-surface border border-border rounded-xl p-3 text-foreground outline-none focus:border-primary transition-all font-mono text-center"
-                                                    value={visaData.expiry}
-                                                    onChange={e => setVisaData({ ...visaData, expiry: e.target.value })}
-                                                />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <label className="block text-[10px] font-bold text-foreground/40 uppercase tracking-widest text-right">CVV</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="123"
-                                                    className="w-full bg-surface border border-border rounded-xl p-3 text-foreground outline-none focus:border-primary transition-all font-mono text-center"
-                                                    value={visaData.cvv}
-                                                    onChange={e => setVisaData({ ...visaData, cvv: e.target.value })}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-3 mt-8">
-                                        <button
-                                            onClick={() => setPaymentStep('select')}
-                                            className="flex-1 py-4 bg-surface text-foreground font-bold rounded-xl border border-border hover:bg-foreground/5 transition-all uppercase text-xs"
-                                        >
-                                            رجوع
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                if (!visaData.number || !visaData.expiry || !visaData.cvv) {
-                                                    alert('يرجى إكمال بيانات الفيزا');
-                                                    return;
-                                                }
-                                                setPaymentStep('upload');
-                                            }}
-                                            className="flex-[2] py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all uppercase text-xs"
-                                        >
-                                            متابعة لرفع الإيصال
-                                        </button>
-                                    </div>
+                                    <button onClick={() => { setSelectedMethod('Vodafone Cash'); setPaymentStep('upload'); }} className="w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 hover:border-primary transition-all flex items-center justify-between group">
+                                        <span className="font-bold">Vodafone Cash</span>
+                                        <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                    </button>
+                                    <button onClick={() => { setSelectedMethod('InstaPay'); setPaymentStep('upload'); }} className="w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 hover:border-primary transition-all flex items-center justify-between group">
+                                        <span className="font-bold">InstaPay</span>
+                                        <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                    </button>
                                 </div>
                             ) : (
                                 <div className="space-y-6">
-                                    <div className="p-6 bg-primary/10 border border-primary/20 rounded-2xl space-y-4">
-                                        <h4 className="text-foreground font-black uppercase tracking-widest text-xs flex items-center gap-2">
-                                            <FiInfo className="text-primary" /> Instructions / تعليمات الدفع
-                                        </h4>
-                                        <div className="space-y-4">
-                                            {selectedMethod === 'Vodafone Cash' && (
-                                                <div className="text-center py-4 bg-dark rounded-xl border border-border">
-                                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">تحويل فودافون كاش إلى الرقم التالي:</p>
-                                                    <p className="text-3xl font-black text-primary tracking-tighter select-all cursor-pointer">01006093939</p>
-                                                </div>
-                                            )}
-                                            {selectedMethod === 'InstaPay' && (
-                                                <div className="text-center py-4 bg-dark rounded-xl border border-border">
-                                                    <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1">تحويل انستا باي إلى الحساب التالي:</p>
-                                                    <p className="text-xl font-black text-primary tracking-tight select-all cursor-pointer">mo.tarek@instapay</p>
-                                                </div>
-                                            )}
-                                            <p className="text-foreground/60 text-[10px] font-bold text-center uppercase tracking-widest">
-                                                بعد التحويل، يرجى رفع صورة الإيصال أو لقطة الشاشة أدناه
-                                            </p>
-                                        </div>
+                                    <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                                        <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Instructions</p>
+                                        <p className="text-sm font-bold">
+                                            {selectedMethod === 'Vodafone Cash' ? 'حول إلى رقم: 01006093939' : 'حول إلى انستا باي: mo.tarek@instapay'}
+                                        </p>
                                     </div>
-
                                     <div className="space-y-2">
-                                        <label className="block text-foreground/60 text-xs font-bold uppercase tracking-widest">Screenshot / Receipt</label>
-                                        <div className="relative group">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleFileChange}
-                                                className="hidden"
-                                                id="proof-upload"
-                                            />
-                                            <label
-                                                htmlFor="proof-upload"
-                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-border rounded-2xl hover:border-primary/50 hover:bg-surface transition-all cursor-pointer overflow-hidden"
-                                            >
-                                                {proofImage ? (
-                                                    <img src={proofImage} alt="Proof" className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <>
-                                                        <FiUpload className="text-3xl text-foreground/40 mb-2 group-hover:text-primary transition-colors" />
-                                                        <span className="text-xs text-foreground/40 font-bold group-hover:text-foreground/60 transition-colors">Click to upload screenshot</span>
-                                                    </>
-                                                )}
-                                            </label>
-                                        </div>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Upload Receipt</label>
+                                        <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="proof-input" />
+                                        <label htmlFor="proof-input" className="block w-full h-40 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl hover:border-primary transition-all cursor-pointer overflow-hidden">
+                                            {proofImage ? <img src={proofImage} className="w-full h-full object-cover" /> : (
+                                                <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                                                    <FiUpload size={24} className="mb-2" />
+                                                    <span className="text-xs">Click to upload image</span>
+                                                </div>
+                                            )}
+                                        </label>
                                     </div>
-
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={() => setPaymentStep('select')}
-                                            className="flex-1 py-4 bg-surface text-foreground font-bold rounded-xl border border-border hover:bg-foreground/5 transition-all uppercase text-xs"
-                                        >
-                                            رجوع
-                                        </button>
-                                        <button
-                                            onClick={handlePaymentSubmit}
-                                            disabled={!proofImage || uploading}
-                                            className="flex-[2] py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 disabled:opacity-50 transition-all uppercase text-xs"
-                                        >
-                                            {uploading ? 'جاري الإرسال...' : 'إرسال إثبات الدفع'}
-                                        </button>
-                                    </div>
+                                    <button
+                                        onClick={handlePaymentSubmit}
+                                        disabled={!proofImage || uploading}
+                                        className="w-full py-4 bg-primary text-white font-black rounded-2xl shadow-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+                                    >
+                                        {uploading ? 'Processing...' : 'Submit Payment Proof'}
+                                    </button>
                                 </div>
                             )}
-
-                            <div className="mt-8 text-center">
-                                <p className="text-xs text-foreground/20">Secure payments powered by Arqam Academy</p>
-                            </div>
                         </motion.div>
                     </div>
                 )}
