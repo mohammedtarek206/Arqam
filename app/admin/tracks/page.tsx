@@ -21,6 +21,7 @@ interface Track {
     price: number;
     slug: string;
     lessons: Lesson[];
+    courses?: string[]; // Array of Course IDs
 }
 
 export default function AdminTracks() {
@@ -28,6 +29,7 @@ export default function AdminTracks() {
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editingTrack, setEditingTrack] = useState<Track | null>(null);
+    const [availableCourses, setAvailableCourses] = useState<any[]>([]);
 
     // Form State
     const [formData, setFormData] = useState<Track>({
@@ -38,12 +40,29 @@ export default function AdminTracks() {
         duration: '',
         price: 0,
         slug: '',
-        lessons: []
+        lessons: [],
+        courses: []
     });
 
     useEffect(() => {
         fetchTracks();
+        fetchCourses();
     }, []);
+
+    const fetchCourses = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/admin/courses', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setAvailableCourses(data);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const fetchTracks = async () => {
         try {
@@ -126,7 +145,8 @@ export default function AdminTracks() {
                     duration: '',
                     price: 0,
                     slug: '',
-                    lessons: []
+                    lessons: [],
+                    courses: []
                 });
             }
         } catch (err) {
@@ -154,7 +174,8 @@ export default function AdminTracks() {
                             duration: '',
                             price: 0,
                             slug: '',
-                            lessons: []
+                            lessons: [],
+                            courses: []
                         });
                         setShowModal(true);
                     }}
@@ -269,6 +290,36 @@ export default function AdminTracks() {
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         required
                                     />
+                                </div>
+
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-1">Associated Courses (Added by Admins/Instructors)</label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-4 bg-foreground/5 rounded-2xl border border-border">
+                                        {availableCourses.map((course) => (
+                                            <label key={course._id} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl cursor-copy hover:bg-primary/10 transition-colors border border-transparent hover:border-primary/20">
+                                                <input
+                                                    type="checkbox"
+                                                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary/50"
+                                                    checked={formData.courses?.includes(course._id)}
+                                                    onChange={(e) => {
+                                                        const currentCourses = formData.courses || [];
+                                                        if (e.target.checked) {
+                                                            setFormData({ ...formData, courses: [...currentCourses, course._id] });
+                                                        } else {
+                                                            setFormData({ ...formData, courses: currentCourses.filter(id => id !== course._id) });
+                                                        }
+                                                    }}
+                                                />
+                                                <div className="min-w-0">
+                                                    <p className="text-sm font-bold truncate">{course.title}</p>
+                                                    <p className="text-[10px] text-foreground/40 font-medium">By {course.instructor?.name || 'Admin'}</p>
+                                                </div>
+                                            </label>
+                                        ))}
+                                        {availableCourses.length === 0 && (
+                                            <p className="col-span-2 text-center py-4 text-xs text-foreground/40 font-bold uppercase tracking-widest">No courses available to link.</p>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-4">

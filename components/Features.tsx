@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useLanguage } from '@/lib/LanguageContext';
+import Link from 'next/link';
 import { FiCode, FiShield, FiCpu, FiSmartphone, FiBriefcase } from 'react-icons/fi';
 
 export default function Features() {
@@ -84,9 +85,9 @@ export default function Features() {
                   {feature.desc}
                 </p>
 
-                <div className="mt-8 flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                <Link href={`/tracks`} className="mt-8 flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
                   {t('explore_tracks')} →
-                </div>
+                </Link>
               </div>
             </motion.div>
           ))}

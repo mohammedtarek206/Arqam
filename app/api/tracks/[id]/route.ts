@@ -15,9 +15,15 @@ export async function GET(
 
         let track;
         if (mongoose.Types.ObjectId.isValid(params.id)) {
-            track = await Track.findById(params.id);
+            track = await Track.findById(params.id).populate({
+                path: 'courses',
+                populate: { path: 'instructor', select: 'name image' }
+            });
         } else {
-            track = await Track.findOne({ slug: params.id });
+            track = await Track.findOne({ slug: params.id }).populate({
+                path: 'courses',
+                populate: { path: 'instructor', select: 'name image' }
+            });
         }
 
         if (!track) {

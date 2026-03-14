@@ -20,6 +20,7 @@ export interface ITrack extends Document {
   slug: string;
   imageUrl: string;
   isActive: boolean;
+  courses: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,6 +49,7 @@ const TrackSchema: Schema = new Schema(
     price: { type: Number, default: 0 },
     slug: { type: String, required: true, unique: true },
     imageUrl: { type: String },
+    courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
     isActive: { type: Boolean, default: true },
   },
   {
