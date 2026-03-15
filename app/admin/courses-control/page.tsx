@@ -35,12 +35,12 @@ function EditModal({
     const [form, setForm] = useState({
         title: course.title || '',
         description: course.description || '',
-        instructor: typeof course.instructor === 'object' ? course.instructor._id : course.instructor || '',
-        track: typeof course.track === 'object' ? course.track._id : course.track || '',
-        price: course.price || 0,
-        isFree: course.isFree || false,
-        isActive: course.isActive || false,
-        level: course.level || 'Beginner',
+        instructor: (course && course.instructor && typeof course.instructor === 'object') ? course.instructor._id : (course ? course.instructor : '') || '',
+        track: (course && course.track && typeof course.track === 'object') ? course.track._id : (course ? course.track : '') || '',
+        price: course?.price || 0,
+        isFree: course?.isFree || false,
+        isActive: course?.isActive || false,
+        level: course?.level || 'Beginner',
     });
     const [saving, setSaving] = useState(false);
 
@@ -207,8 +207,8 @@ export default function CoursesControlPage() {
 
     const filtered = courses.filter(c =>
         !search ||
-        c.title.toLowerCase().includes(search.toLowerCase()) ||
-        (typeof c.instructor === 'object' ? c.instructor.name : '').toLowerCase().includes(search.toLowerCase())
+        (c?.title || '').toLowerCase().includes(search.toLowerCase()) ||
+        (c?.instructor && typeof c.instructor === 'object' ? c.instructor.name : '').toLowerCase().includes(search.toLowerCase())
     );
 
     const toggleStatus = async (course: Course) => {
@@ -318,12 +318,12 @@ export default function CoursesControlPage() {
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 mb-1">
                                 <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded border ${course.isActive ? 'text-green-400 bg-green-400/10 border-green-400/20' : 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20'}`}>
-                                    {course.isActive ? 'Active' : 'Draft/Paused'}
+                                    {course?.isActive ? 'Active' : 'Draft/Paused'}
                                 </span>
-                                <span className="text-[10px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded">{typeof course.track === 'object' ? course.track.title : 'No Track'}</span>
+                                <span className="text-[10px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded">{(course?.track && typeof course.track === 'object') ? course.track.title : 'No Track'}</span>
                             </div>
-                            <h3 className="text-white font-black text-base truncate">{course.title}</h3>
-                            <p className="text-gray-500 text-xs font-bold mt-0.5">By {typeof course.instructor === 'object' ? course.instructor.name : 'Unknown'}</p>
+                            <h3 className="text-white font-black text-base truncate">{course?.title || 'Untitled Course'}</h3>
+                            <p className="text-gray-500 text-xs font-bold mt-0.5">By {(course?.instructor && typeof course.instructor === 'object') ? course.instructor.name : 'Unknown'}</p>
                         </div>
                         <div className="flex items-center gap-6 text-sm shrink-0">
                             <div className="text-center">
