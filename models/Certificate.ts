@@ -14,7 +14,8 @@ export interface ICertificate extends Document {
 const CertificateSchema: Schema = new Schema(
     {
         studentId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
+        courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: false },
+        trackId: { type: Schema.Types.ObjectId, ref: 'Track', required: false },
         examId: { type: Schema.Types.ObjectId, ref: 'Exam', required: true },
         title: { type: String, required: true },
         issuer: { type: String, default: 'Arqam Academy' },

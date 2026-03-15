@@ -86,7 +86,8 @@ export async function POST(request: NextRequest) {
 
                 await Certificate.create({
                     studentId: user.userId,
-                    courseId: exam.courseId,
+                    courseId: exam.courseId || undefined,
+                    trackId: exam.trackId || undefined,
                     examId: exam._id,
                     title: `Certificate of Completion: ${exam.title}`,
                     grade: `${score}%`,
