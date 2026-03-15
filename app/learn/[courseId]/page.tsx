@@ -35,8 +35,8 @@ export default function LearnCoursePage() {
             if (res.ok) {
                 setCourse(data);
                 // Set first lesson as active
-                if (data.modules?.length > 0 && data.modules[0].lessons?.length > 0) {
-                    setActiveLesson(data.modules[0].lessons[0].id);
+                if (data?.modules?.length > 0 && data.modules[0]?.lessons?.length > 0) {
+                    setActiveLesson(data.modules[0].lessons[0].id || data.modules[0].lessons[0]._id);
                 }
             }
         } catch (err) {
@@ -84,7 +84,7 @@ export default function LearnCoursePage() {
         );
     }
 
-    const currentLessonData = course.modules?.flatMap((m: any) => m.lessons).find((l: any) => l.id === activeLesson);
+    const currentLessonData = course?.modules?.flatMap((m: any) => m.lessons || []).find((l: any) => (l.id === activeLesson || l._id === activeLesson));
 
     return (
         <div className="min-h-screen bg-dark flex flex-col font-sans">
@@ -154,15 +154,15 @@ export default function LearnCoursePage() {
                                 </a>
                             </div>
                         ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 gap-4">
-                                <FiAward className="text-6xl text-primary" />
-                                <div className="text-center mb-4">
-                                    <h3 className="text-xl font-black text-white">{currentLessonData.title}</h3>
-                                    <p className="text-gray-400 text-sm mt-1">{currentLessonData.description}</p>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 gap-4 text-center p-8">
+                                <FiAward className="text-6xl text-primary mb-2" />
+                                <div>
+                                    <h3 className="text-xl font-black text-white">{currentLessonData?.title || 'Assessment'}</h3>
+                                    <p className="text-gray-400 text-sm mt-1">{currentLessonData?.description || 'Final exam for this course.'}</p>
                                 </div>
                                 <Link
-                                    href={`/exams/${currentLessonData.id}`}
-                                    className="px-8 py-4 bg-primary text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:bg-primary/80 transition-all"
+                                    href={`/exams/${currentLessonData?.id || currentLessonData?._id}`}
+                                    className="px-8 py-4 bg-primary text-white font-black rounded-2xl uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:bg-primary/80 transition-all mt-4"
                                 >
                                     Start Final Assessment
                                 </Link>
@@ -197,21 +197,21 @@ export default function LearnCoursePage() {
                             className="h-full bg-dark/80 backdrop-blur-xl border-l border-white/5 flex flex-col shrink-0 absolute lg:relative right-0 z-40 w-[380px] lg:w-auto overflow-hidden"
                         >
                             <div className="p-6 border-b border-white/5 bg-black/20">
-                                <h3 className="text-sm font-black text-white uppercase tracking-widest">Course Curriculum</h3>
+                                <h3 className="text-sm font-black text-white uppercase tracking-widest">{course?.title || 'Curriculum'}</h3>
                             </div>
                             <div className="flex-1 overflow-y-auto">
-                                {course.modules?.map((module: any) => (
-                                    <div key={module.id} className="border-b border-white/5">
+                                {course?.modules?.map((module: any) => (
+                                    <div key={module.id || module._id} className="border-b border-white/5">
                                         <div className="w-full p-4 flex items-center justify-between text-left bg-white/3">
-                                            <h4 className="text-sm font-black text-white">{module.title}</h4>
+                                            <h4 className="text-sm font-black text-white">{module?.title}</h4>
                                             <FiChevronDown className="text-gray-500" />
                                         </div>
                                         <div className="bg-black/40">
-                                            {module.lessons?.map((lesson: any) => (
+                                            {module?.lessons?.map((lesson: any) => (
                                                 <button
-                                                    key={lesson.id}
-                                                    onClick={() => setActiveLesson(lesson.id)}
-                                                    className={`w-full p-4 pl-8 flex items-start gap-4 text-left transition-all ${activeLesson === lesson.id
+                                                    key={lesson.id || lesson._id}
+                                                    onClick={() => setActiveLesson(lesson.id || lesson._id)}
+                                                    className={`w-full p-4 pl-8 flex items-start gap-4 text-left transition-all ${(activeLesson === lesson.id || activeLesson === lesson._id)
                                                         ? 'bg-primary/10 border-l-4 border-primary'
                                                         : 'hover:bg-white/5 border-l-4 border-transparent'
                                                         }`}
@@ -226,10 +226,10 @@ export default function LearnCoursePage() {
                                                         )}
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h5 className={`text-xs font-black leading-tight ${activeLesson === lesson.id ? 'text-white' : 'text-gray-400'}`}>
-                                                            {lesson.title}
+                                                        <h5 className={`text-xs font-black leading-tight ${(activeLesson === lesson.id || activeLesson === lesson._id) ? 'text-white' : 'text-gray-400'}`}>
+                                                            {lesson?.title}
                                                         </h5>
-                                                        <p className="text-[10px] font-bold text-gray-600 mt-1">{lesson.duration || '0:00'}</p>
+                                                        <p className="text-[10px] font-bold text-gray-600 mt-1">{lesson?.duration || '0:00'}</p>
                                                     </div>
                                                 </button>
                                             ))}
