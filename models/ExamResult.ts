@@ -30,4 +30,8 @@ const ExamResultSchema: Schema = new Schema(
     }
 );
 
+ExamResultSchema.index({ studentId: 1 });
+ExamResultSchema.index({ examId: 1 });
+ExamResultSchema.index({ completedAt: -1 });
+
 export default mongoose.models.ExamResult || mongoose.model<IExamResult>('ExamResult', ExamResultSchema);

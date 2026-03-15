@@ -19,6 +19,7 @@ export default function AdminExams() {
     const [tracks, setTracks] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [editExamId, setEditExamId] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -79,18 +80,22 @@ export default function AdminExams() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
+            const method = editExamId ? 'PUT' : 'POST';
+            const body = editExamId ? { ...formData, _id: editExamId } : formData;
+
             const res = await fetch('/api/admin/exams', {
-                method: 'POST',
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(body),
             });
 
             if (res.ok) {
                 fetchExams();
                 setShowModal(false);
+                setEditExamId(null);
                 setFormData({ title: '', description: '', trackId: '', duration: 30, passScore: 50, questions: [] });
             }
         } catch (err) {
@@ -98,6 +103,19 @@ export default function AdminExams() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEdit = (exam: Exam) => {
+        setEditExamId(exam._id);
+        setFormData({
+            title: exam.title,
+            description: exam.description,
+            trackId: exam.trackId?._id || (exam.trackId as any),
+            duration: exam.duration,
+            passScore: exam.passScore,
+            questions: exam.questions
+        });
+        setShowModal(true);
     };
 
     const handleDelete = async (id: string) => {
@@ -122,7 +140,11 @@ export default function AdminExams() {
                     <p className="text-foreground/40 font-medium text-sm">Create multiple choice exams for your tracks.</p>
                 </div>
                 <button
-                    onClick={() => setShowModal(true)}
+                    onClick={() => {
+                        setEditExamId(null);
+                        setFormData({ title: '', description: '', trackId: '', duration: 30, passScore: 50, questions: [] });
+                        setShowModal(true);
+                    }}
                     className="bg-primary hover:bg-primary/80 text-white font-black px-6 py-3 rounded-xl flex items-center transition-all shadow-lg uppercase tracking-widest text-xs"
                 >
                     <FiPlus className="mr-2" /> New Exam
@@ -137,12 +159,20 @@ export default function AdminExams() {
                                 <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{exam.trackId?.title}</span>
                                 <h3 className="text-2xl font-black text-foreground tracking-tight">{exam.title}</h3>
                             </div>
-                            <button
-                                onClick={() => handleDelete(exam._id)}
-                                className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
-                            >
-                                <FiTrash2 />
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handleEdit(exam)}
+                                    className="p-3 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all"
+                                >
+                                    <FiFileText />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(exam._id)}
+                                    className="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                                >
+                                    <FiTrash2 />
+                                </button>
+                            </div>
                         </div>
 
                         <div className="flex gap-6 mb-6">
@@ -173,7 +203,9 @@ export default function AdminExams() {
                             className="bg-background w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-[2.5rem] p-10 border border-border"
                         >
                             <div className="flex justify-between items-center mb-10 sticky top-0 bg-background z-10 py-2">
-                                <h2 className="text-3xl font-black text-foreground tracking-tighter uppercase mb-0">Create Assessment</h2>
+                                <h2 className="text-3xl font-black text-foreground tracking-tighter uppercase mb-0">
+                                    {editExamId ? 'Edit Assessment' : 'Create Assessment'}
+                                </h2>
                                 <button onClick={() => setShowModal(false)} className="p-3 bg-foreground/5 rounded-full text-foreground/40 hover:text-foreground transition-all">
                                     <FiX size={20} />
                                 </button>
@@ -308,7 +340,7 @@ export default function AdminExams() {
                                     disabled={loading}
                                     className="w-full bg-primary text-white py-6 rounded-3xl font-black text-xl shadow-2xl shadow-primary/20 hover:scale-[1.01] active:scale-100 transition-all uppercase tracking-tighter"
                                 >
-                                    {loading ? 'Creating Assessment...' : 'Publish Assessment'}
+                                    {loading ? 'Processing...' : (editExamId ? 'Update Assessment' : 'Publish Assessment')}
                                 </button>
                             </form>
                         </motion.div>

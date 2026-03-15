@@ -57,4 +57,7 @@ const TrackSchema: Schema = new Schema(
   }
 );
 
+TrackSchema.index({ isActive: 1 });
+TrackSchema.index({ createdAt: -1 });
+
 export default mongoose.models.Track || mongoose.model<ITrack>('Track', TrackSchema);

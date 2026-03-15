@@ -44,11 +44,15 @@ export default function StudentsManagementPage() {
     const fetchStudents = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/students', { headers: { 'Authorization': `Bearer ${token}` } });
+            const res = await fetch('/api/admin/students?limit=1000', { headers: { 'Authorization': `Bearer ${token}` } });
             const data = await res.json();
-            if (Array.isArray(data)) {
-                setStudents(data);
-                setFiltered(data);
+
+            // Handle both old array format and new paginated object format
+            const studentsData = Array.isArray(data) ? data : data.users;
+
+            if (Array.isArray(studentsData)) {
+                setStudents(studentsData);
+                setFiltered(studentsData);
             }
         } catch (err) {
             console.error('Failed to fetch students:', err);
