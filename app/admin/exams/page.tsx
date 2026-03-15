@@ -52,7 +52,7 @@ export default function AdminExams() {
     const addQuestion = () => {
         setFormData({
             ...formData,
-            questions: [...formData.questions, { text: '', options: ['', '', '', ''], correctOption: 0 }]
+            questions: [...formData.questions, { text: '', options: ['', '', '', ''], correctAnswer: 0 }]
         });
     };
 
@@ -70,7 +70,7 @@ export default function AdminExams() {
 
     const setCorrect = (qIdx: number, oIdx: number) => {
         const qs = [...formData.questions];
-        qs[qIdx].correctOption = oIdx;
+        qs[qIdx].correctAnswer = oIdx;
         setFormData({ ...formData, questions: qs });
     };
 
@@ -277,7 +277,7 @@ export default function AdminExams() {
                                                 </div>
                                                 <div className="grid md:grid-cols-2 gap-4">
                                                     {q.options.map((opt: string, oIdx: number) => (
-                                                        <div key={oIdx} className={`relative flex items-center p-4 rounded-2xl border transition-all ${q.correctOption === oIdx ? 'border-primary bg-primary/5' : 'border-border bg-surface'
+                                                        <div key={oIdx} className={`relative flex items-center p-4 rounded-2xl border transition-all ${q.correctAnswer === oIdx ? 'border-primary bg-primary/5' : 'border-border bg-surface'
                                                             }`}>
                                                             <input
                                                                 type="text"
@@ -290,7 +290,7 @@ export default function AdminExams() {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setCorrect(qIdx, oIdx)}
-                                                                className={`ml-3 p-2 rounded-lg transition-all ${q.correctOption === oIdx ? 'bg-primary text-white' : 'bg-foreground/5 text-foreground/40 hover:text-foreground'
+                                                                className={`ml-3 p-2 rounded-lg transition-all ${q.correctAnswer === oIdx ? 'bg-primary text-white' : 'bg-foreground/5 text-foreground/40 hover:text-foreground'
                                                                     }`}
                                                             >
                                                                 <FiCheckCircle />

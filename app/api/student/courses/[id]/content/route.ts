@@ -32,7 +32,12 @@ export async function GET(
 
         // Fetch modules and exams for this course
         const modules = await Module.find({ course: courseId }).sort({ order: 1 });
-        const exams = await Exam.find({ courseId }).select('_id title description duration passScore');
+        const exams = await Exam.find({
+            $or: [
+                { courseId },
+                { trackId: course.track?._id || course.track }
+            ]
+        }).select('_id title description duration passScore');
 
         const modulesWithLessons = await Promise.all(
             modules.map(async (mod: any) => {

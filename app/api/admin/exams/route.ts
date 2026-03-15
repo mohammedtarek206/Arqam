@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
 
         const data = await request.json();
         await connectDB();
-        const exam = await Exam.create(data);
+        const exam = await Exam.create({
+            ...data,
+            instructorId: user.userId
+        });
         return NextResponse.json(exam, { status: 201 });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to create exam' }, { status: 500 });
