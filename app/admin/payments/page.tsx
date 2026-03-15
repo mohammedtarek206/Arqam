@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiDownload, FiRefreshCw, FiCheckCircle, FiXCircle, FiClock, FiEye } from 'react-icons/fi';
+import { exportToCSV } from '@/lib/exportUtils';
 
 interface Payment {
     _id: string;
@@ -78,6 +79,29 @@ export default function PaymentsPage() {
 
     const refunded = payments.filter(p => p.status === 'refunded').reduce((sum, p) => sum + p.amount, 0);
 
+    const handleExport = () => {
+        const columns = [
+            { header: 'Transaction ID', key: '_id' },
+            { header: 'Student Name', key: 'user.name' },
+            { header: 'Student Email', key: 'user.email' },
+            { header: 'Product', key: 'course.title' }, // Fallback handled in export table display but here we keep it simple
+            { header: 'Amount', key: 'amount' },
+            { header: 'Method', key: 'method' },
+            { header: 'Status', key: 'status' },
+            { header: 'Date', key: 'createdAt' }
+        ];
+
+        // Custom processing for product title as it can be track or course
+        const dataToExport = filtered.map(p => ({
+            ...p,
+            productTitle: p.course?.title || p.track?.title || 'Unknown'
+        }));
+
+        columns[3].key = 'productTitle';
+
+        exportToCSV(dataToExport, 'Payments_List', columns);
+    };
+
     const getStatusIcon = (status: string) => {
         if (status === 'approved' || status === 'paid') return <FiCheckCircle className="text-green-400" />;
         if (status === 'rejected' || status === 'failed') return <FiXCircle className="text-red-400" />;
@@ -99,7 +123,10 @@ export default function PaymentsPage() {
                     <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Payments System</h1>
                     <p className="text-foreground/40 font-medium text-sm mt-1">Track all financial transactions and manage refunds.</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-foreground transition-colors uppercase tracking-widest self-start">
+                <button
+                    onClick={handleExport}
+                    className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-foreground transition-colors uppercase tracking-widest self-start"
+                >
                     <FiDownload /> Export Excel
                 </button>
             </div>

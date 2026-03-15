@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSearch, FiUserCheck, FiUserX, FiEdit2, FiDollarSign, FiCheckCircle, FiXCircle, FiClock, FiTrash2, FiEye, FiFileText, FiSend } from 'react-icons/fi';
+import { FiSearch, FiUserCheck, FiUserX, FiEdit2, FiDollarSign, FiCheckCircle, FiXCircle, FiClock, FiTrash2, FiEye, FiFileText, FiSend, FiDownload } from 'react-icons/fi';
+import { exportToCSV } from '@/lib/exportUtils';
 
 export default function InstructorsManagementPage() {
     const [instructors, setInstructors] = useState<any[]>([]);
@@ -121,6 +122,18 @@ export default function InstructorsManagementPage() {
         }
     };
 
+    const handleExport = () => {
+        const columns = [
+            { header: 'Name', key: 'name' },
+            { header: 'Email', key: 'email' },
+            { header: 'Phone', key: 'phone' },
+            { header: 'Status', key: 'status' },
+            { header: 'Category', key: 'details.category' },
+            { header: 'Joined Date', key: 'createdAt' }
+        ];
+        exportToCSV(filtered, 'Instructors_List', columns);
+    };
+
     const getStatusStyle = (status: string) => {
         if (status === 'approved') return 'text-green-400 bg-green-400/10 border-green-400/20';
         if (status === 'banned') return 'text-red-400 bg-red-400/10 border-red-400/20';
@@ -137,9 +150,17 @@ export default function InstructorsManagementPage() {
 
     return (
         <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Instructors Management</h1>
-                <p className="text-foreground/40 font-medium text-sm mt-1">Review applications, manage revenue splits, and control instructor access.</p>
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">Instructors Management</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Review applications, manage revenue splits, and control instructor access.</p>
+                </div>
+                <button
+                    onClick={handleExport}
+                    className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-primary transition-colors uppercase tracking-widest self-start"
+                >
+                    <FiDownload /> Export
+                </button>
             </div>
 
             {/* Pending Alert */}

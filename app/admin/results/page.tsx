@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiAward, FiUser, FiCalendar, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiAward, FiUser, FiCalendar, FiCheckCircle, FiXCircle, FiDownload } from 'react-icons/fi';
+import { exportToCSV } from '@/lib/exportUtils';
 
 interface Result {
     _id: string;
@@ -36,11 +37,31 @@ export default function AdminResults() {
         }
     };
 
+    const handleExport = () => {
+        const columns = [
+            { header: 'Student Name', key: 'studentId.name' },
+            { header: 'Student Email', key: 'studentId.email' },
+            { header: 'Exam Title', key: 'examId.title' },
+            { header: 'Score (%)', key: 'score' },
+            { header: 'Status', key: 'status' },
+            { header: 'Completion Date', key: 'completedAt' }
+        ];
+        exportToCSV(results, 'Exam_Results', columns);
+    };
+
     return (
         <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-2">Student Exam Results</h1>
-                <p className="text-foreground/40 font-medium text-sm mt-1">Monitor academic performance across all tracks.</p>
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
+                <div>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter mb-2">Student Exam Results</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Monitor academic performance across all tracks.</p>
+                </div>
+                <button
+                    onClick={handleExport}
+                    className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-primary transition-colors uppercase tracking-widest self-start"
+                >
+                    <FiDownload /> Export
+                </button>
             </div>
 
             <div className="glass rounded-[2rem] overflow-hidden border border-border">

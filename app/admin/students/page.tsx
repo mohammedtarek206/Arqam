@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiSearch, FiEdit2, FiTrash2, FiPlusCircle, FiUserX, FiUserCheck, FiDownload, FiFilter, FiMoreVertical, FiEye, FiDollarSign, FiSend, FiXCircle } from 'react-icons/fi';
 import { AnimatePresence } from 'framer-motion';
+import { exportToCSV } from '@/lib/exportUtils';
 
 interface Student {
     _id: string;
@@ -114,6 +115,19 @@ export default function StudentsManagementPage() {
         }
     };
 
+    const handleExport = () => {
+        const columns = [
+            { header: 'Name', key: 'name' },
+            { header: 'Email', key: 'email' },
+            { header: 'Phone', key: 'phone' },
+            { header: 'Status', key: 'status' },
+            { header: 'Points', key: 'points' },
+            { header: 'Level', key: 'level' },
+            { header: 'Joined Date', key: 'createdAt' }
+        ];
+        exportToCSV(filtered, 'Students_List', columns);
+    };
+
     const getStatusStyle = (status: string) => {
         if (status === 'active') return 'bg-green-500/10 text-green-500 border-green-500/20';
         if (status === 'banned') return 'bg-red-500/10 text-red-500 border-red-500/20';
@@ -131,7 +145,10 @@ export default function StudentsManagementPage() {
                     <span className="text-xs font-black text-foreground/40 uppercase tracking-widest bg-surface border border-border px-4 py-2 rounded-xl">
                         Total: <span className="text-primary">{students.length}</span>
                     </span>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-primary transition-colors uppercase tracking-widest">
+                    <button
+                        onClick={handleExport}
+                        className="flex items-center gap-2 px-4 py-2 bg-surface border border-border rounded-xl text-xs font-black text-foreground/40 hover:text-primary transition-colors uppercase tracking-widest"
+                    >
                         <FiDownload /> Export
                     </button>
                 </div>
