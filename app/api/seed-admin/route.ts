@@ -7,14 +7,15 @@ export async function GET() {
     try {
         await connectDB();
 
-        const adminEmail = 'admin@arqam-academy.com';
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@arqam.academy';
         const existingAdmin = await User.findOne({ email: adminEmail });
 
         if (existingAdmin) {
             return NextResponse.json({ message: 'Admin already exists' });
         }
 
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const adminPassword = process.env.ADMIN_PASSWORD || 'Arqam@Admin!2026$#';
+        const hashedPassword = await bcrypt.hash(adminPassword, 12);
         await User.create({
             name: 'Platform Admin',
             email: adminEmail,

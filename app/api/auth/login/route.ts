@@ -3,9 +3,19 @@ import bcrypt from 'bcryptjs';
 import connectDB from '@/lib/mongodb';
 import { generateToken } from '@/lib/auth';
 import User from '@/models/User';
+import { isRateLimited } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate Limiting
+    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    if (isRateLimited(`login_${ip}`, 5, 60000)) {
+      return NextResponse.json(
+        { error: 'Too many login attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     const { email, phone, password } = await request.json();
 
     if ((!email && !phone) || !password) {
@@ -23,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: 'User not found' },
+        { error: 'Invalid credentials' },
         { status: 401 }
       );
     }

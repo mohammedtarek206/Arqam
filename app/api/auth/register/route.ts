@@ -4,9 +4,19 @@ import connectDB from '@/lib/mongodb';
 import { generateToken } from '@/lib/auth';
 import User from '@/models/User';
 import InstructorDetail from '@/models/InstructorDetail';
+import { isRateLimited } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate Limiting
+    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    if (isRateLimited(`register_${ip}`, 5, 600000)) { // 5 attempts per 10 mins
+      return NextResponse.json(
+        { error: 'Too many registration attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const {
       name, email, phone, password, role,
@@ -17,6 +27,15 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !password || !role) {
       return NextResponse.json(
         { error: 'Required fields missing' },
+        { status: 400 }
+      );
+    }
+
+    // Password Strength Validation
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json(
+        { error: 'Password must be at least 8 characters long and contain both letters and numbers.' },
         { status: 400 }
       );
     }
