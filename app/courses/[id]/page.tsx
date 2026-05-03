@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     FiClock, FiBook, FiAward, FiStar, FiPlayCircle, FiCheck, FiArrowRight, 
     FiShield, FiX, FiCreditCard, FiUpload, FiCheckCircle, FiInfo, 
-    FiUser, FiBriefcase 
+    FiUser, FiBriefcase, FiPlus, FiMinus, FiDownload 
 } from 'react-icons/fi';
 import Link from 'next/link';
 import { useAuth } from '@/lib/AuthContext';
@@ -30,6 +30,7 @@ export default function CourseDetailsPage() {
     const [enrollmentStatus, setEnrollmentStatus] = useState<'none' | 'pending' | 'enrolled'>('none');
     const [showFullDesc, setShowFullDesc] = useState(false);
     const [enquiryFor, setEnquiryFor] = useState<'self' | 'company'>('self');
+    const [openAccordion, setOpenAccordion] = useState<string | null>('outline');
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -243,6 +244,74 @@ export default function CourseDetailsPage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Detailed Content Accordions */}
+                    <div className="space-y-4">
+                        {[
+                            { id: 'outline', title: 'Course Outline', content: course.outline },
+                            { id: 'learn', title: 'What you will learn', content: course.whatYouWillLearn },
+                            { id: 'audience', title: 'Audience profile', content: course.audienceProfile }
+                        ].map((item) => (
+                            <div key={item.id} className="border border-white/5 rounded-2xl overflow-hidden">
+                                <button 
+                                    onClick={() => setOpenAccordion(openAccordion === item.id ? null : item.id)}
+                                    className="w-full flex items-center justify-between p-6 bg-[#0f172a] hover:bg-white/5 transition-colors text-left"
+                                >
+                                    <span className="text-lg font-black uppercase tracking-tighter text-white">{item.title}</span>
+                                    <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-primary">
+                                        {openAccordion === item.id ? <FiMinus /> : <FiPlus />}
+                                    </div>
+                                </button>
+                                <AnimatePresence>
+                                    {openAccordion === item.id && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="p-8 pt-0 bg-[#0f172a]/50 text-slate-400 leading-relaxed whitespace-pre-line">
+                                                {item.content || 'Detailed information coming soon...'}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Brochure Bar */}
+                    <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary text-xl">
+                                <FiDownload />
+                            </div>
+                            <div>
+                                <h4 className="font-black uppercase tracking-tighter text-white">Download Course Brochure</h4>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Get the full course details in PDF</p>
+                            </div>
+                        </div>
+                        <button className="px-8 py-3 bg-[#0f172a] text-white font-black uppercase tracking-widest text-xs rounded-xl border border-white/10 hover:bg-primary transition-all">
+                            Download Now
+                        </button>
+                    </div>
+
+                    {/* Prerequisites Section */}
+                    {course.prerequisites && (
+                        <section className="space-y-8">
+                            <h2 className="text-3xl font-black uppercase tracking-tighter text-white">Prerequisites</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {course.prerequisites.split('\n').filter((l: string) => l.trim()).map((item: string, i: number) => (
+                                    <div key={i} className="flex items-start gap-3 group">
+                                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0 mt-0.5">
+                                            <FiCheckCircle className="text-primary text-sm" />
+                                        </div>
+                                        <p className="text-slate-400 text-sm font-bold leading-relaxed">{item}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
                 </div>
 
                 {/* Right Column: Sidebar Form */}

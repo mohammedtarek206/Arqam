@@ -14,6 +14,10 @@ export interface ICourse extends Document {
     benefits?: string[];
     certificationText?: string;
     certificationImage?: string;
+    outline?: string;
+    whatYouWillLearn?: string;
+    audienceProfile?: string;
+    prerequisites?: string;
     passingGrade: number; // For certificate
     isActive: boolean;
     createdAt: Date;
@@ -39,6 +43,10 @@ const CourseSchema: Schema = new Schema(
         benefits: { type: [String], default: [] },
         certificationText: { type: String, default: '' },
         certificationImage: { type: String, default: '' },
+        outline: { type: String, default: '' },
+        whatYouWillLearn: { type: String, default: '' },
+        audienceProfile: { type: String, default: '' },
+        prerequisites: { type: String, default: '' },
         passingGrade: { type: Number, default: 70 },
         isActive: { type: Boolean, default: false }, // Requires admin approval or set by instructor
     },

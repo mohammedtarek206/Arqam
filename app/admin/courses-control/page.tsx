@@ -20,6 +20,10 @@ interface Course {
     benefits?: string[];
     certificationText?: string;
     certificationImage?: string;
+    outline?: string;
+    whatYouWillLearn?: string;
+    audienceProfile?: string;
+    prerequisites?: string;
     thumbnail?: string;
     students?: number;
     rating?: number;
@@ -53,6 +57,10 @@ function EditModal({
         certificationText: course?.certificationText || '',
         certificationImage: course?.certificationImage || '',
         thumbnail: course?.thumbnail || '',
+        outline: course?.outline || '',
+        whatYouWillLearn: course?.whatYouWillLearn || '',
+        audienceProfile: course?.audienceProfile || '',
+        prerequisites: course?.prerequisites || '',
     });
     const [saving, setSaving] = useState(false);
 
@@ -193,6 +201,49 @@ function EditModal({
                                 value={form.certificationImage}
                                 onChange={e => setForm(f => ({ ...f, certificationImage: e.target.value }))}
                                 placeholder="https://..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-4 p-4 border border-border rounded-2xl bg-surface/50">
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">Course Detailed Content (Accordions)</p>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Course Outline</label>
+                            <textarea
+                                rows={3}
+                                value={form.outline}
+                                onChange={e => setForm(f => ({ ...f, outline: e.target.value }))}
+                                placeholder="Module 1: Intro...&#10;Module 2: Basics..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">What you will learn</label>
+                            <textarea
+                                rows={3}
+                                value={form.whatYouWillLearn}
+                                onChange={e => setForm(f => ({ ...f, whatYouWillLearn: e.target.value }))}
+                                placeholder="You will master...&#10;Advanced techniques in..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Audience Profile</label>
+                            <textarea
+                                rows={3}
+                                value={form.audienceProfile}
+                                onChange={e => setForm(f => ({ ...f, audienceProfile: e.target.value }))}
+                                placeholder="Students, Professionals, Developers..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Prerequisites</label>
+                            <textarea
+                                rows={3}
+                                value={form.prerequisites}
+                                onChange={e => setForm(f => ({ ...f, prerequisites: e.target.value }))}
+                                placeholder="Basic knowledge of...&#10;At least 1 year of experience in..."
                                 className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                             />
                         </div>
