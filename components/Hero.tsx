@@ -62,7 +62,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-primary via-accent to-cyber bg-clip-text text-transparent"
+              className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 md:mb-6 bg-gradient-to-r from-primary via-accent to-cyan-400 bg-clip-text text-transparent py-4 leading-[1.2]"
             >
               {t('hero_title')}
             </motion.h1>

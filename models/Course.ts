@@ -9,6 +9,11 @@ export interface ICourse extends Document {
     level: 'Beginner' | 'Intermediate' | 'Advanced';
     price: number;
     isFree: boolean;
+    duration?: string;
+    modulesCount?: number;
+    benefits?: string[];
+    certificationText?: string;
+    certificationImage?: string;
     passingGrade: number; // For certificate
     isActive: boolean;
     createdAt: Date;
@@ -29,6 +34,11 @@ const CourseSchema: Schema = new Schema(
         },
         price: { type: Number, default: 0 },
         isFree: { type: Boolean, default: false },
+        duration: { type: String, default: '' },
+        modulesCount: { type: Number, default: 0 },
+        benefits: { type: [String], default: [] },
+        certificationText: { type: String, default: '' },
+        certificationImage: { type: String, default: '' },
         passingGrade: { type: Number, default: 70 },
         isActive: { type: Boolean, default: false }, // Requires admin approval or set by instructor
     },
@@ -37,4 +47,9 @@ const CourseSchema: Schema = new Schema(
     }
 );
 
-export default mongoose.models.Course || mongoose.model<ICourse>('Course', CourseSchema);
+// Clear the model from cache to ensure schema updates are applied in development
+if (mongoose.models.Course) {
+    delete mongoose.models.Course;
+}
+
+export default mongoose.model<ICourse>('Course', CourseSchema);

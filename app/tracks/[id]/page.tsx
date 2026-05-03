@@ -90,7 +90,7 @@ export default function TrackDetailPage() {
                 },
                 body: JSON.stringify({
                     trackId: track._id,
-                    amount: track.price,
+                    amount: 0,
                     method: selectedMethod,
                     proofImage
                 })
@@ -119,7 +119,7 @@ export default function TrackDetailPage() {
             return;
         }
 
-        if (track.price && track.price > 0) {
+        if (false) {
             setShowPaymentModal(true);
         } else {
             setLoading(true);
@@ -225,7 +225,7 @@ export default function TrackDetailPage() {
                                 onClick={handleEnroll}
                                 className="px-10 py-4 bg-primary text-white font-black uppercase text-sm rounded-2xl shadow-xl shadow-primary/20 flex items-center gap-2 hover:scale-105 transition-transform"
                             >
-                                {track.price > 0 ? `${track.price} EGP - ` : ''} {isRtl ? 'اشترك الآن' : 'Enroll Now'} <FiArrowRight className={isRtl ? 'rotate-180' : ''} />
+                                {isRtl ? 'اشترك في المسار مجاناً' : 'Enroll in Track Free'} <FiArrowRight className={isRtl ? 'rotate-180' : ''} />
                             </button>
                         )}
                     </motion.div>
@@ -328,7 +328,7 @@ export default function TrackDetailPage() {
                             {paymentStep === 'select' ? (
                                 <div className="space-y-4">
                                     <p className="text-slate-500 text-sm mb-6">
-                                        {isRtl ? `للاشتراك في ${track.title}، يرجى اختيار وسيلة الدفع المناسبة لتحويل ${track.price} ج.م` : `Choose a payment method to pay ${track.price} EGP.`}
+                                        {isRtl ? `للاشتراك في ${track.title}، يرجى اختيار وسيلة الدفع المناسبة` : `Choose a payment method to enroll in ${track.title}.`}
                                     </p>
                                     <button onClick={() => { setSelectedMethod('Vodafone Cash'); setPaymentStep('upload'); }} className="w-full p-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 hover:border-primary transition-all flex items-center justify-between group">
                                         <span className="font-bold">Vodafone Cash</span>

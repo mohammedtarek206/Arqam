@@ -15,6 +15,12 @@ interface Course {
     isFree: boolean;
     isActive: boolean;
     level: string;
+    duration?: string;
+    modulesCount?: number;
+    benefits?: string[];
+    certificationText?: string;
+    certificationImage?: string;
+    thumbnail?: string;
     students?: number;
     rating?: number;
 }
@@ -41,6 +47,12 @@ function EditModal({
         isFree: course?.isFree || false,
         isActive: course?.isActive || false,
         level: course?.level || 'Beginner',
+        duration: course?.duration || '',
+        modulesCount: course?.modulesCount || 0,
+        benefits: (course?.benefits || []).join('\n'),
+        certificationText: course?.certificationText || '',
+        certificationImage: course?.certificationImage || '',
+        thumbnail: course?.thumbnail || '',
     });
     const [saving, setSaving] = useState(false);
 
@@ -48,10 +60,14 @@ function EditModal({
         e.preventDefault();
         setSaving(true);
         try {
-            await onSave(form);
+            const submissionData = {
+                ...form,
+                benefits: form.benefits.split('\n').filter(b => b.trim() !== '')
+            };
+            await onSave(submissionData);
             onClose();
-        } catch (err) {
-            alert('Failed to save course');
+        } catch (err: any) {
+            alert('Failed to save course: ' + err.message);
         } finally {
             setSaving(false);
         }
@@ -91,6 +107,15 @@ function EditModal({
                             className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                         />
                     </div>
+                    <div>
+                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Thumbnail URL</label>
+                        <input
+                            value={form.thumbnail}
+                            onChange={e => setForm(f => ({ ...f, thumbnail: e.target.value }))}
+                            placeholder="https://images.unsplash.com/..."
+                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                        />
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Instructor</label>
@@ -119,6 +144,57 @@ function EditModal({
                                     <option key={t._id} value={t._id} className="bg-background">{t.title}</option>
                                 ))}
                             </select>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Duration (e.g. 40 Hours)</label>
+                            <input
+                                value={form.duration}
+                                onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Modules Count</label>
+                            <input
+                                type="number"
+                                value={form.modulesCount}
+                                onChange={e => setForm(f => ({ ...f, modulesCount: Number(e.target.value) }))}
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Course Benefits (One per line)</label>
+                        <textarea
+                            rows={3}
+                            value={form.benefits}
+                            onChange={e => setForm(f => ({ ...f, benefits: e.target.value }))}
+                            placeholder="Hands-on practical experience.&#10;Mastering industry-standard tools."
+                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                        />
+                    </div>
+                    <div className="space-y-4 p-4 border border-border rounded-2xl bg-surface/50">
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">Certification Section</p>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Certification Description</label>
+                            <textarea
+                                rows={2}
+                                value={form.certificationText}
+                                onChange={e => setForm(f => ({ ...f, certificationText: e.target.value }))}
+                                placeholder="This certification showcases key skills..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Certification Image URL</label>
+                            <input
+                                value={form.certificationImage}
+                                onChange={e => setForm(f => ({ ...f, certificationImage: e.target.value }))}
+                                placeholder="https://..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -256,7 +332,8 @@ export default function CoursesControlPage() {
         if (res.ok) {
             fetchInitialData();
         } else {
-            throw new Error('Failed to save');
+            const errData = await res.json();
+            throw new Error(errData.error || 'Failed to save');
         }
     };
 
@@ -333,6 +410,10 @@ export default function CoursesControlPage() {
                             <div className="text-center">
                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Price</p>
                                 <p className="text-yellow-400 font-black">{course.isFree ? 'Free' : `${course.price} EGP`}</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Duration</p>
+                                <p className="text-white font-black">{course.duration || 'N/A'}</p>
                             </div>
                             <div className="text-center">
                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Rating</p>

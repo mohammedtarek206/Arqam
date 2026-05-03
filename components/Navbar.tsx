@@ -8,6 +8,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
 import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import MegaMenu from './MegaMenu';
 import {
   FiMenu, FiX, FiSun, FiMoon, FiUser, FiLogOut,
   FiSearch, FiBell, FiChevronDown, FiBook, FiAward,
@@ -27,6 +28,7 @@ export default function Navbar() {
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
   const [tracks, setTracks] = useState<{ href: string; label: string }[]>([]);
+  const [fullTracks, setFullTracks] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const hasUnread = notifications.some(n => !n.read);
 
@@ -44,6 +46,7 @@ export default function Navbar() {
         const res = await fetch('/api/tracks');
         if (res.ok) {
           const data = await res.json();
+          setFullTracks(data);
           const trackLinks = data.map((track: any) => ({
             href: `/tracks/${track._id}`,
             label: track.title
@@ -112,7 +115,12 @@ export default function Navbar() {
         { href: '/tracks/soft-skills', label: t('track_freelancing') },
       ]
     },
-    { href: '/courses', label: t('courses'), icon: FiBook },
+    {
+      label: t('courses'),
+      icon: FiBook,
+      isMega: true,
+      href: '/courses'
+    },
     { href: '/pricing', label: t('pricing'), icon: FiTag },
     {
       label: t('about'),
@@ -171,23 +179,23 @@ export default function Navbar() {
             <div className="flex flex-col justify-center">
               {lang === 'ar' ? (
                 <div className="flex flex-col">
-                  <span className="text-xl md:text-2xl font-black bg-gradient-to-r from-primary via-accent to-cyber bg-clip-text text-transparent uppercase tracking-tight leading-none">أكاديمية أرقام</span>
-                  <span className="text-[10px] font-black text-foreground/40 uppercase tracking-[0.3em] block mt-1 leading-none">ARQAM ACADEMY</span>
+                  <span className="text-2xl md:text-3xl font-black bg-gradient-to-r from-primary via-cyan-400 to-accent bg-clip-text text-transparent tracking-normal leading-tight py-2 px-1 block">أكاديمية أرقام</span>
+                  <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.5em] block -mt-1 leading-none">ARQAM ACADEMY</span>
                 </div>
               ) : (
-                <>
-                  <span className="text-2xl font-black text-foreground uppercase tracking-tighter block leading-none">Arqam</span>
-                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] block">Academy</span>
-                </>
+                <div className="flex flex-col">
+                  <span className="text-2xl md:text-3xl font-black text-foreground uppercase tracking-tighter block leading-tight">Arqam</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] block -mt-1">Academy</span>
+                </div>
               )}
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden xl:flex items-center space-x-1 rtl:space-x-reverse">
+          <div className="hidden xl:flex items-center gap-4">
             {navLinks.map((link) => (
               <div key={link.label} className="relative group">
-                {link.dropdown ? (
+                {link.dropdown || link.isMega ? (
                   <button
                     onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
                     className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1 transition-all ${activeDropdown === link.label ? 'bg-primary/10 text-primary' : 'text-foreground/60 hover:text-foreground hover:bg-foreground/5'
@@ -389,6 +397,18 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Desktop Mega Menu (Positioned relative to the container) */}
+        <AnimatePresence>
+          {activeDropdown === t('courses') && (
+            <div className="hidden xl:block absolute top-20 left-0 right-0 px-4">
+              <MegaMenu
+                tracks={fullTracks}
+                onClose={() => setActiveDropdown(null)}
+              />
+            </div>
+          )}
+        </AnimatePresence>
+
         {/* Mobile Sidebar Navigation */}
         <AnimatePresence>
           {menuOpen && (
@@ -423,20 +443,33 @@ export default function Navbar() {
                 <div className="space-y-6">
                   {navLinks.map((link) => (
                     <div key={link.label}>
-                      {link.dropdown ? (
+                      {link.dropdown || link.isMega ? (
                         <div className="space-y-2">
                           <p className="text-[10px] font-black text-primary uppercase tracking-widest px-4 mb-2">{link.label}</p>
                           <div className="grid grid-cols-1 gap-1">
-                            {link.dropdown.map((item) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={() => setMenuOpen(false)}
-                                className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
-                              >
-                                {item.label}
-                              </Link>
-                            ))}
+                            {link.isMega ? (
+                              fullTracks.map((track) => (
+                                <Link
+                                  key={track._id}
+                                  href={`/tracks/${track._id}`}
+                                  onClick={() => setMenuOpen(false)}
+                                  className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
+                                >
+                                  {track.title}
+                                </Link>
+                              ))
+                            ) : (
+                              link.dropdown?.map((item) => (
+                                <Link
+                                  key={item.href}
+                                  href={item.href}
+                                  onClick={() => setMenuOpen(false)}
+                                  className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
+                                >
+                                  {item.label}
+                                </Link>
+                              ))
+                            )}
                           </div>
                         </div>
                       ) : (

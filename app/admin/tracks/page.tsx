@@ -18,7 +18,6 @@ interface Track {
     icon: string;
     level: string;
     duration: string;
-    price: number;
     slug: string;
     lessons: Lesson[];
     courses?: string[]; // Array of Course IDs
@@ -38,7 +37,6 @@ export default function AdminTracks() {
         icon: 'FiCode',
         level: 'Beginner',
         duration: '',
-        price: 0,
         slug: '',
         lessons: [],
         courses: []
@@ -143,7 +141,6 @@ export default function AdminTracks() {
                     icon: 'FiCode',
                     level: 'Beginner',
                     duration: '',
-                    price: 0,
                     slug: '',
                     lessons: [],
                     courses: []
@@ -172,7 +169,6 @@ export default function AdminTracks() {
                             icon: 'FiCode',
                             level: 'Beginner',
                             duration: '',
-                            price: 0,
                             slug: '',
                             lessons: [],
                             courses: []
@@ -210,9 +206,6 @@ export default function AdminTracks() {
                             <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full">{track.level}</span>
                             <span className="px-3 py-1 bg-foreground/5 text-foreground/40 border border-border rounded-full">{track.duration}</span>
                             <span className="px-3 py-1 bg-blue-500/10 text-blue-600 border border-blue-500/20 rounded-full">{track.lessons.length} Lessons</span>
-                            {track.price !== undefined && (
-                                <span className="px-3 py-1 bg-green-500/10 text-green-600 border border-green-500/20 rounded-full">{track.price} EGP</span>
-                            )}
                         </div>
                     </div>
                 ))}
@@ -257,16 +250,6 @@ export default function AdminTracks() {
                                             value={formData.duration}
                                             onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                                             required
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-foreground/40 uppercase tracking-widest ml-1">Price (EGP)</label>
-                                        <input
-                                            type="number"
-                                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground focus:border-primary outline-none text-sm font-medium"
-                                            placeholder="e.g. 1000"
-                                            value={formData.price}
-                                            onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                                         />
                                     </div>
                                     <div className="space-y-2">

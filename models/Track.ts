@@ -16,7 +16,6 @@ export interface ITrack extends Document {
   language: string[];
   curriculum: string[];
   lessons: ILesson[];
-  price: number;
   slug: string;
   imageUrl: string;
   isActive: boolean;
@@ -46,7 +45,6 @@ const TrackSchema: Schema = new Schema(
         duration: { type: String, default: '0:00' },
       },
     ],
-    price: { type: Number, default: 0 },
     slug: { type: String, required: true, unique: true },
     imageUrl: { type: String },
     courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
