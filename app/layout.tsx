@@ -7,6 +7,9 @@ import { LanguageProvider } from '@/lib/LanguageContext';
 import { AuthProvider } from '@/lib/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { PWAProvider } from '@/components/pwa/PWAProvider';
+import InstallPrompt from '@/components/pwa/InstallPrompt';
+import IOSInstallGuide from '@/components/pwa/IOSInstallGuide';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const cairo = Cairo({ subsets: ['arabic'], variable: '--font-cairo' });
@@ -83,11 +86,15 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <AuthProvider>
-              <Navbar />
-              <main className="min-h-screen pt-20">
-                {children}
-              </main>
-              <Footer />
+              <PWAProvider>
+                <Navbar />
+                <main className="min-h-screen pt-20">
+                  {children}
+                </main>
+                <Footer />
+                <InstallPrompt />
+                <IOSInstallGuide />
+              </PWAProvider>
             </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>
