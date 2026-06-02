@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'IT-SPARK Platform',
-    short_name: 'IT-SPARK',
+    name: 'Arqam Platform',
+    short_name: 'Arqam',
     description: 'استمتع بتجربة أسرع وأسهل واستخدم المنصة كتطبيق حقيقي مباشرة من الشاشة الرئيسية.',
     start_url: '/',
     display: 'standalone',

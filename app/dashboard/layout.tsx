@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import DashboardMobileHeader from '@/components/student/DashboardMobileHeader';
 import { Metadata } from 'next';
 

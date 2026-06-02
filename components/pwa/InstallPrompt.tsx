@@ -71,10 +71,10 @@ export default function InstallPrompt() {
           <div className="flex items-center gap-4 mb-4">
             <div className="relative w-14 h-14 rounded-xl overflow-hidden shadow-lg flex-shrink-0 bg-primary/10 flex items-center justify-center">
               {/* Fallback if logo is missing, user should place actual icon */}
-              <Image src="/icons/icon-192x192.png" alt="IT-SPARK Logo" fill className="object-cover" />
+              <Image src="/icons/icon-192x192.png" alt="Arqam Logo" fill className="object-cover" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-800 dark:text-white text-lg">أضف منصة IT-SPARK إلى جهازك</h3>
+              <h3 className="font-bold text-slate-800 dark:text-white text-lg">أضف منصة Arqam إلى جهازك</h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                 استمتع بتجربة أسرع وأسهل واستخدم المنصة كتطبيق حقيقي مباشرة من الشاشة الرئيسية.
               </p>

@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/mongodb';
+
+export const dynamic = "force-dynamic";
 
 // Create a simple Mongoose schema for PWA analytics
 const pwaAnalyticsSchema = new mongoose.Schema({
