@@ -157,12 +157,12 @@ export default function PaymentsPage() {
                         className="w-full pl-11 pr-4 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-foreground/20 text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                     />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
                     {['all', 'approved', 'pending', 'rejected', 'refunded'].map(s => (
                         <button
                             key={s}
                             onClick={() => setStatusFilter(s)}
-                            className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-surface border-border text-foreground/40 hover:text-foreground'}`}
+                            className={`px-3 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${statusFilter === s ? 'bg-primary/10 border-primary text-primary' : 'bg-surface border-border text-foreground/40 hover:text-foreground'}`}
                         >
                             {s}
                         </button>

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import React from 'react';
 import { Inter, Cairo } from 'next/font/google';
 import './globals.css';
@@ -13,6 +13,15 @@ import IOSInstallGuide from '@/components/pwa/IOSInstallGuide';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const cairo = Cairo({ subsets: ['arabic'], variable: '--font-cairo' });
+
+export const viewport: Viewport = {
+  themeColor: '#0066ff',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = {
   title: 'Arqam Academy | أكاديمية أرقام - تعليم برمجة وتكنولوجيا',

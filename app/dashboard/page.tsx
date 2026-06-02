@@ -54,9 +54,9 @@ export default function StudentDashboardOverview() {
     }
 
     return (
-        <div className="space-y-12 max-w-7xl mx-auto">
+        <div className="space-y-8 md:space-y-12 max-w-7xl mx-auto">
             <header>
-                <h1 className="text-4xl md:text-5xl font-black text-foreground uppercase tracking-tighter leading-none">
+                <h1 className="text-3xl md:text-5xl font-black text-foreground uppercase tracking-tighter leading-none">
                     {t('welcome_back') || 'WELCOME BACK'}, <br className="md:hidden" />
                     <span className="text-primary">{user?.name?.split(' ')[0].toUpperCase() || 'STUDENT'}</span>
                 </h1>
@@ -64,21 +64,21 @@ export default function StudentDashboardOverview() {
             </header>
 
             {/* Metrics Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-3 md:gap-6">
                 {metrics.map((m, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="glass p-8 rounded-[3rem] border border-border flex items-center gap-6 group hover:border-primary/20 transition-all bg-surface/50 shadow-sm hover:shadow-xl hover:shadow-primary/5"
+                        className="glass p-4 md:p-8 rounded-2xl md:rounded-[3rem] border border-border flex flex-col md:flex-row items-center md:items-center gap-3 md:gap-6 group hover:border-primary/20 transition-all bg-surface/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 text-center md:text-left"
                     >
-                        <div className={`w-16 h-16 rounded-2xl bg-foreground/5 flex items-center justify-center text-3xl shrink-0 ${m.color} group-hover:scale-110 transition-transform`}>
+                        <div className={`w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-foreground/5 flex items-center justify-center text-xl md:text-3xl shrink-0 ${m.color} group-hover:scale-110 transition-transform`}>
                             {m.icon}
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] mb-1">{m.title}</p>
-                            <h3 className="text-4xl font-black text-foreground tracking-tighter">{m.value}</h3>
+                            <p className="text-[8px] md:text-[10px] font-black text-foreground/30 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-1">{m.title}</p>
+                            <h3 className="text-2xl md:text-4xl font-black text-foreground tracking-tighter">{m.value}</h3>
                         </div>
                     </motion.div>
                 ))}
@@ -141,11 +141,11 @@ export default function StudentDashboardOverview() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="glass rounded-[2.5rem] border border-white/5 overflow-hidden group hover:border-primary/30 transition-all flex flex-col sm:flex-row relative"
+                                className="glass rounded-2xl md:rounded-[2.5rem] border border-white/5 overflow-hidden group hover:border-primary/30 transition-all flex flex-col relative"
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10 group-hover:bg-primary/20 transition-all" />
 
-                                <div className="w-full sm:w-48 h-48 sm:h-full relative overflow-hidden shrink-0">
+                                <div className="w-full h-48 relative overflow-hidden shrink-0">
                                     <img
                                         src={course.thumbnail || 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=250&fit=crop'}
                                         alt={course.title}

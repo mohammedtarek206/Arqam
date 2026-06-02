@@ -184,41 +184,43 @@ export default function ManageExams() {
                     <div className="space-y-6">
                         {results.length > 0 ? (
                             <div className="glass rounded-[2rem] border border-white/5 overflow-hidden">
-                                <table className="w-full text-left" dir="ltr">
-                                    <thead className="bg-white/5 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                                        <tr>
-                                            <th className="px-8 py-6">Student</th>
-                                            <th className="px-8 py-6">Assessment</th>
-                                            <th className="px-8 py-6">Score</th>
-                                            <th className="px-8 py-6">Status</th>
-                                            <th className="px-8 py-6">Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {results.map((res) => (
-                                            <tr key={res._id} className="hover:bg-white/3 transition-colors">
-                                                <td className="px-8 py-6">
-                                                    <p className="font-black text-white">{res.studentId?.name || 'Unknown student'}</p>
-                                                    <p className="text-[10px] font-bold text-gray-500">{res.studentId?.email}</p>
-                                                </td>
-                                                <td className="px-8 py-6 font-bold text-gray-300">{res.examId?.title}</td>
-                                                <td className="px-8 py-6">
-                                                    <span className={`text-lg font-black ${res.score >= (res.examId?.passScore || 50) ? 'text-green-500' : 'text-red-500'}`}>
-                                                        {res.score}%
-                                                    </span>
-                                                </td>
-                                                <td className="px-8 py-6">
-                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${res.status === 'Pass' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
-                                                        {res.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-8 py-6 text-xs font-bold text-gray-500">
-                                                    {new Date(res.completedAt).toLocaleDateString()}
-                                                </td>
+                                <div className="overflow-x-auto w-full">
+                                    <table className="w-full text-left whitespace-nowrap" dir="ltr">
+                                        <thead className="bg-white/5 text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                                            <tr>
+                                                <th className="px-8 py-6">Student</th>
+                                                <th className="px-8 py-6">Assessment</th>
+                                                <th className="px-8 py-6">Score</th>
+                                                <th className="px-8 py-6">Status</th>
+                                                <th className="px-8 py-6">Date</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            {results.map((res) => (
+                                                <tr key={res._id} className="hover:bg-white/3 transition-colors">
+                                                    <td className="px-8 py-6">
+                                                        <p className="font-black text-white">{res.studentId?.name || 'Unknown student'}</p>
+                                                        <p className="text-[10px] font-bold text-gray-500">{res.studentId?.email}</p>
+                                                    </td>
+                                                    <td className="px-8 py-6 font-bold text-gray-300">{res.examId?.title}</td>
+                                                    <td className="px-8 py-6">
+                                                        <span className={`text-lg font-black ${res.score >= (res.examId?.passScore || 50) ? 'text-green-500' : 'text-red-500'}`}>
+                                                            {res.score}%
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-6">
+                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${res.status === 'Pass' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                                                            {res.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-6 text-xs font-bold text-gray-500">
+                                                        {new Date(res.completedAt).toLocaleDateString()}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         ) : (
                             <div className="text-center py-24 glass rounded-[3rem] border-2 border-dashed border-white/5">

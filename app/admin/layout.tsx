@@ -230,22 +230,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
                 {/* Top Bar */}
-                <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-surface backdrop-blur-xl shrink-0">
-                    <div className="flex items-center gap-4">
+                <header className="h-16 border-b border-border flex items-center justify-between px-3 md:px-6 bg-surface backdrop-blur-xl shrink-0">
+                    <div className="flex items-center gap-2 md:gap-4 min-w-0">
                         <button
-                            onClick={() => { setSidebarOpen(!sidebarOpen); setMobileSidebarOpen(!mobileSidebarOpen); }}
-                            className="p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 hover:text-foreground transition-colors"
+                            onClick={() => {
+                                if (window.innerWidth >= 1024) {
+                                    setSidebarOpen(!sidebarOpen);
+                                } else {
+                                    setMobileSidebarOpen(!mobileSidebarOpen);
+                                }
+                            }}
+                            className="p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 hover:text-foreground transition-colors shrink-0"
                         >
                             <FiMenu className="text-lg" />
                         </button>
-                        <div className="flex items-center gap-2 text-xs text-foreground/40 font-bold uppercase tracking-widest">
-                            <Link href="/admin/dashboard" className="hover:text-foreground transition-colors">Admin</Link>
-                            <FiChevronRight />
-                            <span className="text-foreground">{pathname.split('/').pop()?.replace(/-/g, ' ') || 'Dashboard'}</span>
+                        <div className="flex items-center gap-1 md:gap-2 text-[10px] md:text-xs text-foreground/40 font-bold uppercase tracking-widest min-w-0">
+                            <Link href="/admin/dashboard" className="hover:text-foreground transition-colors shrink-0">Admin</Link>
+                            <FiChevronRight className="shrink-0" />
+                            <span className="text-foreground truncate">{pathname.split('/').pop()?.replace(/-/g, ' ') || 'Dashboard'}</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Link href="/" className="text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground border border-border px-3 py-1.5 rounded-lg transition-colors">
+                    <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                        <Link href="/" className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground border border-border px-3 py-1.5 rounded-lg transition-colors">
                             View Site
                         </Link>
                         <button className="relative p-2 hover:bg-foreground/5 rounded-lg text-foreground/40 hover:text-foreground transition-colors">
@@ -255,7 +261,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </div>
                 </header>
 
-                <main className="flex-1 overflow-y-auto p-6 md:p-8">
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
                     <div className="max-w-8xl mx-auto">
                         {children}
                     </div>

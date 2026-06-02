@@ -192,9 +192,9 @@ export default function LearnCoursePage() {
                     {sidebarOpen && (
                         <motion.div
                             initial={{ width: 0, opacity: 0 }}
-                            animate={{ width: 380, opacity: 1 }}
+                            animate={{ width: "100%", maxWidth: 380, opacity: 1 }}
                             exit={{ width: 0, opacity: 0 }}
-                            className="h-full bg-dark/80 backdrop-blur-xl border-l border-white/5 flex flex-col shrink-0 absolute lg:relative right-0 z-40 w-[380px] lg:w-auto overflow-hidden"
+                            className="h-full bg-dark/80 backdrop-blur-xl border-l border-white/5 flex flex-col shrink-0 absolute lg:relative right-0 z-40 overflow-hidden"
                         >
                             <div className="p-6 border-b border-white/5 bg-black/20">
                                 <h3 className="text-sm font-black text-white uppercase tracking-widest">{course?.title || 'Curriculum'}</h3>
@@ -210,7 +210,10 @@ export default function LearnCoursePage() {
                                             {module?.lessons?.map((lesson: any) => (
                                                 <button
                                                     key={lesson.id || lesson._id}
-                                                    onClick={() => setActiveLesson(lesson.id || lesson._id)}
+                                                    onClick={() => {
+                                                        setActiveLesson(lesson.id || lesson._id);
+                                                        if (window.innerWidth < 1024) setSidebarOpen(false);
+                                                    }}
                                                     className={`w-full p-4 pl-8 flex items-start gap-4 text-left transition-all ${(activeLesson === lesson.id || activeLesson === lesson._id)
                                                         ? 'bg-primary/10 border-l-4 border-primary'
                                                         : 'hover:bg-white/5 border-l-4 border-transparent'

@@ -502,7 +502,6 @@ export default function Navbar() {
                             </Link>
                           ))}
                         </div>
-                        drum
                         <button
                           onClick={handleLogout}
                           className="flex w-full items-center gap-4 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-500/10 transition-all font-bold"

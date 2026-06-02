@@ -123,34 +123,36 @@ export default function AdminAnalyticsPage() {
                 <div className="p-6 border-b border-border">
                     <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Top Students by Points</h3>
                 </div>
-                <table className="w-full">
-                    <thead>
-                        <tr className="border-b border-border">
-                            <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Rank</th>
-                            <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Student</th>
-                            <th className="p-4 text-right text-[10px] font-black text-foreground/40 uppercase tracking-widest">Courses</th>
-                            <th className="p-4 text-right text-[10px] font-black text-foreground/40 uppercase tracking-widest">Points</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                        {topStudents.length > 0 ? topStudents.map((s, i) => (
-                            <tr key={i} className="hover:bg-foreground/5 transition-colors">
-                                <td className="p-4">
-                                    <span className={`font-black text-sm ${i === 0 ? 'text-yellow-600' : i === 1 ? 'text-foreground/40' : i === 2 ? 'text-amber-700' : 'text-foreground/20'}`}>
-                                        #{i + 1}
-                                    </span>
-                                </td>
-                                <td className="p-4 text-foreground font-bold text-sm">{s.name}</td>
-                                <td className="p-4 text-right text-foreground/40 font-bold text-sm">{s.courses} courses</td>
-                                <td className="p-4 text-right font-black text-foreground">{s.points} PTS</td>
+                <div className="overflow-x-auto w-full">
+                    <table className="w-full whitespace-nowrap">
+                        <thead>
+                            <tr className="border-b border-border">
+                                <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Rank</th>
+                                <th className="p-4 text-left text-[10px] font-black text-foreground/40 uppercase tracking-widest">Student</th>
+                                <th className="p-4 text-right text-[10px] font-black text-foreground/40 uppercase tracking-widest">Courses</th>
+                                <th className="p-4 text-right text-[10px] font-black text-foreground/40 uppercase tracking-widest">Points</th>
                             </tr>
-                        )) : (
-                            <tr>
-                                <td colSpan={4} className="p-8 text-center text-foreground/20 font-black uppercase tracking-widest text-xs">No data available yet</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                            {topStudents.length > 0 ? topStudents.map((s, i) => (
+                                <tr key={i} className="hover:bg-foreground/5 transition-colors">
+                                    <td className="p-4">
+                                        <span className={`font-black text-sm ${i === 0 ? 'text-yellow-600' : i === 1 ? 'text-foreground/40' : i === 2 ? 'text-amber-700' : 'text-foreground/20'}`}>
+                                            #{i + 1}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-foreground font-bold text-sm">{s.name}</td>
+                                    <td className="p-4 text-right text-foreground/40 font-bold text-sm">{s.courses} courses</td>
+                                    <td className="p-4 text-right font-black text-foreground">{s.points} PTS</td>
+                                </tr>
+                            )) : (
+                                <tr>
+                                    <td colSpan={4} className="p-8 text-center text-foreground/20 font-black uppercase tracking-widest text-xs">No data available yet</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

@@ -111,7 +111,7 @@ export default function PublicCoursesPage() {
 
             <div className="max-w-7xl mx-auto space-y-12">
                 <div className="text-center max-w-3xl mx-auto space-y-4">
-                    <h1 className="text-4xl md:text-6xl font-black text-foreground uppercase tracking-tighter leading-none">
+                    <h1 className="text-3xl md:text-6xl font-black text-foreground uppercase tracking-tighter leading-none">
                         Explore Library
                     </h1>
                     <p className="text-foreground/60 font-bold max-w-xl mx-auto">
@@ -120,7 +120,7 @@ export default function PublicCoursesPage() {
                 </div>
 
                 {/* Filter Bar */}
-                <div className="flex flex-wrap justify-center gap-2">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-1 justify-start md:justify-center">
                     {[
                         { id: 'all', name: 'All Courses' },
                         { id: 'web', name: 'Web Dev' },
@@ -131,7 +131,7 @@ export default function PublicCoursesPage() {
                         <button
                             key={f.id}
                             onClick={() => setFilter(f.id)}
-                            className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all ${filter === f.id ? 'bg-primary text-white shadow-lg' : 'bg-surface text-foreground/40 hover:text-primary hover:bg-foreground/5'
+                            className={`px-6 py-2 rounded-xl text-xs font-black uppercase transition-all shrink-0 ${filter === f.id ? 'bg-primary text-white shadow-lg' : 'bg-surface text-foreground/40 hover:text-primary hover:bg-foreground/5'
                                 }`}
                         >
                             {f.name}
