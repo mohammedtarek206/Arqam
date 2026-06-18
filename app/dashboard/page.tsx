@@ -11,7 +11,6 @@ export default function StudentDashboardOverview() {
     const { t, lang } = useLanguage();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
-
     const [dashboardData, setDashboardData] = useState<any>(null);
 
     useEffect(() => {
@@ -43,7 +42,6 @@ export default function StudentDashboardOverview() {
     ];
 
     const currentCourses = dashboardData?.courses || [];
-    const currentTracks = dashboardData?.enrolledTracks || [];
 
     if (loading) {
         return (
@@ -84,40 +82,6 @@ export default function StudentDashboardOverview() {
                 ))}
             </div>
 
-            {/* Enrolled Tracks */}
-            {currentTracks.length > 0 && (
-                <div>
-                    <h2 className="text-2xl font-black text-foreground uppercase mb-6">{t('my_tracks') || 'MY TRACKS'}</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {currentTracks.map((track: any, i: number) => (
-                            <motion.div
-                                key={track._id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                className="glass p-6 rounded-[2rem] border border-white/5 group hover:border-primary/30 transition-all"
-                            >
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-xl font-black">
-                                        {track.icon || <FiActivity />}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-foreground font-black uppercase text-sm">{track.title}</h3>
-                                        <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest">{track.level} • {track.duration}</p>
-                                    </div>
-                                </div>
-                                <Link
-                                    href={`/tracks/${track._id}`}
-                                    className="w-full py-3 bg-foreground/5 hover:bg-primary text-foreground hover:text-white font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-all border border-border"
-                                >
-                                    Continue Track <FiArrowRight />
-                                </Link>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
             {/* Continue Learning */}
             <div>
                 <div className="flex justify-between items-center mb-6">
@@ -155,9 +119,6 @@ export default function StudentDashboardOverview() {
                                             img.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800';
                                         }}
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
-                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-black/50 px-2 py-1 rounded backdrop-blur-md border border-white/10">{course.track?.title || 'Professional'}</span>
-                                    </div>
                                 </div>
 
                                 <div className="p-6 flex-1 flex flex-col justify-between">

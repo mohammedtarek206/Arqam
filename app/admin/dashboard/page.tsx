@@ -6,8 +6,8 @@ import Link from 'next/link';
 import {
     FiUsers, FiBook, FiDollarSign, FiTrendingUp,
     FiUserCheck, FiCreditCard, FiBarChart2, FiAward,
-    FiActivity, FiArrowUpRight, FiArrowDownRight,
-    FiArrowRight, FiStar, FiCheckCircle, FiClock
+    FiArrowUpRight, FiArrowDownRight,
+    FiArrowRight, FiCheckCircle, FiClock, FiActivity
 } from 'react-icons/fi';
 
 const StatCard = ({ title, value, icon: Icon, color, bg, change, delay = 0 }: any) => (
@@ -37,7 +37,7 @@ const StatCard = ({ title, value, icon: Icon, color, bg, change, delay = 0 }: an
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
         students: 0, instructors: 0, courses: 0, revenue: 0,
-        activeSubscriptions: 0, monthRevenue: 0
+        monthRevenue: 0
     });
     const [charts, setCharts] = useState<any>(null);
     const [topStudents, setTopStudents] = useState<any[]>([]);
@@ -93,13 +93,12 @@ export default function AdminDashboard() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 <StatCard title="Total Students" value={stats.students} icon={FiUsers} color="text-primary" bg="bg-primary/10" change={12} delay={0} />
                 <StatCard title="Instructors" value={stats.instructors} icon={FiUserCheck} color="text-blue-600" bg="bg-blue-500/10" change={5} delay={0.05} />
                 <StatCard title="Courses" value={stats.courses} icon={FiBook} color="text-indigo-600" bg="bg-indigo-500/10" change={8} delay={0.1} />
-                <StatCard title="Total Revenue" value={`$${stats.revenue.toLocaleString()}`} icon={FiDollarSign} color="text-emerald-600" bg="bg-emerald-500/10" change={22} delay={0.15} />
-                <StatCard title="This Month" value={`$${stats.monthRevenue.toLocaleString()}`} icon={FiTrendingUp} color="text-sky-600" bg="bg-sky-500/10" change={-3} delay={0.2} />
-                <StatCard title="Active Subs" value={stats.activeSubscriptions} icon={FiActivity} color="text-primary" bg="bg-primary/10" change={15} delay={0.25} />
+                <StatCard title="Total Revenue" value={`EGP ${stats.revenue.toLocaleString()}`} icon={FiDollarSign} color="text-emerald-600" bg="bg-emerald-500/10" change={22} delay={0.15} />
+                <StatCard title="This Month" value={`EGP ${stats.monthRevenue.toLocaleString()}`} icon={FiTrendingUp} color="text-sky-600" bg="bg-sky-500/10" change={-3} delay={0.2} />
             </div>
 
             {/* Quick Links */}
@@ -157,7 +156,7 @@ export default function AdminDashboard() {
                     className="glass rounded-3xl border border-border overflow-hidden bg-surface shadow-sm"
                 >
                     <div className="p-6 border-b border-border flex items-center justify-between bg-foreground/[0.02]">
-                        <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Top Tracks</h3>
+                        <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Top Students</h3>
                         <Link href="/admin/courses-control" className="text-[10px] font-black text-primary hover:text-primary/80 uppercase tracking-widest transition-colors flex items-center gap-1 group">
                             Full Control <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
                         </Link>

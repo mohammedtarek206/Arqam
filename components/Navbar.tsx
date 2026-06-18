@@ -8,7 +8,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useLanguage } from '@/lib/LanguageContext';
 import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import MegaMenu from './MegaMenu';
 import {
   FiMenu, FiX, FiSun, FiMoon, FiUser, FiLogOut,
   FiSearch, FiBell, FiChevronDown, FiBook, FiAward,
@@ -27,8 +26,6 @@ export default function Navbar() {
   const { lang, setLang, t } = useLanguage();
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
-  const [tracks, setTracks] = useState<{ href: string; label: string }[]>([]);
-  const [fullTracks, setFullTracks] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const hasUnread = notifications.some(n => !n.read);
 
@@ -40,24 +37,6 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-
-    const fetchTracks = async () => {
-      try {
-        const res = await fetch('/api/tracks');
-        if (res.ok) {
-          const data = await res.json();
-          setFullTracks(data);
-          const trackLinks = data.map((track: any) => ({
-            href: `/tracks/${track._id}`,
-            label: track.title
-          }));
-          setTracks(trackLinks);
-        }
-      } catch (err) {
-        console.error('Failed to fetch tracks for navbar:', err);
-      }
-    };
-    fetchTracks();
 
     const fetchNotifications = async (tkn: string) => {
       try {
@@ -105,12 +84,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/', label: t('home'), icon: FiHome },
-    {
-      label: t('courses'),
-      icon: FiBook,
-      isMega: true,
-      href: '/courses'
-    },
+    { href: '/courses', label: t('courses'), icon: FiBook },
     { href: '/training-courses', label: t('training_courses'), icon: FiBook },
     { href: '/jobs', label: t('jobs'), icon: FiBriefcase },
     {
@@ -388,17 +362,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop Mega Menu (Positioned relative to the container) */}
-        <AnimatePresence>
-          {activeDropdown === t('courses') && (
-            <div className="hidden xl:block absolute top-20 left-0 right-0 px-4">
-              <MegaMenu
-                tracks={fullTracks}
-                onClose={() => setActiveDropdown(null)}
-              />
-            </div>
-          )}
-        </AnimatePresence>
+
 
         {/* Mobile Sidebar Navigation */}
         <AnimatePresence>
@@ -434,33 +398,20 @@ export default function Navbar() {
                 <div className="space-y-6">
                   {navLinks.map((link) => (
                     <div key={link.label}>
-                      {link.dropdown || link.isMega ? (
+                      {link.dropdown ? (
                         <div className="space-y-2">
                           <p className="text-[10px] font-black text-primary uppercase tracking-widest px-4 mb-2">{link.label}</p>
                           <div className="grid grid-cols-1 gap-1">
-                            {link.isMega ? (
-                              fullTracks.map((track) => (
-                                <Link
-                                  key={track._id}
-                                  href={`/tracks/${track._id}`}
-                                  onClick={() => setMenuOpen(false)}
-                                  className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
-                                >
-                                  {track.title}
-                                </Link>
-                              ))
-                            ) : (
-                              link.dropdown?.map((item) => (
-                                <Link
-                                  key={item.href}
-                                  href={item.href}
-                                  onClick={() => setMenuOpen(false)}
-                                  className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
-                                >
-                                  {item.label}
-                                </Link>
-                              ))
-                            )}
+                            {link.dropdown?.map((item) => (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setMenuOpen(false)}
+                                className="flex items-center gap-4 px-4 py-3 rounded-2xl text-foreground/60 hover:bg-primary/10 hover:text-primary transition-all font-medium"
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
                           </div>
                         </div>
                       ) : (

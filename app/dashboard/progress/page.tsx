@@ -27,7 +27,6 @@ export default function StudentProgressPage() {
                     // Simple logic to mock deriving stats from courses.
                     // Ideally the backend would return aggregated statistics.
                     let totalCompletion = 0;
-                    let tracksEnrolled = data.tracks?.length || 0;
                     let coursesEnrolled = data.courses?.length || 0;
                     let activeCourses = 0;
 
@@ -45,10 +44,11 @@ export default function StudentProgressPage() {
                         if (progress > 0) activeCourses++;
                         totalCompletion += progress;
 
-                        // Add track name as a skill placeholder
-                        if (c.track && !extractedSkills.find(s => s.skill === c.track)) {
+                        // Use category as a skill placeholder
+                        const skillName = c.category || c.title?.split(' ')[0] || 'Course';
+                        if (!extractedSkills.find(s => s.skill === skillName)) {
                             extractedSkills.push({
-                                skill: c.track || c.title.split(' ')[0],
+                                skill: skillName,
                                 progress: progress,
                                 color: colors[i % colors.length]
                             });

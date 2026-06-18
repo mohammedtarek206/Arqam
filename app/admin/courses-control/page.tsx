@@ -31,13 +31,11 @@ interface Course {
 
 function EditModal({
     course,
-    tracks,
     instructors,
     onSave,
     onClose
 }: {
     course: Partial<Course>;
-    tracks: any[];
     instructors: any[];
     onSave: (c: any) => Promise<void>;
     onClose: () => void;
@@ -46,10 +44,9 @@ function EditModal({
         title: course.title || '',
         description: course.description || '',
         instructor: (course && course.instructor && typeof course.instructor === 'object') ? course.instructor._id : (course ? course.instructor : '') || '',
-        track: (course && course.track && typeof course.track === 'object') ? course.track._id : (course ? course.track : '') || '',
         price: course?.price || 0,
         isFree: course?.isFree || false,
-        isActive: course?.isActive || false,
+        isActive: course?.isActive !== undefined ? course.isActive : true,
         level: course?.level || 'Beginner',
         duration: course?.duration || '',
         modulesCount: course?.modulesCount || 0,
@@ -57,6 +54,7 @@ function EditModal({
         certificationText: course?.certificationText || '',
         certificationImage: course?.certificationImage || '',
         thumbnail: course?.thumbnail || '',
+        introVideo: (course as any)?.introVideo || '',
         outline: course?.outline || '',
         whatYouWillLearn: course?.whatYouWillLearn || '',
         audienceProfile: course?.audienceProfile || '',
@@ -115,44 +113,39 @@ function EditModal({
                             className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
                         />
                     </div>
-                    <div>
-                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Thumbnail URL</label>
-                        <input
-                            value={form.thumbnail}
-                            onChange={e => setForm(f => ({ ...f, thumbnail: e.target.value }))}
-                            placeholder="https://images.unsplash.com/..."
-                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
-                        />
+                    <div className="grid grid-cols-1 gap-4">
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Thumbnail URL (Image)</label>
+                            <input
+                                value={form.thumbnail}
+                                onChange={e => setForm(f => ({ ...f, thumbnail: e.target.value }))}
+                                placeholder="https://images.unsplash.com/..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Intro Video URL (YouTube or direct link)</label>
+                            <input
+                                value={form.introVideo}
+                                onChange={e => setForm(f => ({ ...f, introVideo: e.target.value }))}
+                                placeholder="https://www.youtube.com/watch?v=... or https://..."
+                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                            />
+                        </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Instructor</label>
-                            <select
-                                required
-                                value={form.instructor}
-                                onChange={e => setForm(f => ({ ...f, instructor: e.target.value }))}
-                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
-                            >
-                                <option value="" disabled className="bg-background text-foreground/40">Select Instructor</option>
-                                {instructors.map(ins => (
-                                    <option key={ins._id} value={ins._id} className="bg-background">{ins.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Track</label>
-                            <select
-                                required
-                                value={form.track}
-                                onChange={e => setForm(f => ({ ...f, track: e.target.value }))}
-                                className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
-                            >
-                                <option value="" disabled className="bg-background text-foreground/40">Select Track</option>
-                                {tracks.map(t => (
-                                    <option key={t._id} value={t._id} className="bg-background">{t.title}</option>
-                                ))}
-                            </select>
-                        </div>
+                    <div>
+                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Instructor</label>
+                        <select
+                            required
+                            value={form.instructor}
+                            onChange={e => setForm(f => ({ ...f, instructor: e.target.value }))}
+                            className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors"
+                        >
+                            <option value="" disabled className="bg-background text-foreground/40">Select Instructor</option>
+                            {instructors.map(ins => (
+                                <option key={ins._id} value={ins._id} className="bg-background">{ins.name}</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -303,7 +296,6 @@ function EditModal({
 
 export default function CoursesControlPage() {
     const [courses, setCourses] = useState<Course[]>([]);
-    const [tracks, setTracks] = useState<any[]>([]);
     const [instructors, setInstructors] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -316,14 +308,12 @@ export default function CoursesControlPage() {
     const fetchInitialData = async () => {
         setLoading(true);
         try {
-            const [coursesRes, tracksRes, instructorsRes] = await Promise.all([
+            const [coursesRes, instructorsRes] = await Promise.all([
                 fetch('/api/admin/courses', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }),
-                fetch('/api/tracks'),
                 fetch('/api/admin/instructors', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
             ]);
 
             if (coursesRes.ok) setCourses(await coursesRes.json());
-            if (tracksRes.ok) setTracks(await tracksRes.json());
             if (instructorsRes.ok) setInstructors(await instructorsRes.json());
         } catch (err) {
             console.error('Failed to fetch data:', err);
@@ -402,7 +392,6 @@ export default function CoursesControlPage() {
                 {editingCourse && (
                     <EditModal
                         course={editingCourse}
-                        tracks={tracks}
                         instructors={instructors}
                         onSave={handleSaveCourse}
                         onClose={() => setEditingCourse(null)}

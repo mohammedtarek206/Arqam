@@ -10,7 +10,7 @@ import {
     FiMenu, FiX, FiFileText, FiGrid, FiAward,
     FiDollarSign, FiBarChart2, FiBell, FiSettings,
     FiShield, FiCreditCard, FiUserCheck, FiPackage,
-    FiChevronRight, FiImage, FiHeart, FiBookOpen, FiBriefcase
+    FiChevronRight, FiImage, FiHeart, FiBookOpen, FiBriefcase, FiTag
 } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -61,7 +61,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             label: 'Applications',
             items: [
                 { title: 'Course Requests', icon: FiBookOpen, href: '/admin/course-requests' },
-                { title: 'Job Requests', icon: FiBriefcase, href: '/admin/job-requests' },
+                { title: 'Job Applications', icon: FiBriefcase, href: '/admin/job-requests' },
+            ]
+        },
+        {
+            label: 'Jobs & Careers',
+            items: [
+                { title: 'Manage Jobs', icon: FiTag, href: '/admin/jobs-control' },
             ]
         },
         {
@@ -75,7 +81,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             label: 'Content',
             items: [
                 { title: 'Courses', icon: FiBook, href: '/admin/courses-control' },
-                { title: 'Tracks', icon: FiGrid, href: '/admin/tracks' },
                 { title: 'Exams', icon: FiFileText, href: '/admin/exams' },
                 { title: 'Results', icon: FiAward, href: '/admin/results' },
             ]
@@ -84,7 +89,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             label: 'Finance',
             items: [
                 { title: 'Payments', icon: FiCreditCard, href: '/admin/payments' },
-                { title: 'Subscriptions', icon: FiPackage, href: '/admin/subscriptions' },
             ]
         },
         {

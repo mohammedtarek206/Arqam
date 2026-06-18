@@ -54,7 +54,7 @@ export default function Hero() {
               className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 mb-12 md:mb-16"
             >
               <Link
-                href="/tracks"
+                href="/courses"
                 className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-accent rounded-full text-white font-semibold hover:scale-105 transition-transform shadow-lg shadow-primary/50 text-center"
               >
                 {t('start_journey')}

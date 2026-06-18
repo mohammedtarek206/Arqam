@@ -7,17 +7,10 @@ import Course from '@/models/Course';
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
-        
-        const query = {
-            $or: [
-                { status: 'published', visibility: 'public' },
-                { isActive: true, status: { $exists: false } }
-            ]
-        };
 
-        const courses = await Course.find(query)
+        // Return all active courses publicly - no auth required
+        const courses = await Course.find({ isActive: true })
             .populate('instructor', 'name')
-            .populate('track', 'title')
             .sort({ createdAt: -1 });
 
         return NextResponse.json(courses, { status: 200 });
