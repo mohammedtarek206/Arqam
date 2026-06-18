@@ -338,7 +338,7 @@ export async function POST(request: NextRequest) {
     }
     
     const body = await request.json();
-    const { titleAr, titleEn, descriptionAr, descriptionEn, thumbnail, duration, studyMode, category } = body;
+    const { titleAr, titleEn, descriptionAr, descriptionEn, thumbnail, introVideo, duration, studyMode, category } = body;
     
     if (!titleAr || !titleEn || !descriptionAr || !descriptionEn || !duration || !category) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -350,6 +350,7 @@ export async function POST(request: NextRequest) {
       descriptionAr,
       descriptionEn,
       thumbnail,
+      introVideo,
       duration,
       studyMode: studyMode || 'Offline',
       category,

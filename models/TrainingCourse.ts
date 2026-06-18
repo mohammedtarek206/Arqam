@@ -6,6 +6,7 @@ export interface ITrainingCourse extends Document {
   descriptionAr: string;
   descriptionEn: string;
   thumbnail?: string;
+  introVideo?: string;
   duration: string;
   studyMode: 'Online' | 'Offline' | 'Both';
   category: 'programming' | 'graphic' | 'languages' | 'networks' | 'ai' | 'business';
@@ -21,6 +22,7 @@ const TrainingCourseSchema: Schema = new Schema(
     descriptionAr: { type: String, required: true },
     descriptionEn: { type: String, required: true },
     thumbnail: { type: String },
+    introVideo: { type: String },
     duration: { type: String, required: true },
     studyMode: { type: String, enum: ['Online', 'Offline', 'Both'], default: 'Offline' },
     category: {

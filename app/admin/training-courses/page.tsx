@@ -4,27 +4,18 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiEdit2, FiTrash2, FiPlusCircle, FiPause, FiPlay, FiX, FiSave, FiLoader, FiVideo, FiImage } from 'react-icons/fi';
 
-interface Course {
+interface TrainingCourse {
     _id?: string;
-    title: string;
-    description: string;
+    titleAr: string;
+    titleEn: string;
+    descriptionAr: string;
+    descriptionEn: string;
     category: string;
-    price: number;
-    isFree: boolean;
-    isActive: boolean;
-    level: string;
-    duration?: string;
-    modulesCount?: number;
-    benefits?: string[];
-    certificationText?: string;
-    certificationImage?: string;
-    outline?: string;
-    whatYouWillLearn?: string;
-    audienceProfile?: string;
-    prerequisites?: string;
+    duration: string;
+    studyMode: string;
     thumbnail?: string;
     introVideo?: string;
-    students?: number;
+    isActive: boolean;
 }
 
 function EditModal({
@@ -32,29 +23,21 @@ function EditModal({
     onSave,
     onClose
 }: {
-    course: Partial<Course>;
+    course: Partial<TrainingCourse>;
     onSave: (c: any) => Promise<void>;
     onClose: () => void;
 }) {
     const [form, setForm] = useState({
-        title: course.title || '',
-        description: course.description || '',
+        titleAr: course.titleAr || '',
+        titleEn: course.titleEn || '',
+        descriptionAr: course.descriptionAr || '',
+        descriptionEn: course.descriptionEn || '',
         category: course.category || 'programming',
-        price: course?.price || 0,
-        isFree: course?.isFree || false,
+        duration: course.duration || '',
+        studyMode: course.studyMode || 'Offline',
+        thumbnail: course.thumbnail || '',
+        introVideo: course.introVideo || '',
         isActive: course?.isActive !== undefined ? course.isActive : true,
-        level: course?.level || 'Beginner',
-        duration: course?.duration || '',
-        modulesCount: course?.modulesCount || 0,
-        benefits: (course?.benefits || []).join('\n'),
-        certificationText: course?.certificationText || '',
-        certificationImage: course?.certificationImage || '',
-        thumbnail: course?.thumbnail || '',
-        introVideo: course?.introVideo || '',
-        outline: course?.outline || '',
-        whatYouWillLearn: course?.whatYouWillLearn || '',
-        audienceProfile: course?.audienceProfile || '',
-        prerequisites: course?.prerequisites || '',
     });
     const [saving, setSaving] = useState(false);
 
@@ -62,11 +45,7 @@ function EditModal({
         e.preventDefault();
         setSaving(true);
         try {
-            const submissionData = {
-                ...form,
-                benefits: form.benefits.split('\n').filter(b => b.trim() !== '')
-            };
-            await onSave(submissionData);
+            await onSave(form);
             onClose();
         } catch (err: any) {
             alert('Failed to save course: ' + err.message);
@@ -84,7 +63,7 @@ function EditModal({
                 className="glass rounded-2xl border border-white/10 w-full max-w-2xl shadow-2xl overflow-hidden"
             >
                 <div className="flex items-center justify-between p-6 border-b border-border">
-                    <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">{course._id ? 'Edit Online Course' : 'Add Online Course'}</h3>
+                    <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">{course._id ? 'Edit Offline Course' : 'Add Offline Course'}</h3>
                     <button onClick={onClose} className="p-2 rounded-xl text-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-colors">
                         <FiX />
                     </button>
@@ -92,9 +71,25 @@ function EditModal({
                 <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Course Title</label>
-                            <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Title (Arabic)</label>
+                            <input required value={form.titleAr} onChange={e => setForm(f => ({ ...f, titleAr: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
                         </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Title (English)</label>
+                            <input required value={form.titleEn} onChange={e => setForm(f => ({ ...f, titleEn: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Description (Arabic)</label>
+                            <textarea required rows={3} value={form.descriptionAr} onChange={e => setForm(f => ({ ...f, descriptionAr: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Description (English)</label>
+                            <textarea required rows={3} value={form.descriptionEn} onChange={e => setForm(f => ({ ...f, descriptionEn: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Category</label>
                             <select required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors">
@@ -106,11 +101,20 @@ function EditModal({
                                 <option value="business">Business</option>
                             </select>
                         </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Study Mode</label>
+                            <select value={form.studyMode} onChange={e => setForm(f => ({ ...f, studyMode: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors">
+                                <option value="Offline">Offline</option>
+                                <option value="Online">Online</option>
+                                <option value="Both">Both (Hybrid)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Duration (e.g. 40 Hours)</label>
+                            <input required value={form.duration} onChange={e => setForm(f => ({ ...f, duration: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Description</label>
-                        <textarea required rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                    </div>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2 flex items-center gap-1"><FiImage/> Thumbnail URL</label>
@@ -119,43 +123,6 @@ function EditModal({
                         <div>
                             <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2 flex items-center gap-1"><FiVideo/> Intro Video URL (YouTube)</label>
                             <input value={form.introVideo} onChange={e => setForm(f => ({ ...f, introVideo: e.target.value }))} placeholder="https://www.youtube.com/watch?v=..." className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Level</label>
-                            <select value={form.level} onChange={e => setForm(f => ({ ...f, level: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors">
-                                {['Beginner', 'Intermediate', 'Advanced'].map(l => <option key={l} value={l} className="bg-background">{l}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Duration (e.g. 40 Hours)</label>
-                            <input value={form.duration} onChange={e => setForm(f => ({ ...f, duration: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                        </div>
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Price (EGP)</label>
-                            <input type="number" min={0} value={form.price} onChange={e => setForm(f => ({ ...f, price: Number(e.target.value), isFree: Number(e.target.value) === 0 }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Course Benefits (One per line)</label>
-                        <textarea rows={3} value={form.benefits} onChange={e => setForm(f => ({ ...f, benefits: e.target.value }))} placeholder="Hands-on practical experience.&#10;Mastering industry-standard tools." className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                    </div>
-
-                    <div className="space-y-4 p-4 border border-border rounded-2xl bg-surface/50">
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">Course Detailed Content (Accordions)</p>
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Course Outline</label>
-                            <textarea rows={3} value={form.outline} onChange={e => setForm(f => ({ ...f, outline: e.target.value }))} placeholder="Module 1: Intro...&#10;Module 2: Basics..." className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                        </div>
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">What you will learn</label>
-                            <textarea rows={3} value={form.whatYouWillLearn} onChange={e => setForm(f => ({ ...f, whatYouWillLearn: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
-                        </div>
-                        <div>
-                            <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2">Prerequisites</label>
-                            <textarea rows={2} value={form.prerequisites} onChange={e => setForm(f => ({ ...f, prerequisites: e.target.value }))} className="w-full bg-surface border border-border rounded-xl p-3 text-foreground text-sm font-medium focus:outline-none focus:border-primary/50 transition-colors" />
                         </div>
                     </div>
                     
@@ -178,11 +145,11 @@ function EditModal({
     );
 }
 
-export default function CoursesControlPage() {
-    const [courses, setCourses] = useState<Course[]>([]);
+export default function TrainingCoursesControlPage() {
+    const [courses, setCourses] = useState<TrainingCourse[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
-    const [editingCourse, setEditingCourse] = useState<Partial<Course> | null>(null);
+    const [editingCourse, setEditingCourse] = useState<Partial<TrainingCourse> | null>(null);
 
     useEffect(() => {
         fetchInitialData();
@@ -191,8 +158,8 @@ export default function CoursesControlPage() {
     const fetchInitialData = async () => {
         setLoading(true);
         try {
-            const coursesRes = await fetch('/api/admin/courses', { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            if (coursesRes.ok) setCourses(await coursesRes.json());
+            const res = await fetch('/api/training-courses');
+            if (res.ok) setCourses(await res.json());
         } catch (err) {
             console.error('Failed to fetch data:', err);
         } finally {
@@ -202,12 +169,13 @@ export default function CoursesControlPage() {
 
     const filtered = courses.filter(c =>
         !search ||
-        (c?.title || '').toLowerCase().includes(search.toLowerCase())
+        (c?.titleAr || '').toLowerCase().includes(search.toLowerCase()) ||
+        (c?.titleEn || '').toLowerCase().includes(search.toLowerCase())
     );
 
-    const toggleStatus = async (course: Course) => {
+    const toggleStatus = async (course: TrainingCourse) => {
         try {
-            const res = await fetch(`/api/admin/courses/${course._id}`, {
+            const res = await fetch(`/api/training-courses/${course._id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 body: JSON.stringify({ isActive: !course.isActive })
@@ -219,7 +187,7 @@ export default function CoursesControlPage() {
     const deleteCourse = async (id: string) => {
         if (!confirm('Are you sure you want to delete this course?')) return;
         try {
-            const res = await fetch(`/api/admin/courses/${id}`, {
+            const res = await fetch(`/api/training-courses/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
@@ -229,15 +197,8 @@ export default function CoursesControlPage() {
 
     const handleSaveCourse = async (formData: any) => {
         const method = editingCourse?._id ? 'PATCH' : 'POST';
-        const url = editingCourse?._id ? `/api/admin/courses/${editingCourse._id}` : '/api/admin/courses';
+        const url = editingCourse?._id ? `/api/training-courses/${editingCourse._id}` : '/api/training-courses';
         
-        // Ensure standard fields if creating
-        if (!editingCourse?._id) {
-            // Assign to admin or don't assign
-            formData.instructor = undefined; 
-            formData.status = 'published';
-        }
-
         const res = await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
@@ -274,14 +235,14 @@ export default function CoursesControlPage() {
 
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">الكورسات الاونلاين</h1>
-                    <p className="text-foreground/40 font-medium text-sm mt-1">Manage all online courses, content, pricing and visibility.</p>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tighter">الكورسات الاوفلاين</h1>
+                    <p className="text-foreground/40 font-medium text-sm mt-1">Manage offline training courses and registrations.</p>
                 </div>
                 <button
                     onClick={() => setEditingCourse({})}
                     className="self-start flex items-center gap-2 px-5 py-3 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                 >
-                    <FiPlusCircle /> Add Online Course
+                    <FiPlusCircle /> Add Offline Course
                 </button>
             </div>
 
@@ -311,17 +272,14 @@ export default function CoursesControlPage() {
                                     {course?.isActive ? 'Active' : 'Draft/Paused'}
                                 </span>
                                 <span className="text-[10px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded">{course.category || 'General'}</span>
+                                <span className="text-[10px] font-black text-blue-400 uppercase bg-blue-400/10 px-2 py-0.5 rounded border border-blue-400/20">{course.studyMode}</span>
                             </div>
-                            <h3 className="text-white font-black text-base truncate">{course?.title || 'Untitled Course'}</h3>
+                            <h3 className="text-white font-black text-base truncate">{course?.titleAr || course?.titleEn || 'Untitled Course'}</h3>
                         </div>
                         <div className="flex items-center gap-6 text-sm shrink-0">
                             <div className="text-center">
-                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Students</p>
-                                <p className="text-white font-black">{course.students || 0}</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Price</p>
-                                <p className="text-white font-black">{course.isFree ? 'Free' : `${course.price} EGP`}</p>
+                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Duration</p>
+                                <p className="text-white font-black">{course.duration}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2 shrink-0 border-t sm:border-t-0 sm:border-l border-border pt-4 sm:pt-0 sm:pl-4 mt-4 sm:mt-0">

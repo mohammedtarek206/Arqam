@@ -35,7 +35,7 @@ const CourseSchema: Schema = new Schema(
         description: { type: String, required: true },
         thumbnail: { type: String },
         track: { type: Schema.Types.ObjectId, ref: 'Track', required: false },
-        instructor: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        instructor: { type: Schema.Types.ObjectId, ref: 'User', required: false },
         level: {
             type: String,
             enum: ['Beginner', 'Intermediate', 'Advanced'],

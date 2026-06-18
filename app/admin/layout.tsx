@@ -80,7 +80,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {
             label: 'Content',
             items: [
-                { title: 'Courses', icon: FiBook, href: '/admin/courses-control' },
+                { title: 'Online Courses', icon: FiBook, href: '/admin/courses-control' },
+                { title: 'Offline Courses', icon: FiBookOpen, href: '/admin/training-courses' },
                 { title: 'Exams', icon: FiFileText, href: '/admin/exams' },
                 { title: 'Results', icon: FiAward, href: '/admin/results' },
             ]
