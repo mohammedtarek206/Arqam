@@ -4,13 +4,18 @@ export interface ICourse extends Document {
     title: string;
     description: string;
     thumbnail?: string;
-    track: mongoose.Types.ObjectId;
+    track?: mongoose.Types.ObjectId;
     instructor: mongoose.Types.ObjectId;
     level: 'Beginner' | 'Intermediate' | 'Advanced';
     price: number;
     isFree: boolean;
     duration?: string;
     modulesCount?: number;
+    lecturesCount?: number;
+    introVideo?: string;
+    category: 'programming' | 'graphic' | 'languages' | 'networks' | 'ai' | 'business' | 'kids' | 'other';
+    status: 'draft' | 'pending' | 'published';
+    visibility: 'public' | 'private';
     benefits?: string[];
     certificationText?: string;
     certificationImage?: string;
@@ -29,7 +34,7 @@ const CourseSchema: Schema = new Schema(
         title: { type: String, required: true },
         description: { type: String, required: true },
         thumbnail: { type: String },
-        track: { type: Schema.Types.ObjectId, ref: 'Track', required: true },
+        track: { type: Schema.Types.ObjectId, ref: 'Track', required: false },
         instructor: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         level: {
             type: String,
@@ -40,6 +45,23 @@ const CourseSchema: Schema = new Schema(
         isFree: { type: Boolean, default: false },
         duration: { type: String, default: '' },
         modulesCount: { type: Number, default: 0 },
+        lecturesCount: { type: Number, default: 0 },
+        introVideo: { type: String, default: '' },
+        category: {
+            type: String,
+            enum: ['programming', 'graphic', 'languages', 'networks', 'ai', 'business', 'kids', 'other'],
+            default: 'programming',
+        },
+        status: {
+            type: String,
+            enum: ['draft', 'pending', 'published'],
+            default: 'draft',
+        },
+        visibility: {
+            type: String,
+            enum: ['public', 'private'],
+            default: 'public',
+        },
         benefits: { type: [String], default: [] },
         certificationText: { type: String, default: '' },
         certificationImage: { type: String, default: '' },
@@ -48,7 +70,7 @@ const CourseSchema: Schema = new Schema(
         audienceProfile: { type: String, default: '' },
         prerequisites: { type: String, default: '' },
         passingGrade: { type: Number, default: 70 },
-        isActive: { type: Boolean, default: false }, // Requires admin approval or set by instructor
+        isActive: { type: Boolean, default: true },
     },
     {
         timestamps: true,

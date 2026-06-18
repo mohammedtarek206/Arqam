@@ -10,7 +10,7 @@ import {
     FiMenu, FiX, FiFileText, FiGrid, FiAward,
     FiDollarSign, FiBarChart2, FiBell, FiSettings,
     FiShield, FiCreditCard, FiUserCheck, FiPackage,
-    FiChevronRight, FiImage, FiHeart
+    FiChevronRight, FiImage, FiHeart, FiBookOpen, FiBriefcase
 } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -55,6 +55,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             items: [
                 { title: 'Overview', icon: FiLayout, href: '/admin/dashboard' },
                 { title: 'Analytics', icon: FiBarChart2, href: '/admin/analytics' },
+            ]
+        },
+        {
+            label: 'Applications',
+            items: [
+                { title: 'Course Requests', icon: FiBookOpen, href: '/admin/course-requests' },
+                { title: 'Job Requests', icon: FiBriefcase, href: '/admin/job-requests' },
             ]
         },
         {
